@@ -12,7 +12,7 @@ install:
   
 # command to run tests
 script:
-  - python -m unittest discovery -p 'test_*.py'
+  - python -m unittest discover -p 'test_*.py'
 
 after_success:
   - pip3 install python-coveralls;
