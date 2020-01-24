@@ -9,8 +9,14 @@ python:
 # install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install unittest
+  - pip install cover
   
 # command to run tests
 script:
-  - unittest discover -p 'test_*.py'
+  - unittest discovery -p 'test_*.py'
+
+after_success:
+  - pip3 install python-coveralls;
+  - pip3 install coverage codecov
+  - coveralls
+  - codecov
