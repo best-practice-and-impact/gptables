@@ -9,7 +9,6 @@ python:
 # install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install cover
   
 # command to run tests
 script:
