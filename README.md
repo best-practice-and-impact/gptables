@@ -1,5 +1,9 @@
 # Good Practice Tables (gptables)
 
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.org/best-practice-and-impact/gptables.svg?branch=master)](https://travis-ci.org/best-practice-and-impact/gptables)
+<!-- badges: end -->
+
 A wrapper for xlsxwriter, to write publication quality tables in Excel.
 
 ## Installation and use:
