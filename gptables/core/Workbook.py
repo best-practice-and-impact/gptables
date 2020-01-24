@@ -1,6 +1,7 @@
 from pathlib import Path
 import numpy as np
 import xlsxwriter as xlw
+import json
 
 class Workbook:
     """
@@ -8,8 +9,8 @@ class Workbook:
     """
     def __init__(self, filename, styles={}):
 
-        self.filename = Path(filename)
-        if not self.filename.parent.exists():
+        self.filename = filename
+        if not Path(self.filename).parent.exists():
             msg = f"Can't write {filename}, directory does not exist."
             raise OSError(msg)
         
@@ -19,17 +20,17 @@ class Workbook:
         self.worksheets = []
         self.styles = styles
         
-    def add_worksheet(self, name):
+    def add_worksheet(self, name, shape):
         """
         Create a new worksheet with the specified name.
         """
-        new_worksheet = worksheet(name)
+        new_worksheet = worksheet(name, shape)
         self.worksheets.append(new_worksheet)
         return new_worksheet
     
     def write_output_to_excel(self):
         """
-        Uses xlsxwriter to write workbook to an excel file.
+        Use XlsxWriter to write Workbook to an excel file.
         """
         wb = xlw.Workbook(self.filename)
         
@@ -37,14 +38,16 @@ class Workbook:
             ws = wb.add_worksheet(sheet.name)
             
             rows, cols = sheet.shape()
-            for row in rows:
-                for col in cols:
-                    cell_format = wb.add_format(sheet[row, col].data)
-                    ws.write(row, col, sheet[row, col].data, cell_format)
+            for row in range(rows):
+                for col in range(cols):
+                    cell_format = wb.add_format(sheet.cells[row, col].style)
+                    ws.write(row, col, sheet.cells[row, col].data, cell_format)
+        
+        wb.close()
     
-    def write_cell_parameters_to_excel(self):
+    def write_cell_attributes_to_excel(self):
         """
-        Write data and style dictionaries to Excel.
+        Use XlsxWriter to write data and style dictionaries to Excel.
         """
         wb = xlw.Workbook(self.filename.replace(".xlsx", "_parameters.xlsx"))
         
@@ -52,11 +55,13 @@ class Workbook:
             ws = wb.add_worksheet(sheet.name)
             
             rows, cols = sheet.shape()
-            for row in rows:
-                for col in cols:
-                    output_str = "\n".join(sheet[row, col].data,
-                                           sheet[row, col].style)
+            for row in range(rows):
+                for col in range(cols):
+                    output_str = "\n".join([sheet.cells[row, col].data,
+                                           json.dumps(sheet.cells[row, col].style)])
                     ws.write(row, col, output_str)
+                    
+        wb.close()
     
     def list_worksheets(self):
         """
@@ -75,9 +80,9 @@ class worksheet:
     """
     An Excel worksheet within a Workbook.
     """
-    def __init__(self, worksheet_name, shape):
-        self.worksheet_name = worksheet_name
-        self.cells = np.empty(shape)
+    def __init__(self, name, shape):
+        self.name = name
+        self.cells = np.array([cell() for _ in range(shape[0]*shape[1])]).reshape(shape)
         
     def shape(self):
         return self.cells.shape
