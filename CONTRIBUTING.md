@@ -3,7 +3,7 @@
 When contributing to this repository, please first discuss the change you wish to make via issue,
 email, or any other method with the owners of this repository before making a change. 
 
-## Merge Request Process
+## Merge request process
 
 1. Branch from the `dev` branch. If you are implementing a feature name it `feature/name_of_feature`,
    if you are implementing a bugfix name it `bug/issue_name`.
@@ -19,3 +19,9 @@ email, or any other method with the owners of this repository before making a ch
 - We name variables using one or two nouns in lowercase, e.g. `mapping_names` or `increment`.
 - We name functions using verbs in lowercase, e.g. `map_variables_to_names` or `change_values`.
 
+## Review process
+
+1. When we want to release the package we will request a formal review for any non-minor changes.
+2. The review process follows a similar process to ROpenSci.
+3. Reviewers will be requested from associated communities.
+4. Only once reviewers are satisfied will the `dev` branch be released.
