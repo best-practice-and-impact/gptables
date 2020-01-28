@@ -1,4 +1,4 @@
-numpy>=1.17.4
-pandas>=0.25.3
+numpy>=1.16
+pandas>=0.20
 xlrd>=1.2.0
 XlsxWriter>=1.2.6

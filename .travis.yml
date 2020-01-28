@@ -12,4 +12,10 @@ install:
   
 # command to run tests
 script:
-  - unittest discover -p 'test_*.py'
+  - python -m unittest discover -p 'test_*.py'
+
+after_success:
+  - pip3 install python-coveralls;
+  - pip3 install coverage codecov
+  - coveralls
+  - codecov
