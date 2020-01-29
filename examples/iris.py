@@ -29,6 +29,6 @@ kwargs = {"headings":headings,
 ######################################
 gpt.produce_table(data=iris_data,
                   theme=gpttheme,
-                  kwargs)
+                  **kwargs)
 
 
