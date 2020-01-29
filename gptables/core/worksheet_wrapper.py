@@ -25,14 +25,18 @@ class Worksheet(xlsxwriter.Workbook):
     
     def add_gptable(self, table, title, source, notes=None, styles=self.default_styles):
         
-        # Merge styles with defaul styles before applying
+        # Merge user supplied styles with default styles before generating format objects
         
         # Work through elements that have been provided and write them to workbook
         
         
         pass
     
-    def add_cover_page(self, cover_config)
+    def add_cover_page(self, cover_config):
+        """
+        Could be moved to Workbook, if we decide to wrap this too.
+        """
+        pass
     
 class gptable_styles:
     """
@@ -41,7 +45,3 @@ class gptable_styles:
     """
     def __init__(self, yaml_style_config):
         
-        
-    
-    
-    
