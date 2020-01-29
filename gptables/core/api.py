@@ -10,13 +10,15 @@ def produce_table(data, theme=gptheme, **kwargs):
     and keyword arguments. It calls upon the packages to return a formatted
     ``.xlsx`` file.
 
-    Args:
+   Parameters
+   ----------
         data: A pandas dataframe object
         theme: A gptables theme object
         **kwargs: Other arguments such as ``headings``, ``index``, ``source``
             that map features of the data to table elements.
 
-    Returns:
+    Returns
+    -------
         A worksheet object.
     """
 
