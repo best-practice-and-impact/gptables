@@ -12,12 +12,11 @@ class Worksheet(xlsxwriter.Workbook):
     
     def __init__(self):
         super(Worksheet, self).__init__()
-        
-        default_styles = gptheme
-    
-    def write_gptable(self, table, title, source, notes=None, theme=self.default_styles):
+
+    def write_gptable(self, gptable, theme): # Could supply a default theme here, if prefered to XlsxWrite default
         """
-        
+        Write data from a gptable object to the worksheet using the specified
+        theme object for formatting.
         """
         
         # Merge user supplied styles with default styles before generating format objects
@@ -32,5 +31,3 @@ class Worksheet(xlsxwriter.Workbook):
         Could be moved to Workbook, if we decide to wrap this too.
         """
         pass
-
-
