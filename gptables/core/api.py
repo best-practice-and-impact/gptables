@@ -1,8 +1,6 @@
-from gptables.core.theme import create_theme
-from gptables.core.theme import gptheme
-from gptables.core.theme import import_theme
+from gptables.core.theme import Theme
 
-def produce_table(data, theme=gptheme, **kwargs):
+def produce_table(gptable, theme, **kwargs):
 
     """Produces worksheet
 
