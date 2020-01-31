@@ -120,83 +120,77 @@ class GPTable:
     
     def set_title(self, new_title):
         """
-        Set the title attribute.
+        Set the `title` attribute.
         """
         if not isinstance(new_title, str):
-            raise ValueError("title attribute must be a string")
+            raise ValueError("`title` attribute must be a string")
             
         self.title = new_title
     
     def add_subtitle(self, new_subtitle):
         """
-        Add a single subtitle to the existing list of subtitles.
+        Add a single subtitle to the existing list of `subtitles`.
         """
         if not isinstance(new_subtitle, str):
-            raise ValueError("subtitle attributes must be strings")
+            raise ValueError("`subtitles` must be strings")
         self.subtitles.append(new_subtitle)
     
     def set_subtitles(self, new_subtitles, overwrite=True):
         """
-        Set a list of subtitles to the subtitles attribute. Overwrites existing
-        list of subtitles by default.
+        Set a list of subtitles to the `subtitles` attribute. Overwrites
+        existing ist of subtitles by default. If `overwrite` is False, new list
+        is appended to existing list of subtitles.
         """
         if not isinstance(new_subtitles, list):
-            raise ValueError("subtitles must be provided as a list of strings")
+            raise ValueError("`subtitles` must be provided as a list of strings")
             
         if overwrite:
             self.subtitles = new_subtitles
         else:
             self.subtitles += new_subtitles
             
-    def set_demographic(self, new_demographic):
+    def set_scope(self, new_scope):
         """
-        Set the demographic attribute.
+        Set the `scope` attribute.
         """
-        if not isinstance(new_demographic, str):
-            raise ValueError("demographic attribute must be a string")
-            
-        self.demographic = new_demographic
-        
-    def set_location(self, new_location):
-        """
-        Set the location attribute.
-        """
-        if not isinstance(new_location, str):
-            raise ValueError("location attribute must be a string")
-            
-        self.location = new_location
-        
-        
+        if not isinstance(new_scope, str):
+            raise ValueError("`scope` attribute must be a string")
+        self.demographic = new_scope        
+
     def set_units(self, new_units):
         """
-        Set the units attribute.
+        Set the `units` attribute to the supplied str or dict. Units as a dict
+        should be in the format {units:[column_indexes]}. Columns are
+        0-indexed, excluding `index_columns`.
         """
-        if not isinstance(new_units, str):
-            raise ValueError("units attribute must be a string")
+        if not isinstance(new_units, (str, dict)):
+            msg = ("`units` attribute must be a string or dict of str:list of ints")
+            raise ValueError(msg)
             
         self.units = new_units
 
     def set_source(self, new_source):
         """
-        Set the source attribute.
+        Set the source attribute to the specified str.
         """
         if not isinstance(new_source, str):
-            raise ValueError("source attribute must be a string")
+            raise ValueError("`source` attribute must be a string")
             
         self.source = new_source
     
     def add_legend(self, new_legend):
         """
-        Add a single subtitle to the existing list of subtitles.
+        Add a single legend entry to the existing `legend` list.
         """
         if not isinstance(new_legend, str):
-            raise ValueError("legend attributes must be strings")
+            raise ValueError("`legend` entried must be strings")
         self.subtitles.append(new_legend)
     
     def set_legend(self, new_legend, overwrite=True):
         """
-        Set a list of subtitles to the subtitles attribute. Overwrites existing
-        list of subtitles by default.
+        Set a list of legend entries to the `legend` attribute. Overwrites
+        existing legend entries by default. If overwrite is False, new entries 
+        are appended to the `legend` list.
         """
         if not isinstance(new_legend, list):
             raise ValueError("legend must be provided as a list of strings")
@@ -208,16 +202,17 @@ class GPTable:
             
     def add_note(self, new_note):
         """
-        Add a single subtitle to the existing list of subtitles.
+        Add a single note to the existing `notes` list.
         """
         if not isinstance(new_note, str):
-            raise ValueError("note attributes must be strings")
+            raise ValueError("`notes` entries must be strings")
         self.subtitles.append(new_note)
     
     def set_notes(self, new_notes, overwrite=True):
         """
-        Set a list of subtitles to the subtitles attribute. Overwrites existing
-        list of subtitles by default.
+        Set a list of notes to the `notes` attribute. Overwrites existing
+        `notes` list by default.If overwrite is False, new entries are
+        appended to the `notes` list.
         """
         if not isinstance(new_notes, list):
             raise ValueError("notes must be provided as a list of strings")
