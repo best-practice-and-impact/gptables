@@ -4,7 +4,7 @@ class GPTable:
     def __init__(self,
                  table,
                  title,
-                 subtitles
+                 subtitles,
                  scope,
                  units,
                  source,
