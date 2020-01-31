@@ -19,5 +19,3 @@ def produce_table(gptable, theme, **kwargs):
     -------
         A worksheet object.
     """
-
-

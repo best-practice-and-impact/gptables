@@ -2,3 +2,4 @@ numpy>=1.16
 pandas>=0.20
 xlrd>=1.2.0
 XlsxWriter>=1.2.6
+pyyaml>=3.12
