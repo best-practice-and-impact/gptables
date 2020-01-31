@@ -3,13 +3,15 @@ class GPTable:
         """
         Initialise GPTable object object
         """           
-        self.table = None
+        self.index_columns = {}  # 0-indexed column mapped to index level
+        self.multilevel_index = False
+        self.column_headers = [] # All other columns
+        self.data = pd.DataFrame()
         
         self.title = None
         self.subtitles = []
-        self.demographic = None
-        self.location = None
-        self.units = None
+        self.scope = None
+        self.units = None  # Dict for units to columns, or single str
         
         self.source = None
         self.legend = []
@@ -19,11 +21,20 @@ class GPTable:
         for key, value in kwargs.items():
             getattr(self, 'set_' + key)(value)
         
-    def set_table(self, new_table):
+    def set_data(self, new_table):
         """
-        Set the table attribute. Overwrites any existing table.
+        Set the data attribute. Overwrites any existing table.
         """
-        self.table = new_table
+        self.table = data
+    
+    def set_index_columns(self, new_index_columns):
+        """
+        Set the index columns attribute. Overwrites any existing values.
+        A str or dict must be supplied. The dict should map index level to a
+        list of 0-indexed column numbers. All other columns will be considered
+        as data columns.
+        """
+        self.index_columns = new_index_columns
     
     def set_title(self, new_title):
         """
