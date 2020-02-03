@@ -75,8 +75,8 @@ iris_table.format({
             {"align":"right"}])
 
 ######################################
-###### USE PRODUCE_TABLE TO WIN ######
+#### USE PRODUCE_WORKBOOK TO WIN #####
 ######################################
 
-gpt.produce_table(gptable=iris_table,
+gpt.produce_workbook(gptables=iris_table,
                   theme=gptheme)
