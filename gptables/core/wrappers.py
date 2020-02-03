@@ -25,18 +25,46 @@ class GPWorksheet(Worksheet):
         Theme object for formatting.
         """
         if not isinstance(gptable, GPTable):
-            raise ValueError("`gptable` must be a gptable.GPTable object")
+            raise ValueError("`gptable` must be a gptables.GPTable object")
         # TODO. Implement method
-        # Get Theme from Worbook
+        # Get Theme
+        theme = self.theme
         
-        # Work through elements that have been provided and write them to workbook
+        # Write each GPTable element using appropriate Theme attr
     
 #    def write_cover_page(self, cover_config):
 #        """
 #        Write a cover page to the worksheet.
 #        """
 #        pass
-
+        
+    def _smart_write(self, row, col, data, format_dict):
+        """
+        Depending on the input data, this function will write rich strings or
+        use the standard write() method. For rich strings, the base format is
+        merged with each rich format supplied.
+        """
+        if isinstance(data, list):
+            # create a format object using base format updated by every other item
+            data_with_formats = []
+            
+            self.write_rich_string(row,
+                                   col,
+                                   string_parts=*data_with_formats,  # Need to unpack?
+                                   wb.add_format(format_dict)
+                                   )
+        else:
+            # Need to find a way to reference workbook that contains this worksheet!
+            self.write(row, col, data, wb.add_format(format_dict))
+            
+    def _merge_dict(base_dict, update_dict):
+        """
+        Creates a new dictionary, by updating a base dictionary not in-place.
+        """
+        updated_dict = base_dict.copy()
+        return updated_dict.update(update_dict)
+    
+    
     def _excel_string_width(str):
         """
         Calculate the rough length of a string in Excel character units.
@@ -60,7 +88,7 @@ class GPWorkbook(Workbook):
         super(GPWorkbook, self).__init__(filename=filename, options=options)
         self.theme = None
         
-        # self.set_theme(Theme(gptheme))  # Set default theme
+        # self.set_theme(Theme(gptheme.yaml))  # Set default theme
         
     def add_worksheet(self, name=None):
         """
