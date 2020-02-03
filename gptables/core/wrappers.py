@@ -1,11 +1,7 @@
 from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
 
-#from xlsxwriter.chartsheet import Chartsheet
-#from .worksheet_wrapper import Worksheet
-
 from .theme import Theme
-# from gptables import gptheme
 from .gptable import GPTable
 
 class GPWorksheet(Worksheet):
@@ -13,7 +9,16 @@ class GPWorksheet(Worksheet):
     Wrapper for and XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
-
+    def __init__(self):
+        super(GPWorksheet, self).__init__()
+        self.theme = None
+        
+    def _set_theme(self, theme):
+        """
+        Set theme attribute, for initialisation using Workbook theme.
+        """
+        self.theme = theme
+        
     def write_gptable(self, gptable):
         """
         Write data from a GPTable object to the worksheet using the specified
@@ -45,6 +50,7 @@ class GPWorksheet(Worksheet):
         else:
             return string_width * 1.1
 
+
 class GPWorkbook(Workbook):
     """
     Wrapper for and XlsxWriter Workbook object. The Worksheets class has been
@@ -52,24 +58,22 @@ class GPWorkbook(Workbook):
     """
     def __init__(self, filename=None, options={}):
         super(GPWorkbook, self).__init__(filename=filename, options=options)
-        
         self.theme = None
         
-        # self.set_theme(gptheme)  # Set default theme
+        # self.set_theme(Theme(gptheme))  # Set default theme
         
     def add_worksheet(self, name=None):
-        # Overwrite add_worksheet() to create a GPsheet object.
+        """
+        Overwrite add_worksheet() to create a GPWorksheet object.
+        """
         worksheet = super(GPWorkbook, self).add_worksheet(name, GPWorksheet)
-
+        worksheet._set_theme(self.theme)
         return worksheet
 
     def set_theme(self, theme):
         """
         Sets the theme for all GPTable objects written to the Workbook.
         """
-
         if not isinstance(theme, Theme):
             raise ValueError("`theme` must be a gptables.Theme object")
         self.theme = theme
-
-
