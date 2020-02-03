@@ -1,0 +1,36 @@
+global:
+    font_size: 9
+    font: Arial
+
+title:
+    bold: True
+    font_size: 11
+    
+subtitle:
+    font_size: 10
+
+scope:
+
+
+units:
+    align: right
+
+heading:
+    bold: True
+
+index-1:
+    bold: True
+
+index-2:
+
+index-3:
+
+data:
+    num_format: 0.000
+
+source:
+    font_size: 7
+
+note:
+    font_size: 7
+
