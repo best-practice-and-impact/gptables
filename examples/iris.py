@@ -68,11 +68,15 @@ iris_table = gpt.GPTable(
         **kwargs)        
 
 # additional formatting
-iris_table.set_bold({"headings":"All"})
+iris_table.format({
+        [{"headings":"All"},
+            {"bold":True,}],
+        [{"column":["Setosa","Versicolor","Virginica","All"]},
+            {"align":"right"}])
 
 ######################################
 ###### USE PRODUCE_TABLE TO WIN ######
 ######################################
 
 gpt.produce_table(gptable=iris_table,
-                  theme=gpttheme)
+                  theme=gptheme)
