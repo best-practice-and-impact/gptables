@@ -30,25 +30,25 @@ class Theme:
         Initialise theme object
         """
         # Read config file or dict
-        cfg = self.parse_yaml_config(config)
+        cfg = self.parse_config(config)
         
         if "global" in cfg.keys():
             default_format = cfg.pop("global")
         else:
             default_format = {}
         
-        self.column_heading_format = default_format
-        self.index_format = default_format
-        self.data_format = default_format
+        self.column_heading_format = default_format.copy()
+        self.index_format = default_format.copy()
+        self.data_format = default_format.copy()
 
-        self.title_format = default_format
-        self.subtitle_format = default_format
-        self.scope_format = default_format
-        self.unit_format = default_format
+        self.title_format = default_format.copy()
+        self.subtitle_format = default_format.copy()
+        self.scope_format = default_format.copy()
+        self.unit_format = default_format.copy()
 
-        self.source_format = default_format
-        self.legend_format = default_format
-        self.note_format = default_format
+        self.source_format = default_format.copy()
+        self.legend_format = default_format.copy()
+        self.note_format = default_format.copy()
 
         # Set attributes using methods
         for key, value in cfg.items():
@@ -79,7 +79,7 @@ class Theme:
         """
         self.column_heading_format.update(format_dict)
 
-    def update_index_formatt(self, format_dict):
+    def update_index_format(self, format_dict):
         """
         Update the `index_format` attribute. Where keys already exist, existing
         items are replaced.
@@ -154,8 +154,8 @@ class Theme:
         """
         Print all current format attributes and values to the console.
         """
-        attributes = [a for a in self.__dir__() if not a.startswith('__')]
-        for attr in attributes:
-            print(attr, getattr(Theme, attr))
+        obj_attr = [attr for attr in self.__dir__() if not attr.startswith('__') and not callable(getattr(self, attr))]
+        for attr in obj_attr:
+            print(attr, ":", getattr(self, attr))
         
     
