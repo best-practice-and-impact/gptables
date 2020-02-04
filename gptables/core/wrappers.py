@@ -141,16 +141,49 @@ class GPWorksheet(Worksheet):
         pos: tuple
             new position to write next element from
         """
-        # Get theme and additional formatting
+        # Get theme, table and additional formatting
         theme = self.theme
         table = gptable.table
+        addn_formats = gptable._additional_formats
         
-        # Write scope and units
+        # Write scope
+        scope_format_obj = self._workbook.add_format(theme.scope_format)
+        self._smart_write(
+                *pos,
+                gptable.scope,
+                scope_format_obj
+                )
+        
+        # Write units above each col heading
+        pos[1] += gptable.index_levels
+        n_cols = len(gptable._column_headings)
+        if isinstance(gptable.units, str):
+            units = [gptable.units for n in n_cols]
+        elif isinstance(gptable.units, list):
+            units = gptable.units
+        # TODO: add support for dictionary {"Column_name":"unit"}
+        
+        units_format_obj = self._workbook.add_format(theme.units_format)
+        for n in range(n_cols):
+            self._smart_write(
+                *pos,
+                units[n],
+                units_format_obj
+                )
+            pos[1] += 1
         
         # Write table
-        
         pos[0] += 1
-        pos[1] = 0  # Reset to first sheet column
+        pos[1] = 0
+        
+        # TODO: Implement table writing
+        # May need to create an array of format dictionaries to merge
+        # additional formatting with Theme formats
+        # Can then iterate across array of data and formats to write table
+        
+        # Move to next row and reset column position
+        pos[0] += 1
+        pos[1] = 0
         return pos
         
     def _smart_write(self, row, col, data, format_dict):
