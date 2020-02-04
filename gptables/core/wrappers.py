@@ -17,16 +17,40 @@ class GPWorksheet(Worksheet):
         if not isinstance(gptable, GPTable):
             raise ValueError("`gptable` must be a gptables.GPTable object")
         # TODO. Implement method
-        # Get Theme
-        theme = self.theme
         
         # Write each GPTable element using appropriate Theme attr
-    
+        pos = (0, 0)
+        pos = self._write_title(gptable, pos)
+        
+        
 #    def write_cover_page(self, cover_config):
 #        """
 #        Write a cover page to the worksheet.
 #        """
 #        pass
+        
+    
+    def _write_title(self, gptable, pos):
+        """
+        Write the title element of a GPTable to the GPWorksheet.
+        
+        Parameters
+        ----------
+        gptable: gptable.GPTable
+            the GPTable to write the title element from
+        pos: tuple
+            the position of the cell to write the title to
+        Returns
+        -------
+        pos: tuple
+            New position to write next element from
+        """
+        format_obj = self._workbook.add_format(self.theme.title_format)
+        self._smart_write(*pos, gptable.title, format_obj)
+        
+        pos[0] += 1
+        
+        return pos
         
     def _smart_write(self, row, col, data, format_dict):
         """
@@ -124,26 +148,3 @@ class GPWorkbook(Workbook):
         if not isinstance(theme, Theme):
             raise ValueError("`theme` must be a gptables.Theme object")
         self.theme = theme
-
-
-
-class MyWorksheet(Worksheet):
-    """
-    Subclass of the XlsxWriter Worksheet class to override the default
-    write() method.
-
-    """
-
-
-class MyWorkbook(Workbook):
-    """
-    Subclass of the XlsxWriter Workbook class to override the default
-    Worksheet class with our custom class.
-
-    """
-
-    def add_worksheet(self, name=None):
-        # Overwrite add_worksheet() to create a MyWorksheet object.
-        worksheet = super(MyWorkbook, self).add_worksheet(name, MyWorksheet)
-
-        return worksheet
