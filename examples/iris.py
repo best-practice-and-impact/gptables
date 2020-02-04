@@ -50,12 +50,10 @@ units = "cm"
 index = {1:"variable",2:"func"}
 
 # or just use kwargs
-kwargs = {
-        "title":title,
+kwargs = {"title":title,
         "subtitle":subtitle,
         "units":units,
-        "index_columns":index
-         }
+        "index_columns":index}
 
 # define our GPTable
 iris_table = gpt.GPTable(
@@ -74,5 +72,5 @@ iris_table.format({
 ######################################
 
 gpt.produce_workbook(file="/iris_gptable.xlsx",
-    gptables={"iris flower dimensions":iris_table},
+    sheets={"iris flower dimensions":iris_table},
     theme=gptheme)
