@@ -46,13 +46,8 @@ iris_summ = iris_summ.pivot_table(
 
 title = "Iris flower dimensions"
 subtitle = "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$"
-units = {
-    "All":"cm",
-    "Setosa":"cm",
-    "Versicolor":"cm",
-    "Virginica":"cm"
-    } 
-index = ["variable","func"]
+units = "cm"
+index = {1:"variable",2:"func"}
 
 # or just use kwargs
 kwargs = {
