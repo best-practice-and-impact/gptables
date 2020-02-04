@@ -73,5 +73,6 @@ iris_table.format({
 #### USE PRODUCE_WORKBOOK TO WIN #####
 ######################################
 
-gpt.produce_workbook(gptables=iris_table,
-                  theme=gptheme)
+gpt.produce_workbook(file="/iris_gptable.xlsx",
+    gptables={"iris flower dimensions":iris_table},
+    theme=gptheme)
