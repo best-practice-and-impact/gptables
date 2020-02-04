@@ -9,6 +9,12 @@ class GPWorksheet(Worksheet):
     Wrapper for and XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """        
+#    def write_cover_page(self, cover_config):
+#        """
+#        Write a cover page to the worksheet.
+#        """
+#        pass
+    
     def write_gptable(self, gptable):
         """
         Write data from a GPTable object to the worksheet using the specified
@@ -16,41 +22,123 @@ class GPWorksheet(Worksheet):
         """
         if not isinstance(gptable, GPTable):
             raise ValueError("`gptable` must be a gptables.GPTable object")
-        # TODO. Implement method
+        # Get theme
+        theme = self.theme
         
         # Write each GPTable element using appropriate Theme attr
         pos = (0, 0)
-        pos = self._write_title(gptable, pos)
+        pos = self._write_element(
+                gptable.title,
+                theme.title_format,
+                pos
+                )
         
+        pos = self._write_element_list(
+                gptable.subtitles,
+                theme.subtitle_format,
+                pos
+                )
         
-#    def write_cover_page(self, cover_config):
-#        """
-#        Write a cover page to the worksheet.
-#        """
-#        pass
+        pos = self.
+        
+
         
     
-    def _write_title(self, gptable, pos):
+    def _write_element(self, element, format_dict, pos):
         """
         Write the title element of a GPTable to the GPWorksheet.
         
         Parameters
         ----------
-        gptable: gptable.GPTable
-            the GPTable to write the title element from
+        element: str or list
+            the string or list of rich string elements to be written
+        format_dict: dict
+            format to be applied to string
         pos: tuple
-            the position of the cell to write the title to
+            the position of the worksheet cell to write the element to
+
         Returns
         -------
         pos: tuple
-            New position to write next element from
+            new position to write next element from
         """
-        format_obj = self._workbook.add_format(self.theme.title_format)
-        self._smart_write(*pos, gptable.title, format_obj)
+        format_obj = self._workbook.add_format(self.format_dict)
+        self._smart_write(*pos, element, format_obj)
         
         pos[0] += 1
         
         return pos
+    
+    def _write_element_list(self, element_list, format_dict, pos):
+        """
+        Writes a list of elements row-wise.
+        
+        Parameters
+        ----------
+        element_list: list
+            list of strings or nested list of rich string elements to write,
+            one per row
+        format_dict: dict
+            format to be applied to string
+        pos: tuple
+            the position of the worksheet cell to write the elements to
+
+        Returns
+        -------
+        pos: tuple
+            new position to write next element from
+        """
+        format_obj = self._workbook.add_format(format_dict)
+        for element in element_list:
+            self._smart_write(*pos, element, format_obj)
+            
+            pos[0] += 1
+            
+        return pos
+    
+    def _write_units(self, units, format_dict, pos):
+        """
+        Writes units above each column heading.
+        
+        Parameters
+        ----------
+        units: str or dict
+            single unit (for all columns) or map of column to unit type
+            {str: str}
+        format_dict: dict
+            format to be applied to units
+        pos: tuple
+            the position of the worksheet cell to write the units to
+
+        Returns
+        -------
+        pos: tuple
+            new position to write next element from
+        """
+        pass
+    
+    def _write_table_element(self, gptable, pos):
+        """
+        Writes the table element of a GPTable. Uses the Workbook Theme, plus
+        any additional formatting associated with the GPTable.
+        
+        Parameters
+        ----------
+        gptable: gptables.GPTable
+            object containing the table and additional formatting data
+        pos: tuple
+            the position of the worksheet cell to write the units to
+
+        Returns
+        -------
+        pos: tuple
+            new position to write next element from
+        """
+        # Get theme and additional format
+        theme = self.theme
+        table = gptable.table
+        
+        pass
         
     def _smart_write(self, row, col, data, format_dict):
         """
