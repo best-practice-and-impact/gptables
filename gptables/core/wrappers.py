@@ -143,9 +143,8 @@ class GPWorksheet(Worksheet):
         pos : list
             new position to write next element from
         """
-        # Get theme and additional formatting
+        # Get theme
         theme = self.theme
-        addn_format = gptable._additional_formats
         
         # Write scope
         scope_format_obj = self._workbook.add_format(theme.scope_format)
@@ -197,14 +196,25 @@ class GPWorksheet(Worksheet):
             formats.iloc[row] = dict_row
         
         # Add Theme formatting
-        formats.iloc[0, index_levels:].apply(lambda d: d.update(theme.column_heading_format))
-        formats.iloc[1:, index_levels:].apply(lambda d: d.update(theme.data_format))
+        (formats.iloc[0, index_levels:]
+        .apply(lambda d:d.update(theme.column_heading_format)))
         
+        (formats.iloc[1:, index_levels:]
+        .apply(lambda d: d.update(theme.data_format)))
+        
+        index_level_formats = [
+                theme.index_1_format,
+                theme.index_2_format,
+                theme.index_3_format
+                ]
         for level in gptable.index_columns.keys():
-            
+            col = gptable.index_columns[level]
+            (formats.iloc[1:, col]
+            .apply(lambda d: d.update(index_level_formats[level])))
         
         # Add additional formatting
-        
+        # TODO: Implement row, col and cell wise formatting
+        addn_format = gptable._additional_formats
         
         ## Write table
         pos = self._write_array(data, formats, pos)
