@@ -1,3 +1,5 @@
+import pandas as pd
+
 from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
 
@@ -36,7 +38,7 @@ class GPWorksheet(Worksheet):
         theme = self.theme
         
         # Write each GPTable element using appropriate Theme attr
-        pos = (0, 0)
+        pos = [0, 0]
         pos = self._write_element(
                 gptable.title,
                 theme.title_format,
@@ -86,7 +88,7 @@ class GPWorksheet(Worksheet):
 
         Returns
         -------
-        pos : tuple
+        pos : list
             new position to write next element from
         """
         format_obj = self._workbook.add_format(self.format_dict)
@@ -112,7 +114,7 @@ class GPWorksheet(Worksheet):
 
         Returns
         -------
-        pos: tuple
+        pos: list
             new position to write next element from
         """
         format_obj = self._workbook.add_format(format_dict)
@@ -138,13 +140,12 @@ class GPWorksheet(Worksheet):
 
         Returns
         -------
-        pos : tuple
+        pos : list
             new position to write next element from
         """
-        # Get theme, table and additional formatting
+        # Get theme and additional formatting
         theme = self.theme
-        table = gptable.table
-        addn_formats = gptable._additional_formats
+        addn_format = gptable._additional_formats
         
         # Write scope
         scope_format_obj = self._workbook.add_format(theme.scope_format)
@@ -172,18 +173,46 @@ class GPWorksheet(Worksheet):
                 )
             pos[1] += 1
         
-        # Write table
+        # Reset position to left col on next row
         pos[0] += 1
         pos[1] = 0
         
-        # TODO: Implement table writing
-        # May need to create an array of format dictionaries to merge
-        # additional formatting with Theme formats
-        # Can then iterate across array of data and formats to write table
+        ## Create data array
+        index_levels = gptable.index_levels
+        index_columns = [col for col in gptable.index_columns.values()]
+        data = gptable.table
+        
+        # Create row containing column headings
+        data[-1] = data.columns
+        data.index = data.index + 1
+        data.sort_index(inplace=True)
+        data.iloc[0, index_columns] = ""  # Delete index col headings
+        
+        ## Create formats array
+        # pandas.DataFrame did NOT want to hold dictionaries, so be wary
+        formats = pd.DataFrame().reindex_like(data)
+        dict_row = [{} for n in range(formats.shape[1])]
+        for row in range(formats.shape[0]):
+            dict_row = [{} for n in range(formats.shape[1])]
+            formats.iloc[row] = dict_row
+        
+        # Add Theme formatting
+        formats.iloc[0, index_levels:].apply(lambda d: d.update(theme.column_heading_format))
+        formats.iloc[1:, index_levels:].apply(lambda d: d.update(theme.data_format))
+        
+        for level in gptable.index_columns.keys():
+            
+        
+        # Add additional formatting
+        
+        
+        ## Write table
+        pos = self._write_array(data, formats, pos)
         
         # Move to next row and reset column position
         pos[0] += 1
         pos[1] = 0
+        
         return pos
     
     def _write_array(self, data, formats, pos):
@@ -193,9 +222,9 @@ class GPWorksheet(Worksheet):
         
         Parameters
         ----------
-        data : numpy.array
+        data : pandas.DataFrame
             array of data to be written to Worksheet
-        formats : numpy.array
+        formats : pandas.DataFrame
             array of dictionaries that specify the formatting to be applied
             to each cell of data
         pos : tuple
@@ -203,7 +232,8 @@ class GPWorksheet(Worksheet):
             
         Returns
         -------
-        None
+        pos : list
+            new position to write next element from
         """
         if data.shape != formats.shape:
             raise ValueError("Data and format arrays must be of equal shape")
@@ -215,16 +245,20 @@ class GPWorksheet(Worksheet):
                 cell_format_dict = formats[row, col]
                 
                 self._smart_write(
-                        pos[0]+row,
-                        pos[1]+col,
+                        pos[0] + row,
+                        pos[1] + col,
                         cell_data,
                         cell_format_dict
                         )
         
+        pos = (pos[0] + rows, 0)
+        
+        return pos
+        
     def _smart_write(self, row, col, data, format_dict):
         """
         Depending on the input data, this function will write rich strings or
-        use the standard write() method. For rich strings, the base format is
+        use the standard `write()` method. For rich strings, the base format is
         merged with each rich format supplied within data.
         
         Parameters
