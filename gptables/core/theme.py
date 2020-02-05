@@ -30,21 +30,24 @@ class Theme:
         Initialise theme object
         """
         # Read config file or dict
-        cfg = self.parse_config(config)
+        cfg = self._parse_config(config)
         
         if "global" in cfg.keys():
             default_format = cfg.pop("global")
         else:
             default_format = {}
         
-        self.column_heading_format = default_format.copy()
-        self.index_format = default_format.copy()
-        self.data_format = default_format.copy()
-
         self.title_format = default_format.copy()
         self.subtitle_format = default_format.copy()
+        
         self.scope_format = default_format.copy()
         self.unit_format = default_format.copy()
+        
+        self.column_heading_format = default_format.copy()
+        self.index_1_format = default_format.copy()
+        self.index_2_format = default_format.copy()
+        self.index_3_format = default_format.copy()
+        self.data_format = default_format.copy()
 
         self.source_format = default_format.copy()
         self.legend_format = default_format.copy()
@@ -54,7 +57,7 @@ class Theme:
         for key, value in cfg.items():
             getattr(self, "update_" + key + "_format")(value)
             
-    def parse_config(self, config):
+    def _parse_config(self, config):
         """
         Parse yaml configuration to dictionary.
         """
@@ -79,12 +82,26 @@ class Theme:
         """
         self.column_heading_format.update(format_dict)
 
-    def update_index_format(self, format_dict):
+    def update_index_1_format(self, format_dict):
         """
-        Update the `index_format` attribute. Where keys already exist, existing
+        Update the `index_1_format` attribute. Where keys already exist, existing
         items are replaced.
         """
-        self.index_format.update(format_dict)
+        self.index_1_format.update(format_dict)
+        
+    def update_index_2_format(self, format_dict):
+        """
+        Update the `index_2_format` attribute. Where keys already exist, existing
+        items are replaced.
+        """
+        self.index_2_format.update(format_dict)
+        
+    def update_index_3_format(self, format_dict):
+        """
+        Update the `index_3_format` attribute. Where keys already exist, existing
+        items are replaced.
+        """
+        self.index_3_format.update(format_dict)
 
     def data_format_format(self, format_dict):
         """
