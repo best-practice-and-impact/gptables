@@ -1,5 +1,7 @@
 from gptables.core.theme import Theme
 from gptables.core.gptable import GPTable
+from gptables.core.wrappers import GPWorkbook
+
 
 from gptables.core.api import (
         #datatypes
@@ -11,5 +13,6 @@ from gptables.core.api import (
 
 
         #functions
-        produce_table,
+        produce_workbook,
+	write_workbook
         )
