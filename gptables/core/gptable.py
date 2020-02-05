@@ -1,58 +1,63 @@
 import pandas as pd
 
 class GPTable:
+    """
+    A Good Practice Table. Stores a table and metadata for writing a table
+    to excel.
+    
+    Attributes
+    ----------
+    
+    Methods
+    -------
+    
+    """  
     def __init__(self,
                  table,
                  title,
-                 subtitles,
                  scope,
                  units,
                  source,
+                 subtitles=[],
+                 legend=[],
                  notes=[],
                  index_columns={2:0}):
-        """
-        Initialise GPTable object object
-        """  
-        self.multilevel_index = False
-        self.VALID_INDEX_LEVELS = [1, 2, 3]
         
-        self.table_shape = (0, 0)
-         
-        self.index_columns = {}  # 0-indexed column mapped to index level
-        self._column_headings = [] # All other columns
-        self.table = pd.DataFrame()
-        
+        # Attributes
         self.title = None
         self.subtitles = []
+        
         self.scope = None
-        self.units = None  # Dict for units to columns, or single str
+        self.units = None  # str or {units (str):column index (int)} dict
+        
+        self._VALID_INDEX_LEVELS = [1, 2, 3]
+        self.index_levels = 0
+        self.index_columns = {}  # {index level (int): column index (int)}
+        self._column_headings = set() # Non-index column headings
+        self.table = pd.DataFrame()
         
         self.source = None
         self.legend = []
         self.notes = []
         
-        # Set attributes using methods
-#        # Locals method uses an unordered dict, so best to do this manually
-#        for key, value in locals():
-#            getattr(self, 'set_' + key)(value)
-        
-        self.set_table(table, index_columns)
+        # Call methods to set attributes        
         self.set_title(title)
         self.set_subtitles(subtitles)
         self.set_scope(scope)
         self.set_units(units)
+        self.set_table(table, index_columns)
         self.set_source(source)
+        self.set_legend(legend)
         self.set_notes(notes)
         
     def set_table(self, new_table, new_index_columns=None):
         """
-        Set the `table`, `table_shape`, `index_columns` attributes. Overwrites
-        existing values for these attributes.
+        Set the `table` and `index_columns` attributes. Overwrites existing
+        values for these attributes.
         """
         if not isinstance(new_table, pd.DataFrame):
             raise ValueError("`table` must be a pandas DataFrame")
         self.table = new_table
-        self._set_table_shape()
         
         if new_index_columns is None:
             new_index_columns = self.index_columns
@@ -67,14 +72,14 @@ class GPTable:
         """
         if isinstance(new_index_columns, dict):
             # Check if levels and values are valid
-            valid_levels = all(level in self.VALID_INDEX_LEVELS for level in new_index_columns.keys())
+            valid_levels = all(level in self._VALID_INDEX_LEVELS for level in new_index_columns.keys())
             if not valid_levels:
                 msg = ("Each dict key must be a valid index level:"
                        f" {VALID_INDEX_LEVELS}")
                 raise ValueError(msg)
             
             column_indexes = [col for col in new_index_columns.values()]
-            if not all(isinstance(int, col) for col in column_indexes):
+            if not all(isinstance(col, int) for col in column_indexes):
                 raise ValueError("Column indexes must be single integers")
                 
             valid_columns = all(self._valid_column_index(col) for col in column_indexes)
@@ -83,10 +88,7 @@ class GPTable:
                        " valid 0-indexed column numbers")
                 raise ValueError(msg)
             
-            if len(new_index_columns.keys() > 1):
-                self.multilevel_index = True
-            else:
-                self.multilevel_index = False
+            self.index_levels = len(new_index_columns.keys())
             
             self.index_columns = new_index_columns
             self._set_column_headings()
@@ -97,26 +99,17 @@ class GPTable:
     
     def _valid_column_index(self, column_index):
         """
-        Check if `column_index` is valid, given the `table_shape`.
+        Check if `column_index` is valid, given the `table` shape.
         """
-        return column_index in range(self.table_shape[1])
+        return column_index in range(self.table.shape[1])
         
     def _set_column_headings(self):
         """
-        Sets the `column_headings` attribute to the list of column indexes that
-        are not set as `index_columns`.
+        Sets the `column_headings` attribute to the set of column indexes that
+        are not assigned to `index_columns`.
         """
-        index_cols = list(self.index_columns.values())
-        self._column_headings = [x for x in range(self.table_shape[1])] - index_cols
-
-    def _set_table_shape(self):
-        """
-        Subsequently resets the `index_columns` and `column_headings` attributes
-        to verify that they are valid for the new tables shape.
-        """
-        self.table_shape = self.table.shape
-        self.table_shape[0] + 1  # Account for column headings
-        self.set_index_columns(self, self.index_columns)
+        index_cols = set(self.index_columns.values())
+        self._column_headings = {x for x in range(self.table.shape[1])} - index_cols
     
     def set_title(self, new_title):
         """
@@ -155,7 +148,7 @@ class GPTable:
         """
         if not isinstance(new_scope, str):
             raise ValueError("`scope` attribute must be a string")
-        self.demographic = new_scope        
+        self.scope = new_scope        
 
     def set_units(self, new_units):
         """
