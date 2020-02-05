@@ -77,16 +77,16 @@ class GPWorksheet(Worksheet):
         
         Parameters
         ----------
-        element: str or list
+        element : str or list
             the string or list of rich string elements to be written
-        format_dict: dict
+        format_dict : dict
             format to be applied to string
-        pos: tuple
+        pos : tuple
             the position of the worksheet cell to write the element to
 
         Returns
         -------
-        pos: tuple
+        pos : tuple
             new position to write next element from
         """
         format_obj = self._workbook.add_format(self.format_dict)
@@ -102,12 +102,12 @@ class GPWorksheet(Worksheet):
         
         Parameters
         ----------
-        element_list: list
+        element_list : list
             list of strings or nested list of rich string elements to write,
             one per row
-        format_dict: dict
+        format_dict : dict
             format to be applied to string
-        pos: tuple
+        pos : tuple
             the position of the worksheet cell to write the elements to
 
         Returns
@@ -131,14 +131,14 @@ class GPWorksheet(Worksheet):
         
         Parameters
         ----------
-        gptable: gptables.GPTable
+        gptable : gptables.GPTable
             object containing the table and additional formatting data
-        pos: tuple
+        pos : tuple
             the position of the worksheet cell to write the units to
 
         Returns
         -------
-        pos: tuple
+        pos : tuple
             new position to write next element from
         """
         # Get theme, table and additional formatting
@@ -185,6 +185,41 @@ class GPWorksheet(Worksheet):
         pos[0] += 1
         pos[1] = 0
         return pos
+    
+    def _write_array(self, data, formats, pos):
+        """
+        Write a two-dimensional array to the current Worksheet, starting from
+        the specified position.
+        
+        Parameters
+        ----------
+        data : numpy.array
+            array of data to be written to Worksheet
+        formats : numpy.array
+            array of dictionaries that specify the formatting to be applied
+            to each cell of data
+        pos : tuple
+            the position of the top left cell to start writing the array from
+            
+        Returns
+        -------
+        None
+        """
+        if data.shape != formats.shape:
+            raise ValueError("Data and format arrays must be of equal shape")
+        
+        rows, cols = data.shape
+        for row in range(rows):
+            for col in range(cols):
+                cell_data = data[row, col]
+                cell_format_dict = formats[row, col]
+                
+                self._smart_write(
+                        pos[0]+row,
+                        pos[1]+col,
+                        cell_data,
+                        cell_format_dict
+                        )
         
     def _smart_write(self, row, col, data, format_dict):
         """
@@ -194,16 +229,16 @@ class GPWorksheet(Worksheet):
         
         Parameters
         ----------
-        row: int
+        row : int
             0-indexed row of cell to write to
-        col: int
+        col : int
             0-indexed column of cell to write to
-        data: str or list
+        data : str or list
             Simple string to be written with `format_dict` formatting. Or a
             list of alternating string and dictionary objects. Dictionaries
             specify additional formatting to be applied to the following string
             in the list.
-        format_dict: dict
+        format_dict : dict
             Dictionary containing base format for the string.
             
         Returns
@@ -214,7 +249,7 @@ class GPWorksheet(Worksheet):
         if isinstance(data, list):
             data_with_formats = []
             for item in data:
-                # Convert dicts to Format objects
+                # Convert dicts to Format (with merge onto base format)
                 if isinstance(item, dict):
                     rich_format = self._merge_dict(format_dict, item)
                     data_with_formats.append(wb.add_format(rich_format))
