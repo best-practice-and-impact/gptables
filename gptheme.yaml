@@ -11,20 +11,19 @@ subtitle:
 
 scope:
 
-
 units:
     align: right
 
 heading:
     bold: True
 
-index-1:
+index_1:
     bold: True
 
-index-2:
+index_2:
 
-index-3:
-
+index_3:
+    italic: True
 data:
     num_format: 0.000
 
