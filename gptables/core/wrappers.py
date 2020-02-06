@@ -91,8 +91,7 @@ class GPWorksheet(Worksheet):
         pos : list
             new position to write next element from
         """
-        format_obj = self._workbook.add_format(format_dict)
-        self._smart_write(*pos, element, format_obj)
+        self._smart_write(*pos, element, format_dict)
         
         pos[0] += 1
         
@@ -117,9 +116,8 @@ class GPWorksheet(Worksheet):
         pos: list
             new position to write next element from
         """
-        format_obj = self._workbook.add_format(format_dict)
         for element in element_list:
-            self._smart_write(*pos, element, format_obj)
+            self._smart_write(*pos, element, format_dict)
             
             pos[0] += 2
             
@@ -147,11 +145,10 @@ class GPWorksheet(Worksheet):
         theme = self.theme
         
         # Write scope
-        scope_format_obj = self._workbook.add_format(theme.scope_format)
         self._smart_write(
                 *pos,
                 gptable.scope,
-                scope_format_obj
+                theme.scope_format
                 )
         
         # Write units above each col heading
@@ -298,13 +295,13 @@ class GPWorksheet(Worksheet):
                     data_with_formats.append(wb.add_format(rich_format))
                 else:
                     data_with_formats.append(item)
-            
             self.write_rich_string(row,
                                    col,
                                    data_with_formats,
                                    wb.add_format(format_dict)
                                    )
         else:
+            print(format_dict)
             self.write(row,
                        col,
                        data,
