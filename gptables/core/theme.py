@@ -22,38 +22,33 @@ class Theme:
 
     def __init__(
             self,
-            config):
+            config=None,
+            ):
         """
         Initialise theme object
-        """
-        # Read config file or dict
-        cfg = self._parse_config(config)
+        """               
+        self.title_format = {}
+        self.subtitle_format = {}
         
-        if "global" in cfg.keys():
-            default_format = cfg.pop("global")
-        else:
-            default_format = {}
-                
-        self.title_format = default_format.copy()
-        self.subtitle_format = default_format.copy()
+        self.scope_format = {}
+        self.units_format = {}
         
-        self.scope_format = default_format.copy()
-        self.units_format = default_format.copy()
-        
-        self.column_heading_format = default_format.copy()
-        self.index_1_format = default_format.copy()
-        self.index_2_format = default_format.copy()
-        self.index_3_format = default_format.copy()
-        self.data_format = default_format.copy()
+        self.column_heading_format = {}
+        self.index_1_format = {}
+        self.index_2_format = {}
+        self.index_3_format = {}
+        self.data_format = {}
 
-        self.source_format = default_format.copy()
-        self.legend_format = default_format.copy()
-        self.note_format = default_format.copy()
-
-        # Set attributes using methods
-        for key, value in cfg.items():
-            if value is not None:
-                getattr(self, "update_" + key + "_format")(value)
+        self.source_format = {}
+        self.legend_format = {}
+        self.note_format = {}
+        
+        # TODO: Dynamically generate update method for each attr to avoid rep
+        # Would be more extensible
+        
+        if config:
+            self.apply_config(config)
+        
             
     def _parse_config(self, config):
         """
@@ -72,6 +67,36 @@ class Theme:
             raise ValueError("Theme configuration must be a dict or YAML file")
             
         return cfg
+    
+    def apply_config(self, config):
+        """
+        Update multiple Theme attributes using a YAML or dictionary config.
+        This enables extension of build in Themes.
+        """
+        cfg = self._parse_config(config)
+        
+        # Update all when global used
+        if "global" in cfg.keys():
+            default_format = cfg.pop("global")
+            self.update_all_formats(default_format)
+        
+        # Update with individual methods
+        for key, value in cfg.items():
+            if value is not None:
+                getattr(self, "update_" + key + "_format")(value)
+    
+    def update_all_formats(self, global_dict):
+        """
+        Updates all theme attributes with a global format dictionary.
+        """
+        obj_attr = [
+                attr for attr in self.__dir__()
+                if not attr.startswith('__')
+                and not callable(getattr(self, attr))
+                ]
+        for attr in obj_attr:
+            getattr(self, "update_" + str(attr))(global_dict)
+        
             
     def update_column_heading_format(self, format_dict):
         """
@@ -101,12 +126,12 @@ class Theme:
         """
         self.index_3_format.update(format_dict)
 
-    def data_format_format(self, format_dict):
+    def update_data_format(self, format_dict):
         """
-        Update the `data_format_format` attribute. Where keys already exist,
+        Update the `data_format` attribute. Where keys already exist,
         existing items are replaced.
         """
-        self.data_format_format.update(format_dict)
+        self.data_format.update(format_dict)
     
     def update_title_format(self, format_dict):
         """
@@ -169,7 +194,11 @@ class Theme:
         """
         Print all current format attributes and values to the console.
         """
-        obj_attr = [attr for attr in self.__dir__() if not attr.startswith('__') and not callable(getattr(self, attr))]
+        obj_attr = [
+                attr for attr in self.__dir__()
+                if not attr.startswith('__')
+                and not callable(getattr(self, attr))
+                ]
         for attr in obj_attr:
             print(attr, ":", getattr(self, attr))
         
