@@ -155,7 +155,7 @@ class GPWorksheet(Worksheet):
         pos[1] += gptable.index_levels
         n_cols = len(gptable._column_headings)
         if isinstance(gptable.units, str):
-            units = [gptable.units for n in n_cols]
+            units = [gptable.units for n in range(n_cols)]
         elif isinstance(gptable.units, list):
             units = gptable.units
         # TODO: add support for dictionary {"Column_name":"unit"}
@@ -301,7 +301,6 @@ class GPWorksheet(Worksheet):
                                    wb.add_format(format_dict)
                                    )
         else:
-            print(format_dict)
             self.write(row,
                        col,
                        data,
