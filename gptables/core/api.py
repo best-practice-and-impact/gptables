@@ -1,4 +1,4 @@
-from gptables.core.theme import Theme
+from gptables import GPWorkbook
 
 def produce_workbook(file, sheets, theme, cover_sheet=None):
 
@@ -24,7 +24,14 @@ def produce_workbook(file, sheets, theme, cover_sheet=None):
     -------
     workbook : gptables.GPWorkbook
     """
-
+    wb = GPWorkbook(file)
+    wb.set_theme(theme)
+    
+    for sheet in sheets.keys():
+        ws = wb.add_worksheet(sheet)
+        ws.write_gptable(sheets[sheet])
+    
+    return wb
 
 def write_workbook(file, sheets, theme, cover_sheet=None):
 
@@ -50,3 +57,5 @@ def write_workbook(file, sheets, theme, cover_sheet=None):
     -------
     None
     """
+    wb = produce_workbook(file, sheets, theme, cover_sheet)
+    wb.close()

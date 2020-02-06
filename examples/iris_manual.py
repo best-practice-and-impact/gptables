@@ -12,11 +12,13 @@ funcs = [np.mean, np.median]
 iris_data = pd.read_csv("./iris.csv")
 
 iris_data.rename(
-        columns={" class":"class",
+        columns={
+            " class":"class",
             "sepal_length":"Sepal Length",
             " petal_length":"Petal Length",
             " petal_width":"Petal Width",
-            " sepal_width":"Sepal Width"}, 
+            " sepal_width":"Sepal Width"
+            }, 
         inplace=True
         )
 
@@ -53,8 +55,6 @@ scope = "Iris"
 source = "Source: Office for Iris Statistics"
 index = {1:1,2:2}  # Need to support referencing by col name
 
-print(iris_summ.head())
-
 # or just use kwargs
 kwargs = {"title":title,
         "subtitles":[subtitle],
@@ -66,7 +66,8 @@ kwargs = {"title":title,
 # define our GPTable
 iris_table = gpt.GPTable(
         table=iris_summ,
-        **kwargs)        
+        **kwargs
+        )        
 
 # additional formatting
 #iris_table.format({
@@ -79,6 +80,8 @@ iris_table = gpt.GPTable(
 #### USE PRODUCE_WORKBOOK TO WIN #####
 ######################################
 
-gpt.produce_workbook(file="/iris_gptable.xlsx",
-    sheets={"iris flower dimensions":iris_table},
-    theme=gptheme)
+gpt.produce_workbook(
+        file="/iris_gptable.xlsx",
+        sheets={"iris flower dimensions":iris_table},
+        theme=gptheme
+        )
