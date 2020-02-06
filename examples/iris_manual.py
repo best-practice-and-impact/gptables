@@ -2,6 +2,8 @@ import gptables as gpt
 import pandas as pd
 import numpy as np
 
+from gptables import gptheme
+
 ######################################
 ###### READ DATA IN AND FORMAT #######
 ######################################
