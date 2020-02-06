@@ -160,12 +160,11 @@ class GPWorksheet(Worksheet):
             units = gptable.units
         # TODO: add support for dictionary {"Column_name":"unit"}
         
-        units_format_obj = self._workbook.add_format(theme.units_format)
         for n in range(n_cols):
             self._smart_write(
                 *pos,
                 units[n],
-                units_format_obj
+                theme.units_format
                 )
             pos[1] += 1
         
@@ -179,6 +178,8 @@ class GPWorksheet(Worksheet):
         data = gptable.table
         
         # Create row containing column headings
+        print(data.shape)
+        print(data.columns)
         data[-1] = data.columns
         data.index = data.index + 1
         data.sort_index(inplace=True)
