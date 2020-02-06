@@ -27,9 +27,9 @@ def produce_workbook(file, sheets, theme, cover_sheet=None):
     wb = GPWorkbook(file)
     wb.set_theme(theme)
     
-    for sheet in sheets.keys():
+    for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
-        ws.write_gptable(sheets[sheet])
+        ws.write_gptable(gptable)
     
     return wb
 

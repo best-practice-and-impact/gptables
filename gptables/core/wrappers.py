@@ -207,8 +207,7 @@ class GPWorksheet(Worksheet):
                 theme.index_2_format,
                 theme.index_3_format
                 ]
-        for level in gptable.index_columns.keys():
-            col = gptable.index_columns[level]
+        for level, col in gptable.index_columns.items():
             (formats.iloc[1:, col]
             .apply(lambda d: d.update(index_level_formats[level])))
         
