@@ -33,12 +33,12 @@ class Theme:
             default_format = cfg.pop("global")
         else:
             default_format = {}
-        
+                
         self.title_format = default_format.copy()
         self.subtitle_format = default_format.copy()
         
         self.scope_format = default_format.copy()
-        self.unit_format = default_format.copy()
+        self.units_format = default_format.copy()
         
         self.column_heading_format = default_format.copy()
         self.index_1_format = default_format.copy()
@@ -52,7 +52,8 @@ class Theme:
 
         # Set attributes using methods
         for key, value in cfg.items():
-            getattr(self, "update_" + key + "_format")(value)
+            if value is not None:
+                getattr(self, "update_" + key + "_format")(value)
             
     def _parse_config(self, config):
         """
@@ -136,12 +137,12 @@ class Theme:
         self.location_format.update(format_dict)
         
         
-    def update_unit_format(self, format_dict):
+    def update_units_format(self, format_dict):
         """
-        Update the `unit_format` attribute. Where keys already exist, existing
+        Update the `units_format` attribute. Where keys already exist, existing
         items are replaced.
         """
-        self.unit_format.update(format_dict)
+        self.units_format.update(format_dict)
 
     def update_source_format(self, format_dict):
         """
