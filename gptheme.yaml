@@ -14,7 +14,7 @@ scope:
 units:
     align: right
 
-heading:
+column_heading:
     bold: True
 
 index_1:
