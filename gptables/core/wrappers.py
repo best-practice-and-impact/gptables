@@ -91,7 +91,7 @@ class GPWorksheet(Worksheet):
         pos : list
             new position to write next element from
         """
-        format_obj = self._workbook.add_format(self.format_dict)
+        format_obj = self._workbook.add_format(format_dict)
         self._smart_write(*pos, element, format_obj)
         
         pos[0] += 1
