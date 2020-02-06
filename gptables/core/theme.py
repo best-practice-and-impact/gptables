@@ -1,8 +1,5 @@
 import yaml
 
-# gptheme = Theme(gptheme.conf)
-
-
 class Theme:
     """
     A class that defines a set of format attributes for use in xlsxwriter.
@@ -64,7 +61,7 @@ class Theme:
         if isinstance(config, str):
             if not config.endswith((".yml", ".yaml")):
                 raise ValueError("Theme configuration files must be YAML")
-            with config.open() as file:
+            with open(config, "r") as file:
                 cfg = yaml.safe_load(file)
                 
         elif isinstance(config, dict):
