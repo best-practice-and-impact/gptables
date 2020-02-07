@@ -41,7 +41,7 @@ class Theme:
 
         self.source_format = {}
         self.legend_format = {}
-        self.note_format = {}
+        self.notes_format = {}
         
         # TODO: Dynamically generate update method for each attr to avoid rep
         # Would be more extensible
@@ -183,12 +183,12 @@ class Theme:
         """
         self.legend_format.update(format_dict)
     
-    def update_note_format(self, format_dict):
+    def update_notes_format(self, format_dict):
         """
-        Update the `note_format` attribute. Where keys already exist, existing
+        Update the `notes_format` attribute. Where keys already exist, existing
         items are replaced.
         """
-        self.note_format.update(format_dict)
+        self.notes_format.update(format_dict)
     
     def print_formats(self):
         """
