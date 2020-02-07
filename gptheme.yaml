@@ -14,7 +14,7 @@ scope:
 units:
     align: right
 
-heading:
+column_heading:
     bold: True
 
 index_1:
@@ -30,6 +30,6 @@ data:
 source:
     font_size: 7
 
-note:
+notes:
     font_size: 7
 

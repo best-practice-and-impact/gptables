@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
@@ -50,6 +51,7 @@ class GPWorksheet(Worksheet):
                 theme.subtitle_format,
                 pos
                 )
+        pos[0] += 1  # Leave empty row after titles
         
         pos = self._write_table_elements(
                 gptable,
@@ -91,8 +93,7 @@ class GPWorksheet(Worksheet):
         pos : list
             new position to write next element from
         """
-        format_obj = self._workbook.add_format(self.format_dict)
-        self._smart_write(*pos, element, format_obj)
+        self._smart_write(*pos, element, format_dict)
         
         pos[0] += 1
         
@@ -117,9 +118,8 @@ class GPWorksheet(Worksheet):
         pos: list
             new position to write next element from
         """
-        format_obj = self._workbook.add_format(format_dict)
         for element in element_list:
-            self._smart_write(*pos, element, format_obj)
+            self._smart_write(*pos, element, format_dict)
             
             pos[0] += 2
             
@@ -147,28 +147,26 @@ class GPWorksheet(Worksheet):
         theme = self.theme
         
         # Write scope
-        scope_format_obj = self._workbook.add_format(theme.scope_format)
         self._smart_write(
                 *pos,
                 gptable.scope,
-                scope_format_obj
+                theme.scope_format
                 )
         
         # Write units above each col heading
         pos[1] += gptable.index_levels
         n_cols = len(gptable._column_headings)
         if isinstance(gptable.units, str):
-            units = [gptable.units for n in n_cols]
+            units = [gptable.units for n in range(n_cols)]
         elif isinstance(gptable.units, list):
             units = gptable.units
         # TODO: add support for dictionary {"Column_name":"unit"}
         
-        units_format_obj = self._workbook.add_format(theme.units_format)
         for n in range(n_cols):
             self._smart_write(
                 *pos,
                 units[n],
-                units_format_obj
+                theme.units_format
                 )
             pos[1] += 1
         
@@ -182,7 +180,7 @@ class GPWorksheet(Worksheet):
         data = gptable.table
         
         # Create row containing column headings
-        data[-1] = data.columns
+        data.iloc[-1] = data.columns
         data.index = data.index + 1
         data.sort_index(inplace=True)
         data.iloc[0, index_columns] = ""  # Delete index col headings
@@ -197,31 +195,29 @@ class GPWorksheet(Worksheet):
         
         # Add Theme formatting
         (formats.iloc[0, index_levels:]
-        .apply(lambda d:d.update(theme.column_heading_format)))
+        .apply(lambda d:d.update(theme.column_heading_format))
+        )
         
         (formats.iloc[1:, index_levels:]
-        .apply(lambda d: d.update(theme.data_format)))
+        .apply(np.vectorize(lambda d: d.update(theme.data_format)))
+        )
         
         index_level_formats = [
                 theme.index_1_format,
                 theme.index_2_format,
                 theme.index_3_format
                 ]
-        for level in gptable.index_columns.keys():
-            col = gptable.index_columns[level]
+        for level, col in gptable.index_columns.items():
             (formats.iloc[1:, col]
-            .apply(lambda d: d.update(index_level_formats[level])))
+            .apply(lambda d: d.update(index_level_formats[level]))
+            )
         
         # Add additional formatting
         # TODO: Implement row, col and cell wise formatting
-        addn_format = gptable._additional_formats
+        # addn_format = gptable._additional_formats
         
         ## Write table
         pos = self._write_array(data, formats, pos)
-        
-        # Move to next row and reset column position
-        pos[0] += 1
-        pos[1] = 0
         
         return pos
     
@@ -251,8 +247,8 @@ class GPWorksheet(Worksheet):
         rows, cols = data.shape
         for row in range(rows):
             for col in range(cols):
-                cell_data = data[row, col]
-                cell_format_dict = formats[row, col]
+                cell_data = data.iloc[row, col]
+                cell_format_dict = formats.iloc[row, col]
                 
                 self._smart_write(
                         pos[0] + row,
@@ -261,7 +257,7 @@ class GPWorksheet(Worksheet):
                         cell_format_dict
                         )
         
-        pos = (pos[0] + rows, 0)
+        pos = [pos[0] + rows, 0]
         
         return pos
         
@@ -299,7 +295,6 @@ class GPWorksheet(Worksheet):
                     data_with_formats.append(wb.add_format(rich_format))
                 else:
                     data_with_formats.append(item)
-            
             self.write_rich_string(row,
                                    col,
                                    data_with_formats,
