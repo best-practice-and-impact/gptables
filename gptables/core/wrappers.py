@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
@@ -50,6 +51,7 @@ class GPWorksheet(Worksheet):
                 theme.subtitle_format,
                 pos
                 )
+        pos[0] += 1  # Leave empty row after titles
         
         pos = self._write_table_elements(
                 gptable,
@@ -178,9 +180,7 @@ class GPWorksheet(Worksheet):
         data = gptable.table
         
         # Create row containing column headings
-        print(data.shape)
-        print(data.columns)
-        data[-1] = data.columns
+        data.iloc[-1] = data.columns
         data.index = data.index + 1
         data.sort_index(inplace=True)
         data.iloc[0, index_columns] = ""  # Delete index col headings
@@ -195,10 +195,12 @@ class GPWorksheet(Worksheet):
         
         # Add Theme formatting
         (formats.iloc[0, index_levels:]
-        .apply(lambda d:d.update(theme.column_heading_format)))
+        .apply(lambda d:d.update(theme.column_heading_format))
+        )
         
         (formats.iloc[1:, index_levels:]
-        .apply(lambda d: d.update(theme.data_format)))
+        .apply(np.vectorize(lambda d: d.update(theme.data_format)))
+        )
         
         index_level_formats = [
                 theme.index_1_format,
@@ -207,18 +209,15 @@ class GPWorksheet(Worksheet):
                 ]
         for level, col in gptable.index_columns.items():
             (formats.iloc[1:, col]
-            .apply(lambda d: d.update(index_level_formats[level])))
+            .apply(lambda d: d.update(index_level_formats[level]))
+            )
         
         # Add additional formatting
         # TODO: Implement row, col and cell wise formatting
-        addn_format = gptable._additional_formats
+        # addn_format = gptable._additional_formats
         
         ## Write table
         pos = self._write_array(data, formats, pos)
-        
-        # Move to next row and reset column position
-        pos[0] += 1
-        pos[1] = 0
         
         return pos
     
@@ -248,8 +247,8 @@ class GPWorksheet(Worksheet):
         rows, cols = data.shape
         for row in range(rows):
             for col in range(cols):
-                cell_data = data[row, col]
-                cell_format_dict = formats[row, col]
+                cell_data = data.iloc[row, col]
+                cell_format_dict = formats.iloc[row, col]
                 
                 self._smart_write(
                         pos[0] + row,
@@ -258,7 +257,7 @@ class GPWorksheet(Worksheet):
                         cell_format_dict
                         )
         
-        pos = (pos[0] + rows, 0)
+        pos = [pos[0] + rows, 0]
         
         return pos
         
