@@ -2,6 +2,8 @@ import gptables as gpt
 import pandas as pd
 import numpy as np
 
+from gptables import gptheme
+
 ######################################
 ###### READ DATA IN AND FORMAT #######
 ######################################
@@ -10,11 +12,13 @@ funcs = [np.mean, np.median]
 iris_data = pd.read_csv("./iris.csv")
 
 iris_data.rename(
-        columns={" class":"class",
+        columns={
+            " class":"class",
             "sepal_length":"Sepal Length",
             " petal_length":"Petal Length",
             " petal_width":"Petal Width",
-            " sepal_width":"Sepal Width"}, 
+            " sepal_width":"Sepal Width"
+            }, 
         inplace=True
         )
 
@@ -47,30 +51,39 @@ iris_summ = iris_summ.pivot_table(
 title = "Iris flower dimensions"
 subtitle = "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$"
 units = "cm"
-index = {1:"variable",2:"func"}
+scope = "Iris"
+source = "Source: Office for Iris Statistics"
+index = {1:1,2:2}  # Need to support referencing by col name
 
 # or just use kwargs
 kwargs = {"title":title,
-        "subtitle":subtitle,
+        "subtitles":[subtitle],
         "units":units,
+        "scope": scope,
+        "source":source,
         "index_columns":index}
 
 # define our GPTable
 iris_table = gpt.GPTable(
-        data=iris_summ,
-        **kwargs)        
+        table=iris_summ,
+        **kwargs
+        )        
 
 # additional formatting
-iris_table.format({
-        [{"headings":"All"},
-            {"bold":True,}],
-        [{"column":["Setosa","Versicolor","Virginica","All"]},
-            {"align":"right"}])
+#iris_table.format({
+#        [{"headings":"All"},
+#            {"bold":True,}],
+#        [{"column":["Setosa","Versicolor","Virginica","All"]},
+#            {"align":"right"}])
 
 ######################################
 #### USE PRODUCE_WORKBOOK TO WIN #####
 ######################################
 
-gpt.produce_workbook(file="/iris_gptable.xlsx",
-    sheets={"iris flower dimensions":iris_table},
-    theme=gptheme)
+wb = gpt.produce_workbook(
+        file="/iris_gptable.xlsx",
+        sheets={"iris flower dimensions":iris_table},
+        theme=gptheme
+        )
+
+wb.close()
