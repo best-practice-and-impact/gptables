@@ -75,7 +75,7 @@ class GPTable:
             valid_levels = all(level in self._VALID_INDEX_LEVELS for level in new_index_columns.keys())
             if not valid_levels:
                 msg = ("Each dict key must be a valid index level:"
-                       f" {VALID_INDEX_LEVELS}")
+                       f" {self._VALID_INDEX_LEVELS}")
                 raise ValueError(msg)
             
             column_indexes = [col for col in new_index_columns.values()]
@@ -189,9 +189,9 @@ class GPTable:
             raise ValueError("legend must be provided as a list of strings")
             
         if overwrite:
-            self.subtitles = new_legend
+            self.legend = new_legend
         else:
-            self.subtitles += new_legend
+            self.legend += new_legend
             
     def add_note(self, new_note):
         """
@@ -199,7 +199,7 @@ class GPTable:
         """
         if not isinstance(new_note, str):
             raise ValueError("`notes` entries must be strings")
-        self.subtitles.append(new_note)
+        self.notes.append(new_note)
     
     def set_notes(self, new_notes, overwrite=True):
         """
@@ -211,6 +211,6 @@ class GPTable:
             raise ValueError("notes must be provided as a list of strings")
             
         if overwrite:
-            self.subtitles = new_notes
+            self.notes = new_notes
         else:
-            self.subtitles += new_notes
+            self.notes += new_notes

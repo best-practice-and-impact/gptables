@@ -177,10 +177,10 @@ class GPWorksheet(Worksheet):
         ## Create data array
         index_levels = gptable.index_levels
         index_columns = [col for col in gptable.index_columns.values()]
-        data = gptable.table
+        data = pd.DataFrame(gptable.table, copy=True)
         
         # Create row containing column headings
-        data.iloc[-1] = data.columns
+        data.loc[-1] = data.columns
         data.index = data.index + 1
         data.sort_index(inplace=True)
         data.iloc[0, index_columns] = ""  # Delete index col headings

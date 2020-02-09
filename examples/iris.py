@@ -53,7 +53,7 @@ subtitle = "1936 Fisher, R.A; The use of multiple measurements in taxonomic prob
 units = "cm"
 scope = "Iris"
 source = "Source: Office for Iris Statistics"
-index = {1:1,2:2}  # Need to support referencing by col name
+index = {1:0,2:1}  # Need to support referencing by col name
 
 # or just use kwargs
 kwargs = {"title":title,
@@ -81,7 +81,7 @@ iris_table = gpt.GPTable(
 ######################################
 
 wb = gpt.produce_workbook(
-        file="/iris_gptable.xlsx",
+        file="./iris_gptable.xlsx",
         sheets={"iris flower dimensions":iris_table},
         theme=gptheme
         )
