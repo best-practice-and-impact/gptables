@@ -18,7 +18,6 @@ after_success:
   - coveralls
   - codecov
   - pip install sphinx
-  - cd /docs
   - docs/make html
   - touch docs/build/html/.nojekyll
 
