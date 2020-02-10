@@ -17,9 +17,7 @@ after_success:
   - pip install coverage codecov
   - coveralls
   - codecov
-  - pip install sphinx
-  - ./docs/make html
-  - make docs
+  - make html
   - touch ./docs/build/html/.nojekyll
 
 deploy:
