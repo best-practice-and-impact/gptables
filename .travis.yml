@@ -17,8 +17,6 @@ after_success:
   - pip install coverage codecov
   - coveralls
   - codecov
-
-after_success:
   - pip install sphinx
   - cd /docs
   - docs/make html
@@ -26,8 +24,6 @@ after_success:
   on:
     branch: master
 
-# Tell Travis CI to copy the documentation to the gh-pages branch of
-# your GitHub repository.
 deploy:
   provider: pages
   skip_cleanup: true
