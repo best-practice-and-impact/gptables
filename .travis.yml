@@ -13,7 +13,20 @@ script:
   - python -m unittest discover -p 'test_*.py'
 
 after_success:
-  - pip3 install python-coveralls;
-  - pip3 install coverage codecov
+  - pip install python-coveralls
+  - pip install coverage codecov
   - coveralls
   - codecov
+
+before_deploy:
+  - pip install sphinx
+  - cd ./docs && sphinx-build -nW -b html -d ./build/doctrees ./source ./build/html && touch ./build/html/.nojekyll
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+  keep-history: true
+  on:
+    branch: master
+  local_dir: ./docs/build/html/
