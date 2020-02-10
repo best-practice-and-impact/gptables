@@ -18,8 +18,9 @@ after_success:
   - coveralls
   - codecov
   - pip install sphinx
-  - docs/make html
-  - touch docs/build/html/.nojekyll
+  - ./docs/make html
+  - make docs
+  - touch ./docs/build/html/.nojekyll
 
 deploy:
   provider: pages
@@ -28,4 +29,4 @@ deploy:
   keep-history: true
   on:
     branch: master
-  local_dir: docs/build/html/
+  local_dir: ./docs/build/html/
