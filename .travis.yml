@@ -17,8 +17,7 @@ after_success:
   - pip install coverage codecov
   - coveralls
   - codecov
-  - make html
-  - touch ./docs/build/html/.nojekyll
+  - cd ./docs && make html && touch ./build/html/.nojekyll
 
 deploy:
   provider: pages
