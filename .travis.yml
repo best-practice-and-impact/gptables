@@ -18,7 +18,7 @@ after_success:
   - coveralls
   - codecov
   - pip install sphinx
-  - cd ./docs && sphinx-build -nW -b html -d build/doctrees . build/html && touch ./build/html/.nojekyll
+  - cd ./docs && sphinx-build -nW -b html -d ./build/doctrees ./source ./build/html && touch ./build/html/.nojekyll
 
 deploy:
   provider: pages
