@@ -13,7 +13,26 @@ script:
   - python -m unittest discover -p 'test_*.py'
 
 after_success:
-  - pip3 install python-coveralls;
-  - pip3 install coverage codecov
+  - pip install python-coveralls;
+  - pip install coverage codecov
   - coveralls
   - codecov
+
+after_success:
+  - pip install sphinx
+  - cd /docs
+  - docs/make html
+  - touch docs/build/html/.nojekyll
+  on:
+    branch: master
+
+# Tell Travis CI to copy the documentation to the gh-pages branch of
+# your GitHub repository.
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+  keep-history: true
+  on:
+    branch: master
+  local_dir: docs/build/html/
