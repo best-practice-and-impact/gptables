@@ -13,10 +13,12 @@ script:
   - python -m unittest discover -p 'test_*.py'
 
 after_success:
-  - pip install python-coveralls;
+  - pip install python-coveralls
   - pip install coverage codecov
   - coveralls
   - codecov
+
+before_deploy:
   - pip install sphinx
   - cd ./docs && sphinx-build -nW -b html -d ./build/doctrees ./source ./build/html && touch ./build/html/.nojekyll
 
