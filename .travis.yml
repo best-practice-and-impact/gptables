@@ -21,8 +21,6 @@ after_success:
   - cd /docs
   - docs/make html
   - touch docs/build/html/.nojekyll
-  on:
-    branch: master
 
 deploy:
   provider: pages
