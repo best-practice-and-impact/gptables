@@ -7,6 +7,19 @@ class GPTable:
     
     Attributes
     ----------
+    title : str
+        description of the table
+    subtitles : list
+        subtitiles as strings
+    scope : str
+        description of scope/basis of data in table
+    legend : list
+        descriptions of special notations used in table
+    notes : dict
+        mapping each notes reference to the note as {ref: note}
+    index_columns : dict
+        mapping an index level to a 0-indexed column as {level: column}.
+        Default is a level two index in the first column ({2: 0}).
     
     Methods
     -------
