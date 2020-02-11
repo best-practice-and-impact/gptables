@@ -1,3 +1,4 @@
+import re
 import pandas as pd
 import numpy as np
 
@@ -12,6 +13,7 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """        
+    # TODO: Implement cover page
 #    def write_cover_page(self, cover_config):
 #        """
 #        Write a cover page to the worksheet.
@@ -74,6 +76,47 @@ class GPWorksheet(Worksheet):
                 theme.notes_format,
                 pos
                 )
+        
+    def _reference_notes(self, gptable):
+        """
+        Replace note references with numbered references. Acts on `title`,
+        `subtitles`, `table` and `notes` attributes of a GPTable. References 
+        are numbered from top left of spreadsheet, working row-wise.
+        
+        Parameters
+        ----------
+        gptable : gptables.GPTable
+            object containing data with references to notes
+
+        Returns
+        -------
+        None
+        """
+        ordered_refs = []
+        
+        gptable.title = self._replace_reference(gptable.title, ordered_refs)
+        
+        new_notes = {}
+        # Add to dict in order
+        for n in range(len(ordered_refs)):
+            new_notes.update({n+1: gptable.notes[ordered_refs[n]]})
+        
+        # Replace old notes refs
+        gptable.notes = new_notes
+    
+    def _replace_reference(self, data, ordered_refs):
+        """
+        Given a single string, record occurences of new references and replace
+        reference with number from ordering.
+        """
+        used_refs = re.findall(r"[$]{2}.*?[$]{2}", data)
+        for ref in used_refs:
+            if ref not in ordered_refs:
+                ordered_refs.append(ref)
+            new_ref = "(" + str(ordered_refs.index(ref) + 1) + ")"
+            data = data.replace(ref, new_ref)
+        return data
+        
 
     def _write_element(self, element, format_dict, pos):
         """
@@ -215,6 +258,9 @@ class GPWorksheet(Worksheet):
         # Add additional formatting
         # TODO: Implement row, col and cell wise formatting
         # addn_format = gptable._additional_formats
+        
+        ## Insert note references
+        
         
         ## Write table
         pos = self._write_array(data, formats, pos)
