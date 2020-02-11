@@ -20,7 +20,7 @@ class GPTable:
                  source,
                  subtitles=[],
                  legend=[],
-                 notes=[],
+                 notes={},
                  index_columns={2:0}):
         
         # Attributes
@@ -38,7 +38,7 @@ class GPTable:
         
         self.source = None
         self.legend = []
-        self.notes = []
+        self.notes = {}
         
         # Call methods to set attributes        
         self.set_title(title)
@@ -197,9 +197,9 @@ class GPTable:
         """
         Add a single note to the existing `notes` list.
         """
-        if not isinstance(new_note, str):
-            raise ValueError("`notes` entries must be strings")
-        self.notes.append(new_note)
+        if not isinstance(new_note, dict):
+            raise ValueError("`notes` entries must be dictionaries")
+        self.notes.update(new_note)
     
     def set_notes(self, new_notes, overwrite=True):
         """
@@ -207,10 +207,11 @@ class GPTable:
         `notes` list by default.If overwrite is False, new entries are
         appended to the `notes` list.
         """
-        if not isinstance(new_notes, list):
-            raise ValueError("notes must be provided as a list of strings")
+        if not isinstance(new_notes, dict):
+            msg = ("notes must be provided as a dict of {reference: note}")
+            raise ValueError(msg)
             
         if overwrite:
             self.notes = new_notes
         else:
-            self.notes += new_notes
+            self.notes.update(new_notes)
