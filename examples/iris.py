@@ -54,6 +54,8 @@ units = "cm"
 scope = "Iris"
 source = "Source: Office for Iris Statistics"
 index = {1:0,2:1}  # Need to support referencing by col name
+notes = {"note1": "I've got 99 problems and taxonomy is one.",
+         "note2": "This note is not references, so should come last."}
 
 # or just use kwargs
 kwargs = {"title":title,
@@ -61,7 +63,8 @@ kwargs = {"title":title,
         "units":units,
         "scope": scope,
         "source":source,
-        "index_columns":index}
+        "index_columns":index,
+        "notes":notes}
 
 # define our GPTable
 iris_table = gpt.GPTable(
