@@ -12,14 +12,15 @@ class GPWorksheet(Worksheet):
     """
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
-    """        
+    """
+
     # TODO: Implement cover page
 #    def write_cover_page(self, cover_config):
 #        """
 #        Write a cover page to the worksheet.
 #        """
 #        pass
-    
+
     def write_gptable(self, gptable):
         """
         Write data from a GPTable object to the worksheet using the specified
@@ -71,12 +72,14 @@ class GPWorksheet(Worksheet):
                 pos
                 )
         
+        self._reference_notes(gptable)
+        
         pos = self._write_element_list(
                 gptable.notes,
                 theme.notes_format,
                 pos
                 )
-        
+
     def _reference_notes(self, gptable):
         """
         Replace note references with numbered references. Acts on `title`,
@@ -94,7 +97,15 @@ class GPWorksheet(Worksheet):
         """
         ordered_refs = []
         
-        gptable.title = self._replace_reference(gptable.title, ordered_refs)
+        gptable.title = self._replace_reference_in_attr(
+                gptable.title,
+                ordered_refs
+                )
+        
+        gptable.subtitles = self._replace_reference_in_attr(
+                gptable.subtitles,
+                ordered_refs
+                )
         
         new_notes = {}
         # Add to dict in order
@@ -103,20 +114,34 @@ class GPWorksheet(Worksheet):
         
         # Replace old notes refs
         gptable.notes = new_notes
-    
+
+    def _replace_reference_in_attr(self, data, ordered_refs):
+        """
+        Replaces references in a string or list of strings.
+        """
+        if isinstance(data, str):
+            new_data = self._replace_reference(data, ordered_refs)
+        if isinstance(data, list):
+            new_data = []
+            for item in data:
+                new_data.append(self._replace_reference(item, ordered_refs))
+                
+        return new_data
+
     def _replace_reference(self, data, ordered_refs):
         """
         Given a single string, record occurences of new references and replace
         reference with number from ordering.
         """
-        used_refs = re.findall(r"[$]{2}.*?[$]{2}", data)
-        for ref in used_refs:
-            if ref not in ordered_refs:
-                ordered_refs.append(ref)
-            new_ref = "(" + str(ordered_refs.index(ref) + 1) + ")"
-            data = data.replace(ref, new_ref)
+        text_refs = re.findall(r"[$]{2}.*?[$]{2}", data)
+        dict_refs = [w.replace("$", "") for w in text_refs]
+        for n in range(len(dict_refs)):
+            if dict_refs[n] not in ordered_refs:
+                ordered_refs.append(dict_refs[n])
+            num_ref = "(" + str(ordered_refs.index(dict_refs[n]) + 1) + ")"
+            data = data.replace(text_refs[n], num_ref)
+            
         return data
-        
 
     def _write_element(self, element, format_dict, pos):
         """
@@ -141,7 +166,7 @@ class GPWorksheet(Worksheet):
         pos[0] += 1
         
         return pos
-    
+
     def _write_element_list(self, element_list, format_dict, pos):
         """
         Writes a list of elements row-wise.
