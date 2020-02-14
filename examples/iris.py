@@ -1,15 +1,16 @@
 import gptables as gpt
 import pandas as pd
 import numpy as np
+import os
 
 from gptables import gptheme
 
 ######################################
 ###### READ DATA IN AND FORMAT #######
 ######################################
-
 funcs = [np.mean, np.median]
-iris_data = pd.read_csv("./iris.csv")
+parent_dir = os.path.dirname(os.path.realpath(__file__))
+iris_data = pd.read_csv(parent_dir + "/iris.csv")
 
 iris_data.rename(
         columns={
