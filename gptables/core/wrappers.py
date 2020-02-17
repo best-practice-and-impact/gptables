@@ -551,6 +551,7 @@ class GPWorkbook(Workbook):
         worksheet = super(GPWorkbook, self).add_worksheet(name, GPWorksheet)
         worksheet.theme = self.theme
         worksheet._workbook = self  # Create reference to wb, for formatting
+        worksheet.hide_gridlines(2)
         return worksheet
 
     def set_theme(self, theme):
