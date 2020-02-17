@@ -1,3 +1,5 @@
+import os
+import re
 import pandas as pd
 import numpy as np
 
@@ -11,13 +13,15 @@ class GPWorksheet(Worksheet):
     """
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
-    """        
+    """
+
+    # TODO: Implement cover page
 #    def write_cover_page(self, cover_config):
 #        """
 #        Write a cover page to the worksheet.
 #        """
 #        pass
-    
+
     def write_gptable(self, gptable):
         """
         Write data from a GPTable object to the worksheet using the specified
@@ -40,6 +44,10 @@ class GPWorksheet(Worksheet):
         
         # Write each GPTable element using appropriate Theme attr
         pos = [0, 0]
+        
+        self._format_notes(gptable)
+        self._reference_annotations(gptable)
+        
         pos = self._write_element(
                 gptable.title,
                 theme.title_format,
@@ -51,7 +59,7 @@ class GPWorksheet(Worksheet):
                 theme.subtitle_format,
                 pos
                 )
-        pos[0] += 1  # Leave empty row after titles
+        pos[0] += 1
         
         pos = self._write_table_elements(
                 gptable,
@@ -69,11 +77,170 @@ class GPWorksheet(Worksheet):
                 pos
                 )
         
+        pos = self._write_annotation_elements(
+                gptable.annotations,
+                theme.notes_format,
+                pos
+                )
+        
         pos = self._write_element_list(
                 gptable.notes,
                 theme.notes_format,
                 pos
                 )
+
+    def _format_notes(self, gptable):
+        """
+        Flank notes with parentheses. Handles strings and lists (rich strings).
+        """
+        for n in range(len(gptable.notes)):
+            note = gptable.notes[n]
+            if isinstance(note, list):
+                note = ["("] + note + [")"]
+            elif isinstance(note, str):
+                note =  "(" + note + ")"
+                
+            gptable.notes[n] = note
+        
+    def _reference_annotations(self, gptable):
+        """
+        Replace note references with numbered references. Acts on `title`,
+        `subtitles`, `table` and `notes` attributes of a GPTable. References 
+        are numbered from top left of spreadsheet, working row-wise.
+        
+        Parameters
+        ----------
+        gptable : gptables.GPTable
+            object containing data with references to notes
+
+        Returns
+        -------
+        None
+        """
+        elements = [
+                "title",
+                "subtitles",
+                "scope",
+                "units",
+                "legend"
+                ]
+        # Store references in order detected
+        ordered_refs = []
+        
+        # Loop through elements, replacing references in strings
+        for attr in elements:
+            attr_current = getattr(gptable, attr)
+            setattr(
+                    gptable,
+                    attr,
+                    self._replace_reference_in_attr(
+                            attr_current,
+                            ordered_refs
+                            )
+                    )
+        self._reference_table_annotations(gptable, ordered_refs)
+
+        new_annotations = {}
+        # Add to dict in order
+        for n in range(len(ordered_refs)):
+            new_annotations.update({n+1: gptable.annotations[ordered_refs[n]]})
+        # Warn if all annotations not referenced
+        annotations_diff = len(gptable.annotations) - len(new_annotations)
+        if annotations_diff:
+            output_file = os.path.basename(self._workbook.filename)
+            msg =(f"Warning: {annotations_diff} annotations have not been"
+                  f" referenced in {output_file}") 
+            print(msg)
+        # Replace old notes refs
+        gptable.annotations = new_annotations
+        
+    def _reference_table_annotations(self, gptable, ordered_refs):
+         """
+         Reference annotaitons in the table column headings and index columns.
+         """
+         table = getattr(gptable, "table")
+         
+         table.columns = self._replace_reference_in_attr(
+                 [x for x in table.columns],
+                 ordered_refs
+                 )
+         
+         index_columns = gptable.index_columns.values()
+         
+         for col in index_columns:
+             table.iloc[:, col] = table.iloc[:, col].apply(
+                     lambda x: self._replace_reference_in_attr(x, ordered_refs)
+                     )
+             
+         setattr(gptable, "table", table)
+         
+    def _replace_reference_in_attr(self, data, ordered_refs):
+        """
+        Replaces references in a string or list/dict of strings. Works
+        recursively on list elements and dict values. Other types are returned
+        without modification. Updates `ordered_refs` with newly detected
+        references.
+        
+        Parameters
+        ----------
+        data : any type
+            object containing strings to replace references in
+        ordered_refs : list
+            list of references used so far. New references will be added to
+            this list in order of detection
+
+        Returns
+        -------
+        string : str
+            input string with references replaced with numerical reference (n),
+            where n is the order of appearence in the resulting document
+        """
+        if isinstance(data, str):
+            data = self._replace_reference(data, ordered_refs)
+        if isinstance(data, list):
+            for n in range(len(data)):
+                data[n] = self._replace_reference_in_attr(
+                        data[n],
+                        ordered_refs
+                        )
+        if isinstance(data, dict):
+            for key in data.keys():
+                data[key] = self._replace_reference_in_attr(
+                        data[key],
+                        ordered_refs
+                        )
+
+        return data
+
+    def _replace_reference(self, string, ordered_refs):
+        """
+        Given a single string, record occurences of new references (denoted by
+        flanking $$) and replace with number reference reflecting order of
+        detection.
+        
+        Parameters
+        ----------
+        string : str
+            the string to replace references within
+        ordered_refs : list
+            list of references used so far. New references will be added to
+            this list in order of detection
+
+        Returns
+        -------
+        string : str
+            input string with references replaced with numerical reference (n),
+            where n is the order of appearence in the resulting document
+        """
+        text_refs = re.findall(r"[$]{2}.*?[$]{2}", string)
+        dict_refs = [w.replace("$", "") for w in text_refs]
+        for n in range(len(dict_refs)):
+            if dict_refs[n] not in ordered_refs:
+                ordered_refs.append(dict_refs[n])
+            num_ref = "(" + str(ordered_refs.index(dict_refs[n]) + 1) + ")"
+            string = string.replace(text_refs[n], num_ref)
+
+        return string
 
     def _write_element(self, element, format_dict, pos):
         """
@@ -93,12 +260,12 @@ class GPWorksheet(Worksheet):
         pos : list
             new position to write next element from
         """
-        self._smart_write(*pos, element, format_dict)
-        
-        pos[0] += 1
+        if element:
+            self._smart_write(*pos, element, format_dict)
+            pos[0] += 1
         
         return pos
-    
+
     def _write_element_list(self, element_list, format_dict, pos):
         """
         Writes a list of elements row-wise.
@@ -118,10 +285,35 @@ class GPWorksheet(Worksheet):
         pos: list
             new position to write next element from
         """
-        for element in element_list:
+        if element_list:
+            for element in element_list:
+                self._smart_write(*pos, element, format_dict)
+                pos[0] += 1         
+        
+        return pos
+    
+    def _write_annotation_elements(self, annotations_dict, format_dict, pos):
+        """
+        Writes a list of elements row-wise.
+        
+        Parameters
+        ----------
+        notes_dict : dict
+            note associate with each references, as {reference: note}
+        format_dict : dict
+            format to be applied to string
+        pos : tuple
+            the position of the worksheet cell to write the elements to
+
+        Returns
+        -------
+        pos: list
+            new position to write next element from
+        """
+        for ref, annotation in annotations_dict.items():
+            element = f"({ref}: {annotation})"
             self._smart_write(*pos, element, format_dict)
-            
-            pos[0] += 2
+            pos[0] += 1
             
         return pos
     
@@ -381,6 +573,7 @@ class GPWorkbook(Workbook):
         worksheet = super(GPWorkbook, self).add_worksheet(name, GPWorksheet)
         worksheet.theme = self.theme
         worksheet._workbook = self  # Create reference to wb, for formatting
+        worksheet.hide_gridlines(2)
         return worksheet
 
     def set_theme(self, theme):
