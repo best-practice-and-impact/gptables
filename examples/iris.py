@@ -15,7 +15,7 @@ iris_data = pd.read_csv(parent_dir + "/iris.csv")
 iris_data.rename(
         columns={
             " class":"class",
-            "sepal_length":"Sepal Length",
+            "sepal_length":"Sepal Length$$note4$$",
             " petal_length":"Petal Length",
             " petal_width":"Petal Width",
             " sepal_width":"Sepal Width"
@@ -31,7 +31,7 @@ iris_data["class"] = iris_data.apply(
 ls = []
 for func in funcs:
     ls.append(iris_data.groupby("class").agg(func))
-    ls.append(pd.DataFrame(iris_data.agg(func).rename("All")).T)
+    ls.append(pd.DataFrame(iris_data.agg(func).rename("All$$note3$$")).T)
 
 iris_summ = pd.concat(ls)
 iris_summ["func"] = ["Mean"] * 4 + ["Median"] * 4
@@ -64,7 +64,9 @@ index = {
 annotations = {
         "note1": "I've got 99 problems and taxonomy is one.",
         "note2": "Goo Goo Dolls, 1998.",
-        "note3": "This annotation is not referenced, so should not appear."
+        "note3": "All species of the Iris genus",
+        "note4": "Length of the largest sepal",
+        "note5": "This annotation is not referenced, so should not appear."
         }
 notes = [
         "This note hath no reference."

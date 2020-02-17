@@ -138,7 +138,8 @@ class GPWorksheet(Worksheet):
                             ordered_refs
                             )
                     )
-        
+        self._reference_table_annotations(gptable, ordered_refs)
+
         new_annotations = {}
         # Add to dict in order
         for n in range(len(ordered_refs)):
@@ -152,7 +153,27 @@ class GPWorksheet(Worksheet):
             print(msg)
         # Replace old notes refs
         gptable.annotations = new_annotations
-
+        
+    def _reference_table_annotations(self, gptable, ordered_refs):
+         """
+         Reference annotaitons in the table column headings and index columns.
+         """
+         table = getattr(gptable, "table")
+         
+         table.columns = self._replace_reference_in_attr(
+                 [x for x in table.columns],
+                 ordered_refs
+                 )
+         
+         index_columns = gptable.index_columns.values()
+         
+         for col in index_columns:
+             table.iloc[:, col] = table.iloc[:, col].apply(
+                     lambda x: self._replace_reference_in_attr(x, ordered_refs)
+                     )
+             
+         setattr(gptable, "table", table)
+         
     def _replace_reference_in_attr(self, data, ordered_refs):
         """
         Replaces references in a string or list/dict of strings. Works
@@ -188,6 +209,7 @@ class GPWorksheet(Worksheet):
                         data[key],
                         ordered_refs
                         )
+
         return data
 
     def _replace_reference(self, string, ordered_refs):
