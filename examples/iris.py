@@ -64,8 +64,11 @@ index = {
 annotations = {
         "note1": "I've got 99 problems and taxonomy is one.",
         "note2": "Goo Goo Dolls, 1998.",
-        "note3": "This note is not referenced, so should not appear."
+        "note3": "This annotation is not referenced, so should not appear."
         }
+notes = [
+        "This note hath no reference."
+        ]
 legend = [
         ": not applicable$$note1$$"
         ]
@@ -77,7 +80,8 @@ kwargs = {"title":title,
         "scope": scope,
         "source":source,
         "index_columns":index,
-        "notes":annotations,
+        "annotations":annotations,
+        "notes":notes,
         "legend":legend
         }
 

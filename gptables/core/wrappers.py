@@ -45,6 +45,7 @@ class GPWorksheet(Worksheet):
         # Write each GPTable element using appropriate Theme attr
         pos = [0, 0]
         
+        self._format_notes(gptable)
         self._reference_annotations(gptable)
         
         pos = self._write_element(
@@ -58,6 +59,7 @@ class GPWorksheet(Worksheet):
                 theme.subtitle_format,
                 pos
                 )
+        pos[0] += 1
         
         pos = self._write_table_elements(
                 gptable,
@@ -75,12 +77,31 @@ class GPWorksheet(Worksheet):
                 pos
                 )
         
-        pos = self._write_note_elements(
+        pos = self._write_annotation_elements(
+                gptable.annotations,
+                theme.notes_format,
+                pos
+                )
+        
+        pos = self._write_element_list(
                 gptable.notes,
                 theme.notes_format,
                 pos
                 )
 
+    def _format_notes(self, gptable):
+        """
+        Flank notes with parentheses. Handles strings and lists (rich strings).
+        """
+        for n in range(len(gptable.notes)):
+            note = gptable.notes[n]
+            if isinstance(note, list):
+                note = ["("] + note + [")"]
+            elif isinstance(note, str):
+                note =  "(" + note + ")"
+                
+            gptable.notes[n] = note
+        
     def _reference_annotations(self, gptable):
         """
         Replace note references with numbered references. Acts on `title`,
@@ -118,19 +139,19 @@ class GPWorksheet(Worksheet):
                             )
                     )
         
-        new_notes = {}
+        new_annotations = {}
         # Add to dict in order
         for n in range(len(ordered_refs)):
-            new_notes.update({n+1: gptable.notes[ordered_refs[n]]})
+            new_annotations.update({n+1: gptable.annotations[ordered_refs[n]]})
         # Warn if all annotations not referenced
-        notes_diff = len(gptable.notes) - len(new_notes)
-        if notes_diff:
+        annotations_diff = len(gptable.annotations) - len(new_annotations)
+        if annotations_diff:
             output_file = os.path.basename(self._workbook.filename)
-            msg =(f"Warning: {notes_diff} annotations have not been"
+            msg =(f"Warning: {annotations_diff} annotations have not been"
                   f" referenced in {output_file}") 
             print(msg)
         # Replace old notes refs
-        gptable.notes = new_notes
+        gptable.annotations = new_annotations
 
     def _replace_reference_in_attr(self, data, ordered_refs):
         """
@@ -245,12 +266,11 @@ class GPWorksheet(Worksheet):
         if element_list:
             for element in element_list:
                 self._smart_write(*pos, element, format_dict)
-                pos[0] += 1
-            pos[0] += 1            
+                pos[0] += 1         
         
         return pos
     
-    def _write_note_elements(self, notes_dict, format_dict, pos):
+    def _write_annotation_elements(self, annotations_dict, format_dict, pos):
         """
         Writes a list of elements row-wise.
         
@@ -268,12 +288,10 @@ class GPWorksheet(Worksheet):
         pos: list
             new position to write next element from
         """
-        for ref, note in notes_dict.items():
-            element = f"({ref}: {note})"
+        for ref, annotation in annotations_dict.items():
+            element = f"({ref}: {annotation})"
             self._smart_write(*pos, element, format_dict)
             pos[0] += 1
-        
-        pos[0] += 1
             
         return pos
     
@@ -367,9 +385,6 @@ class GPWorksheet(Worksheet):
         # Add additional formatting
         # TODO: Implement row, col and cell wise formatting
         # addn_format = gptable._additional_formats
-        
-        ## Insert note references
-        
         
         ## Write table
         pos = self._write_array(data, formats, pos)
