@@ -49,23 +49,37 @@ iris_summ = iris_summ.pivot_table(
 ####### DEFINE TABLE ELEMENTS ########
 ######################################
 
-title = "Iris flower dimensions"
-subtitle = "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$"
-units = "cm"
-scope = "Iris"
+title = "Iris$$note2$$ flower dimensions"
+subtitles = [
+        "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
+        "Just another subtitile"
+        ]
+units = "cm$$note1$$"
+scope = "Iris$$note2$$"
 source = "Source: Office for Iris Statistics"
-index = {1:0,2:1}  # Need to support referencing by col name
-notes = {"note1": "I've got 99 problems and taxonomy is one.",
-         "note2": "This note is not references, so should come last."}
+index = {
+        1:0,
+        2:1
+        }  # Need to support referencing by col name
+annotations = {
+        "note1": "I've got 99 problems and taxonomy is one.",
+        "note2": "Goo Goo Dolls, 1998.",
+        "note3": "This note is not referenced, so should not appear."
+        }
+legend = [
+        ": not applicable$$note1$$"
+        ]
 
 # or just use kwargs
 kwargs = {"title":title,
-        "subtitles":[subtitle],
+        "subtitles":subtitles,
         "units":units,
         "scope": scope,
         "source":source,
         "index_columns":index,
-        "notes":notes}
+        "notes":annotations,
+        "legend":legend
+        }
 
 # define our GPTable
 iris_table = gpt.GPTable(
@@ -85,7 +99,7 @@ iris_table = gpt.GPTable(
 ######################################
 
 wb = gpt.produce_workbook(
-        file="./iris_gptable.xlsx",
+        file= parent_dir + "/iris_gptable.xlsx",
         sheets={"iris flower dimensions":iris_table},
         theme=gptheme
         )
