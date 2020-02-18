@@ -41,6 +41,7 @@ class Theme:
 
         self.source_format = {}
         self.legend_format = {}
+        self.annotations_format = {}
         self.notes_format = {}
         
         self.footer_order = []
@@ -188,6 +189,13 @@ class Theme:
         """
         self.legend_format.update(format_dict)
     
+    def update_annotations_format(self, format_dict):
+        """
+        Update the `annotations_format` attribute. Where keys already exist,
+        existing items are replaced.
+        """
+        self.annotations_format.update(format_dict)
+
     def update_notes_format(self, format_dict):
         """
         Update the `notes_format` attribute. Where keys already exist, existing
