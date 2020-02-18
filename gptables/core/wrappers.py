@@ -281,19 +281,19 @@ class GPWorksheet(Worksheet):
         """
         Alias for writting footer elements by name.
         """
-        self._write_element(element, format_dict, pos)
+        return self._write_element(element, format_dict, pos)
     
     def _write_legend(self, element_list, format_dict, pos):
         """
         Alias for writting footer elements by name.
         """
-        self._write_element_list(element_list, format_dict, pos)
+        return self._write_element_list(element_list, format_dict, pos)
         
     def _write_notes(self, element_list, format_dict, pos):
         """
         Alias for writting footer elements by name.
         """
-        self._write_element_list(element_list, format_dict, pos)
+        return self._write_element_list(element_list, format_dict, pos)
         
     def _write_annotations(self, annotations_dict, format_dict, pos):
         """
