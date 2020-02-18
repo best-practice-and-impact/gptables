@@ -349,21 +349,27 @@ class GPWorksheet(Worksheet):
                 )
         
         # Write units above each col heading
+        # TODO: add support for dictionary {"Column_name":"unit"}
         pos[1] += gptable.index_levels
         n_cols = len(gptable._column_headings)
-        if isinstance(gptable.units, str):
-            units = [gptable.units for n in range(n_cols)]
-        elif isinstance(gptable.units, list):
-            units = gptable.units
-        # TODO: add support for dictionary {"Column_name":"unit"}
-        
-        for n in range(n_cols):
+        units = gptable.units
+        if isinstance(units, str):
+            pos[1] += n_cols - 1
             self._smart_write(
                 *pos,
-                units[n],
+                units,
                 theme.units_format
                 )
             pos[1] += 1
+
+        elif isinstance(units, list):
+            for n in range(n_cols):
+                self._smart_write(
+                    *pos,
+                    units[n],
+                    theme.units_format
+                    )
+                pos[1] += 1
         
         # Reset position to left col on next row
         pos[0] += 1
