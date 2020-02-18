@@ -39,55 +39,40 @@ class GPWorksheet(Worksheet):
         """
         if not isinstance(gptable, GPTable):
             raise ValueError("`gptable` must be a gptables.GPTable object")
-        # Get theme
+
         theme = self.theme
-        
+
         # Write each GPTable element using appropriate Theme attr
         pos = [0, 0]
-        
+
         self._format_notes(gptable)
         self._reference_annotations(gptable)
-        
+
         pos = self._write_element(
                 gptable.title,
                 theme.title_format,
                 pos
                 )
-        
+
         pos = self._write_element_list(
                 gptable.subtitles,
                 theme.subtitle_format,
                 pos
                 )
         pos[0] += 1
-        
+
         pos = self._write_table_elements(
                 gptable,
                 pos
                 )
-        
-        pos = self._write_element(
-                gptable.source,
-                theme.source_format,
-                pos)
-        
-        pos = self._write_element_list(
-                gptable.legend,
-                theme.legend_format,
-                pos
-                )
-        
-        pos = self._write_annotation_elements(
-                gptable.annotations,
-                theme.notes_format,
-                pos
-                )
-        
-        pos = self._write_element_list(
-                gptable.notes,
-                theme.notes_format,
-                pos
-                )
+
+        footer = theme.footer_order
+        for element in footer:
+            pos = getattr(self, "_write_" + element)(
+                    getattr(gptable, element),
+                    getattr(theme, element + "_format"),
+                    pos
+                    )
 
     def _format_notes(self, gptable):
         """
@@ -264,8 +249,8 @@ class GPWorksheet(Worksheet):
             self._smart_write(*pos, element, format_dict)
             pos[0] += 1
         
-        return pos
-
+        return pos       
+        
     def _write_element_list(self, element_list, format_dict, pos):
         """
         Writes a list of elements row-wise.
@@ -292,9 +277,27 @@ class GPWorksheet(Worksheet):
         
         return pos
     
-    def _write_annotation_elements(self, annotations_dict, format_dict, pos):
+    def _write_source(self, element, format_dict, pos):
         """
-        Writes a list of elements row-wise.
+        Alias for writting footer elements by name.
+        """
+        return self._write_element(element, format_dict, pos)
+    
+    def _write_legend(self, element_list, format_dict, pos):
+        """
+        Alias for writting footer elements by name.
+        """
+        return self._write_element_list(element_list, format_dict, pos)
+        
+    def _write_notes(self, element_list, format_dict, pos):
+        """
+        Alias for writting footer elements by name.
+        """
+        return self._write_element_list(element_list, format_dict, pos)
+        
+    def _write_annotations(self, annotations_dict, format_dict, pos):
+        """
+        Writes a list of ordered annotations row-wise.
         
         Parameters
         ----------
@@ -346,21 +349,27 @@ class GPWorksheet(Worksheet):
                 )
         
         # Write units above each col heading
+        # TODO: add support for dictionary {"Column_name":"unit"}
         pos[1] += gptable.index_levels
         n_cols = len(gptable._column_headings)
-        if isinstance(gptable.units, str):
-            units = [gptable.units for n in range(n_cols)]
-        elif isinstance(gptable.units, list):
-            units = gptable.units
-        # TODO: add support for dictionary {"Column_name":"unit"}
-        
-        for n in range(n_cols):
+        units = gptable.units
+        if isinstance(units, str):
+            pos[1] += n_cols - 1
             self._smart_write(
                 *pos,
-                units[n],
+                units,
                 theme.units_format
                 )
             pos[1] += 1
+
+        elif isinstance(units, list):
+            for n in range(n_cols):
+                self._smart_write(
+                    *pos,
+                    units[n],
+                    theme.units_format
+                    )
+                pos[1] += 1
         
         # Reset position to left col on next row
         pos[0] += 1
