@@ -26,7 +26,7 @@ class Theme:
             ):
         """
         Initialise theme object
-        """               
+        """
         self.title_format = {}
         self.subtitle_format = {}
         
@@ -43,8 +43,10 @@ class Theme:
         self.legend_format = {}
         self.notes_format = {}
         
-        # TODO: Dynamically generate update method for each attr to avoid rep
-        # Would be more extensible
+        self.footer_order = []
+        
+        # TODO: Dynamically generate update method for each format attr to
+        # avoid rep and increase extensibility
         
         if config:
             self.apply_config(config)
@@ -82,7 +84,9 @@ class Theme:
         
         # Update with individual methods
         for key, value in cfg.items():
-            if value is not None:
+            if key == "footer_order":
+                self.update_footer_order(value)
+            elif value is not None:
                 getattr(self, "update_" + key + "_format")(value)
     
     def update_all_formats(self, global_dict):
@@ -95,7 +99,8 @@ class Theme:
                 and not callable(getattr(self, attr))
                 ]
         for attr in obj_attr:
-            getattr(self, "update_" + str(attr))(global_dict)
+            if attr.endswith("_format"):
+                getattr(self, "update_" + str(attr))(global_dict)
         
             
     def update_column_heading_format(self, format_dict):
@@ -189,8 +194,14 @@ class Theme:
         items are replaced.
         """
         self.notes_format.update(format_dict)
+        
+    def update_footer_order(self, order_list):
+        """
+        Update the `footer_order` attribute. Overrides existing order.
+        """
+        self.footer_order = order_list
     
-    def print_formats(self):
+    def print_attributes(self):
         """
         Print all current format attributes and values to the console.
         """

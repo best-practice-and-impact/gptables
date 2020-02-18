@@ -33,3 +33,9 @@ source:
 notes:
     font_size: 7
 
+footer_order:
+    - source
+    - legend
+    - annotations
+    - notes
+
