@@ -8,7 +8,11 @@ setup(
     name='gptables',
     version='0.1.0',
     author='David Foster',
-    description='A wrapper for xlsxwriter, to write statistical tables for publication.',
-    packages=find_packages(),    
+    description='Simplifying good practice in statistical tables.',
+    data_files=[
+            ("examples", ["addn_files/demos/iris.py", "addn_files/demos/iris.csv"]),
+            ("themes", ["addn_files/themes/gptheme.yaml"])
+            ],
+    packages=find_packages(),
     install_requires=required
 )
