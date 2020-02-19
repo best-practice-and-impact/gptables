@@ -12,7 +12,9 @@ class ThemeUnpickler(pickle.Unpickler):
             return Theme
         return super().find_class(module, name)
 
-
 gptheme = ThemeUnpickler(
-        open(resource_filename(__name__, "/gptheme.pickle"), "rb")
+        open(
+            resource_filename("gptables", "/themes/gptheme.pickle"),
+            "rb"
+            )
         ).load()
