@@ -45,7 +45,6 @@ class GPWorksheet(Worksheet):
         # Write each GPTable element using appropriate Theme attr
         pos = [0, 0]
 
-        self._format_notes(gptable)
         self._reference_annotations(gptable)
 
         pos = self._write_element(
@@ -66,6 +65,8 @@ class GPWorksheet(Worksheet):
                 pos
                 )
 
+        self._format_footer_elements(gptable)
+
         footer = theme.footer_order
         for element in footer:
             pos = getattr(self, "_write_" + element)(
@@ -74,18 +75,23 @@ class GPWorksheet(Worksheet):
                     pos
                     )
 
-    def _format_notes(self, gptable):
+    def _format_footer_elements(self, gptable):
         """
         Flank notes with parentheses. Handles strings and lists (rich strings).
         """
+        def flank(element):
+            if isinstance(element, str):
+                return  "(" + element + ")"
+            elif isinstance(element, list):
+                return ["("] + element + [")"]
+        
+        gptable.source = flank(gptable.source)
+        
         for n in range(len(gptable.notes)):
-            note = gptable.notes[n]
-            if isinstance(note, list):
-                note = ["("] + note + [")"]
-            elif isinstance(note, str):
-                note =  "(" + note + ")"
-                
-            gptable.notes[n] = note
+            gptable.notes[n] = flank(gptable.notes[n])
+            
+        for n in range(len(gptable.legend)):
+            gptable.legend[n] = flank(gptable.legend[n])
         
     def _reference_annotations(self, gptable):
         """
@@ -324,7 +330,7 @@ class GPWorksheet(Worksheet):
         """
         Writes the table, scope and units elements of a GPTable. Uses the
         Workbook Theme, plus any additional formatting associated with the
-        GPTable.
+        GPTable. Also replaces `np.nan` with a missing value marker.
         
         Parameters
         ----------
@@ -379,7 +385,7 @@ class GPWorksheet(Worksheet):
         index_levels = gptable.index_levels
         index_columns = [col for col in gptable.index_columns.values()]
         data = pd.DataFrame(gptable.table, copy=True)
-        
+            
         # Create row containing column headings
         data.loc[-1] = data.columns
         data.index = data.index + 1
@@ -394,7 +400,32 @@ class GPWorksheet(Worksheet):
             dict_row = [{} for n in range(formats.shape[1])]
             formats.iloc[row] = dict_row
         
-        # Add Theme formatting
+        
+        ## Handle missing values
+        missing_marker = theme.missing_value
+
+        if data.isna().values.any():
+            if missing_marker is not None:
+                # Super inefficient format update loop
+                # Only run if align not set for data
+                if not "align" in theme.data_format.keys():
+                    rows, cols = data.shape
+                    for row in range(rows):
+                        for col in range(cols):
+                            if pd.isna(data.iloc[row, col]):
+                                (formats.iloc[row, col]
+                                .update({"align":"center"})
+                                )
+
+                data.fillna(missing_marker, inplace=True)
+                gptable.legend.append(f"{missing_marker} not available")
+            else:
+                msg = ("`Theme.missing_marker` must be assigned if values are"
+                       " missing within GPTable.")
+                raise ValueError(msg)
+        
+        
+        ## Add Theme formatting
         (formats.iloc[0, index_levels:]
         .apply(lambda d:d.update(theme.column_heading_format))
         )
