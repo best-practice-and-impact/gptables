@@ -45,6 +45,9 @@ iris_summ = iris_summ.pivot_table(
         values="value"
         ).reset_index()
 
+# Insert nan
+iris_summ.iloc[2, 3] = np.nan
+
 ######################################
 ####### DEFINE TABLE ELEMENTS ########
 ######################################
@@ -64,15 +67,12 @@ index = {
 annotations = {
         "note1": "I've got 99 problems and taxonomy is one.",
         "note2": "Goo Goo Dolls, 1998.",
-        "note3": "All species of the Iris genus",
-        "note4": "Length of the largest sepal",
+        "note3": "All species of the Iris genus.",
+        "note4": "Length of the largest sepal.",
         "note5": "This annotation is not referenced, so should not appear."
         }
 notes = [
         "This note hath no reference."
-        ]
-legend = [
-        ": not applicable$$note1$$"
         ]
 
 # or just use kwargs
@@ -83,8 +83,7 @@ kwargs = {"title":title,
         "source":source,
         "index_columns":index,
         "annotations":annotations,
-        "notes":notes,
-        "legend":legend
+        "notes":notes
         }
 
 # define our GPTable

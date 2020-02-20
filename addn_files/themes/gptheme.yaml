@@ -17,6 +17,7 @@ units:
 
 column_heading:
     bold: True
+    bottom: 1
 
 index_1:
     bold: True
@@ -46,3 +47,5 @@ footer_order:
     - legend
     - annotations
     - notes
+
+missing_value: ':'
