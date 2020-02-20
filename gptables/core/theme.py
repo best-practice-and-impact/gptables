@@ -14,7 +14,39 @@ class Theme:
     ----------
     config : dict or .yaml/.yml
         theme specification
+    
+    Attributes
+    ----------
+    title_format : dict
 
+    subtitle_format : dict
+    
+    scope_format : dict
+    
+    units_format : dict
+
+    column_heading_format : dict
+    
+    index_1_format : dict
+    
+    index_2_format : dict
+    
+    index_3_format : dict
+    
+    data_format : dict
+
+    source_format : dict
+    
+    legend_format : dict
+    
+    annotations_format : dict
+    
+    notes_format : dict
+    
+    footer_order : list
+    
+    missing_value : None or str
+    
     Returns
     -------
         None
@@ -27,32 +59,36 @@ class Theme:
         """
         Initialise theme object
         """
-        self.title_format = {}
-        self.subtitle_format = {}
+        ## Formats
+        self._format_attributes = [
+            "title_format",
+            "subtitle_format",
+            "scope_format",
+            "units_format",
+            "column_heading_format",
+            "index_1_format",
+            "index_2_format",
+            "index_3_format",
+            "data_format",
+            "source_format",
+            "legend_format",
+            "annotations_format",
+            "notes_format"
+            ]
         
-        self.scope_format = {}
-        self.units_format = {}
+        for attr in self._format_attributes:
+            setattr(self, attr, {})
         
-        self.column_heading_format = {}
-        self.index_1_format = {}
-        self.index_2_format = {}
-        self.index_3_format = {}
-        self.data_format = {}
-
-        self.source_format = {}
-        self.legend_format = {}
-        self.annotations_format = {}
-        self.notes_format = {}
-        
+        ## Other attributes
         self.footer_order = []
+        self.missing_value = None
         
         # TODO: Dynamically generate update method for each format attr to
         # avoid rep and increase extensibility
-        
+            
         if config:
             self.apply_config(config)
         
-            
     def _parse_config(self, config):
         """
         Parse yaml configuration to dictionary.
@@ -85,8 +121,8 @@ class Theme:
         
         # Update with individual methods
         for key, value in cfg.items():
-            if key == "footer_order":
-                self.update_footer_order(value)
+            if key in ["footer_order", "missing_value"]:
+                getattr(self, "update_" + key)(value)
             elif value is not None:
                 getattr(self, "update_" + key + "_format")(value)
     
@@ -208,7 +244,15 @@ class Theme:
         Update the `footer_order` attribute. Overrides existing order.
         """
         self.footer_order = order_list
-    
+
+    def update_missing_value(self, string):
+        """
+        Update the `missing_value` attribute. Overrides existing string.
+        """
+        if not isinstance(string, str):
+            raise ValueError("Missing value representation must be a string.")
+        self.missing_value = string
+
     def print_attributes(self):
         """
         Print all current format attributes and values to the console.
