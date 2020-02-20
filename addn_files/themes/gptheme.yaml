@@ -17,6 +17,7 @@ units:
 
 column_heading:
     bold: True
+    bottom: 1
 
 index_1:
     bold: True
