@@ -1,3 +1,4 @@
+from xlsxwriter.format import Format
 import yaml
 
 class Theme:
@@ -88,8 +89,9 @@ class Theme:
             
         if config:
             self.apply_config(config)
-        
-    def _parse_config(self, config):
+    
+    @staticmethod
+    def _parse_config(config):
         """
         Parse yaml configuration to dictionary.
         """
@@ -106,6 +108,31 @@ class Theme:
             raise ValueError("Theme configuration must be a dict or YAML file")
             
         return cfg
+
+    def _validate_config(self, config):
+        
+        valid_attrs = [
+                x.replace("_format", "")
+                for x in self._format_attributes
+                ] + [
+                    "global"
+                    ]
+        
+        valid_formats = [
+                attr.replace("set_", "")
+                for attr in Format().__dir__() 
+                if attr.startswith('set_')
+                and callable(getattr(Format(), attr))
+                ]
+        
+        for attr in config.keys():
+            if attr in valid_attrs:
+                attr_config = config[attr] or {}
+                for fmt in attr_config.keys():
+                    if fmt not in valid_formats:
+                        raise ValueError(f"{fmt} not a valid format attribute")
+            elif attr not in ["footer_order", "missing_value"]:
+                raise ValueError(f"{attr} not a valid config attribute")
     
     def apply_config(self, config):
         """
@@ -113,6 +140,7 @@ class Theme:
         This enables extension of build in Themes.
         """
         cfg = self._parse_config(config)
+        self._validate_config(cfg)
         
         # Update all when global used
         if "global" in cfg.keys():
