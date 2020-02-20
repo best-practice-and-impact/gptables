@@ -1,6 +1,6 @@
 global:
     font_size: 9
-    font: Arial
+    font_name: Arial
 
 title:
     bold: True
