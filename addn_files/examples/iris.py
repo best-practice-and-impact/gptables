@@ -76,23 +76,31 @@ notes = [
         ]
 
 
-# additional formatting
+# Additional formatting
+# Only columns can be references by name
+# Column and row numbers include indexes and column headings
 formatting = [
         {"column":
-            {"columns": ["Setosa","Versicolor"],  # Str or list of str
-             "format": {"align":"right"},
-             "include_names": False  # Whether to include column headings
+            {"columns": ["Setosa","Versicolor"],  # Str, int or list of either
+             "format": {"align":"center"},
+             "include_names": False  # Whether to include column headings (optional)
             }
         },
-        {"row":  # As above
-            {"rows": 1,
+        {"column":
+            {"columns": [3],
+             "format": {"left":1},
+             "include_names": True
+            }
+        },
+        {"row":
+            {"rows": 3,  # Numbers only
              "format": {"bold":True},
              "include_names": True
              }
         },
         {"cell":
-            {"cells": (1, 5),  # tuple or list of tuples
-             "format": {"italic":True, "font_color": "red"}
+            {"cells": (3, 3),  # tuple or list of tuples
+             "format": {"font_color": "red"}
                 }
         }
 ]
