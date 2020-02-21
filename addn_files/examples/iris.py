@@ -79,18 +79,20 @@ notes = [
 # additional formatting
 formatting = ([
         {"column":
-            {["Setosa","Versicolor"]:
-                {"align":"right"}
-                }
-            },
-        {"row":
-            {1:
-                {"bold":True}
-                }
+            {"columns": ["Setosa","Versicolor"],  # Str or list of str
+             "format": {"align":"right"},
+             "include_names": False  # Whether to include column headings
+            }
+        },
+        {"row":  # As above
+            {"rows": 1,
+             "format": {"bold":True},
+             "include_names": True
+             }
         },
         {"cell":
-            {(1,5):
-                {"italic":True, "font_color": "red"}
+            {"cells": (1, 5),  # tuple or list of tuples
+             "format": {"italic":True, "font_color": "red"}
                 }
         }
 ])
