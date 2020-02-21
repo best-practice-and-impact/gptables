@@ -75,6 +75,27 @@ notes = [
         "This note hath no reference."
         ]
 
+
+# additional formatting
+formatting = ([
+        {"column":
+            {["Setosa","Versicolor"]:
+                {"align":"right"}
+                }
+            },
+        {"row":
+            {1:
+                {"bold":True}
+                }
+        },
+        {"cell":
+            {(1,5):
+                {"italic":True, "font_color": "red"}
+                }
+        }
+])
+
+
 # or just use kwargs
 kwargs = {"title":title,
         "subtitles":subtitles,
@@ -83,7 +104,8 @@ kwargs = {"title":title,
         "source":source,
         "index_columns":index,
         "annotations":annotations,
-        "notes":notes
+        "notes":notes,
+        "additional_formatting": formatting
         }
 
 # define our GPTable
@@ -92,12 +114,6 @@ iris_table = gpt.GPTable(
         **kwargs
         )        
 
-# additional formatting
-#iris_table.format({
-#        [{"headings":"All"},
-#            {"bold":True,}],
-#        [{"column":["Setosa","Versicolor","Virginica","All"]},
-#            {"align":"right"}])
 
 ######################################
 #### USE PRODUCE_WORKBOOK TO WIN #####
