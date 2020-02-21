@@ -75,6 +75,37 @@ notes = [
         "This note hath no reference."
         ]
 
+
+# Additional formatting
+# Only columns can be references by name
+# Column and row numbers include indexes and column headings
+formatting = [
+        {"column":
+            {"columns": ["Setosa","Versicolor"],  # Str, int or list of either
+             "format": {"align":"center"},
+             "include_names": False  # Whether to include column headings (optional)
+            }
+        },
+        {"column":
+            {"columns": [3],
+             "format": {"left":1},
+             "include_names": True
+            }
+        },
+        {"row":
+            {"rows": 3,  # Numbers only
+             "format": {"bold":True},
+             "include_names": True
+             }
+        },
+        {"cell":
+            {"cells": (3, 3),  # tuple or list of tuples
+             "format": {"font_color": "red"}
+                }
+        }
+]
+
+
 # or just use kwargs
 kwargs = {"title":title,
         "subtitles":subtitles,
@@ -83,7 +114,8 @@ kwargs = {"title":title,
         "source":source,
         "index_columns":index,
         "annotations":annotations,
-        "notes":notes
+        "notes":notes,
+        "additional_formatting": formatting
         }
 
 # define our GPTable
@@ -92,12 +124,6 @@ iris_table = gpt.GPTable(
         **kwargs
         )        
 
-# additional formatting
-#iris_table.format({
-#        [{"headings":"All"},
-#            {"bold":True,}],
-#        [{"column":["Setosa","Versicolor","Virginica","All"]},
-#            {"align":"right"}])
 
 ######################################
 #### USE PRODUCE_WORKBOOK TO WIN #####

@@ -7,19 +7,27 @@ class GPTable:
     
     Attributes
     ----------
+    table : pandas.DataFrame
+        table to be written to an Excel workbook
     title : str
         description of the table
     subtitles : list
-        subtitiles as strings
+        subtitiles as a list of strings
     scope : str
         description of scope/basis of data in table
+    units : str or dict
+        units used in all (str) or each (dict) column of `table`
     legend : list
-        descriptions of special notations used in table
-    notes : dict
-        mapping each notes reference to the note as {ref: note}
+        descriptions of special notation used in `table`
+    annotations : dict
+        notes that are referenced in header or table elements (excluding data)
+    notes : list
+        notes that are not referenced
     index_columns : dict
         mapping an index level to a 0-indexed column as {level: column}.
         Default is a level two index in the first column ({2: 0}).
+    additional_formatting : dict
+        table-specific formatting for columns, rows or individual cells
     
     Methods
     -------
@@ -35,7 +43,9 @@ class GPTable:
                  legend=[],
                  annotations={},
                  notes=[],
-                 index_columns={2:0}):
+                 index_columns={2:0},
+                 additional_formatting=[]
+                 ):
         
         # Attributes
         self.title = None
@@ -53,7 +63,9 @@ class GPTable:
         self.source = None
         self.legend = []
         self.annotations = {}
-        self.notes=[]
+        self.notes = []
+        
+        self.additional_formatting = []
         
         # Call methods to set attributes        
         self.set_title(title)
@@ -65,6 +77,7 @@ class GPTable:
         self.set_legend(legend)
         self.set_annotations(annotations)
         self.set_notes(notes)
+        self.set_additional_formatting(additional_formatting)
         
     def set_table(self, new_table, new_index_columns=None):
         """
@@ -254,3 +267,19 @@ class GPTable:
             self.notes = new_notes
         else:
             self.notes += new_notes
+            
+    def set_additional_formatting(self, new_formatting):
+        """
+        Set a dictionary of additional formatting to be applied to this table.
+        """
+        if not isinstance(new_formatting, list):
+            msg = ("`additional_formatting` must be a list of dictionaries")
+            raise ValueError(msg)
+        keys = [key for item in new_formatting for key in item.keys()]
+        for key in keys:
+            if key not in ["column", "row", "cell"]:
+                msg = (f"`{key}` is not a supported format type. Please use"
+                       " `column`, `row` or `cell`")
+                raise ValueError(msg)
+            
+        self.additional_formatting = new_formatting

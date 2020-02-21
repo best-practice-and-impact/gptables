@@ -24,7 +24,7 @@ class GPWorksheet(Worksheet):
 
     def write_gptable(self, gptable):
         """
-        Write data from a GPTable object to the worksheet using the specified
+        Write data from a GPTable object to the worksheet using the workbook
         Theme object for formatting.
         
         Parameters
@@ -426,13 +426,15 @@ class GPWorksheet(Worksheet):
         
         
         ## Add Theme formatting
-        (formats.iloc[0, index_levels:]
-        .apply(lambda d:d.update(theme.column_heading_format))
-        )
+        self._apply_format(
+                formats.iloc[0, index_levels:],
+                theme.column_heading_format
+                )
         
-        (formats.iloc[1:, index_levels:]
-        .apply(np.vectorize(lambda d: d.update(theme.data_format)))
-        )
+        self._apply_format(
+                formats.iloc[1:, index_levels:],
+                theme.data_format
+                )
         
         index_level_formats = [
                 theme.index_1_format,
@@ -440,19 +442,92 @@ class GPWorksheet(Worksheet):
                 theme.index_3_format
                 ]
         for level, col in gptable.index_columns.items():
-            (formats.iloc[1:, col]
-            .apply(lambda d: d.update(index_level_formats[level]))
-            )
+            self._apply_format(
+                formats.iloc[1:, col],
+                index_level_formats[level]
+                )
         
-        # Add additional formatting
-        # TODO: Implement row, col and cell wise formatting
-        # addn_format = gptable._additional_formats
+        ## Add additional table-specific formatting
+        self._apply_additional_formatting(
+                formats,
+                gptable.additional_formatting,
+                gptable.index_levels
+                )
         
         ## Write table
         pos = self._write_array(data, formats, pos)
         
         return pos
     
+    def _apply_additional_formatting(
+            self,
+            formats_table,
+            additional_formatting,
+            index_levels
+            ):
+        """
+        Apply row, column and cell formatting to dataframe of formats.
+        """
+        for item in additional_formatting:
+            fmt_type = list(item.keys())[0]
+            format_desc = item[fmt_type]
+            
+            if fmt_type == "cell":
+                formatting = format_desc["format"]
+                cell_ilocs = format_desc["cells"]
+                if isinstance(cell_ilocs, tuple):
+                    cell_ilocs = [cell_ilocs]
+                for row, col in cell_ilocs:
+                    formats_table_slice = formats_table.iloc[row, col]
+                    
+                    self._apply_format(
+                        formats_table_slice,
+                        formatting
+                        )
+                return None
+            
+            if fmt_type == "column":
+                cols_iloc = [
+                        formats_table.columns.get_loc(col)
+                        if isinstance(col, str)
+                        else col
+                        for col in format_desc["columns"]
+                        ]
+                row_start = 0
+                if "include_names" in format_desc.keys():
+                    row_start = 0 if format_desc["include_names"] else 1
+    
+                formats_table_slice = formats_table.iloc[row_start:, cols_iloc]
+                formatting = format_desc["format"]
+
+            elif fmt_type == "row":
+                rows_iloc = format_desc["rows"]
+                col_start = 0
+                if "include_names" in format_desc.keys():
+                    col_start = 0 if format_desc["include_names"] else index_levels
+    
+                formats_table_slice = formats_table.iloc[rows_iloc, col_start:]
+                formatting = format_desc["format"]
+            
+            self._apply_format(
+                formats_table_slice,
+                formatting
+                )
+
+    @staticmethod
+    def _apply_format(format_table_slice, format_dict):
+        if isinstance(format_table_slice, pd.Series):
+            (format_table_slice
+             .apply(lambda d: d.update(format_dict))
+             )
+        elif isinstance(format_table_slice, pd.DataFrame):
+            # Vectorised for 2D
+            (format_table_slice
+             .apply(np.vectorize(lambda d: d.update(format_dict)))
+             )
+        elif isinstance(format_table_slice, dict):
+            format_table_slice.update(format_dict)
+
     def _write_array(self, data, formats, pos):
         """
         Write a two-dimensional array to the current Worksheet, starting from
