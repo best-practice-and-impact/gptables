@@ -44,7 +44,8 @@ class GPTable:
                  annotations={},
                  notes=[],
                  index_columns={2:0},
-                 additional_formatting={}):
+                 additional_formatting=[]
+                 ):
         
         # Attributes
         self.title = None
@@ -64,7 +65,7 @@ class GPTable:
         self.annotations = {}
         self.notes = []
         
-        self.additional_formatting = {}
+        self.additional_formatting = []
         
         # Call methods to set attributes        
         self.set_title(title)
@@ -271,11 +272,11 @@ class GPTable:
         """
         Set a dictionary of additional formatting to be applied to this table.
         """
-        if not isinstance(new_formatting, dict):
-            msg = ("`additional_formatting` must be provided as a dictionary")
+        if not isinstance(new_formatting, list):
+            msg = ("`additional_formatting` must be a list of dictionaries")
             raise ValueError(msg)
-        
-        for key in new_formatting.keys():
+        keys = [key for item in new_formatting for key in item.keys()]
+        for key in keys:
             if key not in ["column", "row", "cell"]:
                 msg = (f"`{key}` is not a supported format type. Please use"
                        " `column`, `row` or `cell`")

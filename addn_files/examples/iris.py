@@ -77,7 +77,7 @@ notes = [
 
 
 # additional formatting
-formatting = ([
+formatting = [
         {"column":
             {"columns": ["Setosa","Versicolor"],  # Str or list of str
              "format": {"align":"right"},
@@ -95,7 +95,7 @@ formatting = ([
              "format": {"italic":True, "font_color": "red"}
                 }
         }
-])
+]
 
 
 # or just use kwargs
