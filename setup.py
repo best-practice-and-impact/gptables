@@ -8,7 +8,7 @@ def read_file(file):
    with open(file) as f:
         return f.read()
     
-long_description = read_file("Readme.md")
+long_description = read_file("README.md")
 licence = read_file("./LICENSE")
 required = read_requirements("requirements.txt")
 
