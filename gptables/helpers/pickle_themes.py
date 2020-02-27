@@ -7,8 +7,8 @@ def pickle_themes():
     package_dir = dirname(dirname(dirname(abspath(__file__))))
     theme_configs = glob.glob(join(
             package_dir,
-            "addn_files",
-            "themes",
+            "gptables",
+            "theme_configs",
             "*.yaml")
     )
 

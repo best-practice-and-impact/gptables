@@ -1,0 +1,6 @@
+include README.md
+include LICENSE
+include requirements.txt
+recursive-include gptables/examples *.csv *.py
+recursive-include gptables/theme_configs *.yaml
+recursive-include gptables/test test*.py

@@ -1,0 +1,212 @@
+import unittest
+from io import StringIO
+from contextlib import redirect_stdout
+from pkg_resources import resource_filename
+
+from gptables import Theme
+from gptables import gptheme
+
+class TestCleanInitialisation(unittest.TestCase):
+    """
+    Test initialisation of the Theme class without config.
+    """
+
+    def setUp(self):
+        self.fh = StringIO()
+        self.theme = Theme()
+
+    
+    def test_default_types(self):  
+        """Test Theme attribute default types"""
+        for attr in self.theme._format_attributes:
+            exp = {}
+            got = getattr(self.theme, attr)
+            self.assertEqual(exp, got)
+        
+        self.assertEqual(self.theme.footer_order, [])
+        self.assertEqual(self.theme.missing_value, None)
+
+    def test_print_attributes(self):
+        """Test Theme print_attributes()"""
+        
+        with redirect_stdout(self.fh):
+            self.theme.print_attributes()
+        
+        got = self.fh.getvalue()
+
+        exp = (
+"""title_format : {}
+subtitle_format : {}
+scope_format : {}
+units_format : {}
+column_heading_format : {}
+index_1_format : {}
+index_2_format : {}
+index_3_format : {}
+data_format : {}
+source_format : {}
+legend_format : {}
+annotations_format : {}
+notes_format : {}
+footer_order : []
+missing_value : None
+"""
+                )
+
+        self.assertEqual(got, exp)
+
+class TestConfigInitialisation(unittest.TestCase):
+    """
+    Test initialisation of the Theme class using a config dictionary.
+    """
+
+    def test_dict_init(self):
+        config = {
+            "global":
+                {
+                 "font_size": 9,
+                "font_name": "Arial"
+                }, 
+
+            "title":
+                {
+                 "bold": True,
+                "font_size": 11
+                },
+     
+            "subtitle":
+                {"font_size": 10},
+            
+            "scope": None,
+            
+            "units":
+                {
+                "align": "right",
+                "italic": True
+                },
+            
+            "column_heading":
+                {
+                "bold": True,
+                "bottom": 1
+                },
+            
+            "index_1":
+                {"bold": True},
+            
+            "index_2": None,
+            
+            "index_3":
+                {"italic": True},
+            
+            "data":
+                {"num_format": '0.000'},
+            
+            "source":
+                {"font_size": 7},
+            
+            "legend":
+                {"font_size": 7},
+            
+            "annotations":
+                {"font_size": 7},
+            
+            "notes":
+                {"font_size": 7},
+            
+            "footer_order":
+                [
+                "source",
+                "legend",
+                "annotations",
+                "notes",
+                ],
+            
+            "missing_value": ':'
+                }
+        self.theme = Theme(config)
+        
+        exp = gptheme
+        
+        got = self.theme
+        
+        self.assertEqual(exp, got)
+        
+    def test_file_init(self):
+        """
+        Test initialisation of Theme using yaml config file.
+        """
+        config_file = resource_filename(
+                "gptables",
+                "theme_configs/gptheme.yaml"
+                )
+        self.theme = Theme(config_file)
+        
+        exp = gptheme
+        
+        got = self.theme
+        
+        self.assertEqual(exp, got)
+
+
+class TestFormatValidation(unittest.TestCase):
+    """
+    Test validation of format dictionaries.
+    """
+    
+    def setUp(self):
+        self.theme = Theme()
+
+    def test_invalid_attribute_config(self):
+        """
+        Test that invalid attribute names in config raises a ValueError.
+        """
+        config = {"potatoe": {"font_size": 9}}
+        with self.assertRaises(ValueError):
+            self.theme.apply_config(config)
+
+    def test_invalid_format_label_config(self):
+        """
+        Test that invalid format labels in config raises a ValueError.
+        """
+        config = {"notes": {"font_bigness": 5}}
+        with self.assertRaises(ValueError):
+            self.theme.apply_config(config)
+        
+    def test_invalid_format_label_single_attr(self):
+        """
+        Test that `validate_single_format` decorator catches invalid format
+        labels in individual format dictionaries.
+        """
+        format_dict = {"font_bigness": 5}
+        with self.assertRaises(ValueError):
+            self.theme.update_notes_format(format_dict)
+    
+    def test_valid_format_label(self):
+        """
+        Test that Theme attribute is correctly updated when valid format label
+        is used.
+        """
+        self.theme.update_annotations_format({"font_size": 9})
+        
+        exp = {"font_size": 9}
+        got = self.theme.annotations_format
+        
+        self.assertEqual(exp, got)
+    
+    def test_valid_format_label_config(self):
+        """
+        Test that valid format labels in config changes specified format attr
+        but not an unrelated attr.
+        """
+        config = {"notes": {"font_size": 5}}
+        self.theme.apply_config(config)
+        
+        exp = {"font_size": 5}
+        got = self.theme.notes_format
+        
+        self.assertEqual(exp, got)
+        
+        got2 = self.theme.title_format
+        
+        self.assertEqual({}, got2)
