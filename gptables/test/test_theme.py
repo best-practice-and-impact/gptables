@@ -6,7 +6,7 @@ from pkg_resources import resource_filename
 from gptables import Theme
 from gptables import gptheme
 
-class TestCleanInitialisation(unittest.TestCase):
+class TestCleanInitTheme(unittest.TestCase):
     """
     Test initialisation of the Theme class without config.
     """
@@ -55,7 +55,7 @@ missing_value : None
 
         self.assertEqual(got, exp)
 
-class TestConfigInitialisation(unittest.TestCase):
+class TestConfigInitTheme(unittest.TestCase):
     """
     Test initialisation of the Theme class using a config dictionary.
     """
@@ -149,7 +149,7 @@ class TestConfigInitialisation(unittest.TestCase):
         self.assertEqual(exp, got)
 
 
-class TestFormatValidation(unittest.TestCase):
+class TestFormatValidationTheme(unittest.TestCase):
     """
     Test validation of format dictionaries.
     """
