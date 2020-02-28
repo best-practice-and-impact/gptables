@@ -1,4 +1,5 @@
 import pandas as pd
+from xlsxwriter.format import Format
 
 class GPTable:
     """
@@ -66,6 +67,14 @@ class GPTable:
         self.notes = []
         
         self.additional_formatting = []
+        
+        # Valid format labels from XlsxWriter
+        self._valid_format_labels = [
+                attr.replace("set_", "")
+                for attr in Format().__dir__() 
+                if attr.startswith('set_')
+                and callable(getattr(Format(), attr))
+                ]
         
         # Call methods to set attributes        
         self.set_title(title)
@@ -295,8 +304,24 @@ class GPTable:
                 msg = (f"`{key}` is not a supported format type. Please use"
                        " `column`, `row` or `cell`")
                 raise ValueError(msg)
+        
+        self._validate_format_labels(new_formatting)
             
         self.additional_formatting = new_formatting
+    
+    def _validate_format_labels(self, format_list):
+        """
+        Validate that format labels are valid property of XlsxWriter Format.
+        """
+        labels = [label
+                  for item in format_list
+                  for key in item.keys()
+                  for label in item[key].keys()
+                  ]
+        for label in labels:
+            if label not in self._valid_format_labels:
+                msg = ("`{label}` is not a valid XlsxWriter Format property")
+                raise ValueError(msg)
     
     @staticmethod
     def _validate_text(obj, attr):
