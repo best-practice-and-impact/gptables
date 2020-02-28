@@ -85,7 +85,7 @@ class GPTable:
         values for these attributes.
         """
         if not isinstance(new_table, pd.DataFrame):
-            raise ValueError("`table` must be a pandas DataFrame")
+            raise TypeError("`table` must be a pandas DataFrame")
         self.table = new_table
         
         if new_index_columns is None:
@@ -103,18 +103,18 @@ class GPTable:
             # Check if levels and values are valid
             valid_levels = all(level in self._VALID_INDEX_LEVELS for level in new_index_columns.keys())
             if not valid_levels:
-                msg = ("Each dict key must be a valid index level:"
-                       f" {self._VALID_INDEX_LEVELS}")
+                msg = ("Each `index_columns` dict key must be a valid index"
+                       f" level: {self._VALID_INDEX_LEVELS}")
                 raise ValueError(msg)
             
             column_indexes = [col for col in new_index_columns.values()]
             if not all(isinstance(col, int) for col in column_indexes):
-                raise ValueError("Column indexes must be single integers")
+                raise TypeError("column_indexes must be integers")
                 
             valid_columns = all(self._valid_column_index(col) for col in column_indexes)
             if not valid_columns:
-                msg = ("Out of range: `index_columns` must be levels mapped to"
-                       " valid 0-indexed column numbers")
+                msg = ("Out of range - `index_columns` dictionary values must"
+                       "be valid, 0-indexed column numbers")
                 raise ValueError(msg)
             
             self.index_levels = len(new_index_columns.keys())
@@ -144,17 +144,14 @@ class GPTable:
         """
         Set the `title` attribute.
         """
-        if not isinstance(new_title, str):
-            raise ValueError("`title` attribute must be a string")
-            
+        self._validate_text(new_title, "title")
         self.title = new_title
     
     def add_subtitle(self, new_subtitle):
         """
         Add a single subtitle to the existing list of `subtitles`.
         """
-        if not isinstance(new_subtitle, str):
-            raise ValueError("`subtitles` must be strings")
+        self._validate_text(new_subtitle, "subtitles")
         self.subtitles.append(new_subtitle)
     
     def set_subtitles(self, new_subtitles, overwrite=True):
@@ -164,7 +161,12 @@ class GPTable:
         is appended to existing list of subtitles.
         """
         if not isinstance(new_subtitles, list):
-            raise ValueError("`subtitles` must be provided as a list of strings")
+            msg =("`subtitles` must be provided as a list containing strings"
+                  " and/or lists of strings and format dictionaries"
+                  " (rich text)")
+            raise TypeError(msg)
+        for text in new_subtitles:
+            self._validate_text(text, "subtitles")
             
         if overwrite:
             self.subtitles = new_subtitles
@@ -175,8 +177,7 @@ class GPTable:
         """
         Set the `scope` attribute.
         """
-        if not isinstance(new_scope, str):
-            raise ValueError("`scope` attribute must be a string")
+        self._validate_text(new_scope, "scope")
         self.scope = new_scope        
 
     def set_units(self, new_units):
@@ -184,10 +185,16 @@ class GPTable:
         Set the `units` attribute to the supplied str or dict. Units as a dict
         should be in the format {units:[column_indexes]}. Columns are
         0-indexed, excluding `index_columns`.
-        """
-        if not isinstance(new_units, (str, dict)):
-            msg = ("`units` attribute must be a string or dict of str:list of ints")
-            raise ValueError(msg)
+        """            
+        if isinstance(new_units, str):
+            self._validate_text(new_units, "units")
+        elif isinstance(new_units, dict):
+            for text in new_units.keys():
+                self._validate_text(text, "units")
+        else:
+            msg = ("`units` attribute must be a string or dictionary of"
+                   "{str: list of ints}")
+            raise TypeError(msg)
             
         self.units = new_units
 
@@ -195,8 +202,7 @@ class GPTable:
         """
         Set the source attribute to the specified str.
         """
-        if not isinstance(new_source, str):
-            raise ValueError("`source` attribute must be a string")
+        self._validate_text(new_source, "source")
             
         self.source = new_source
     
@@ -204,8 +210,7 @@ class GPTable:
         """
         Add a single legend entry to the existing `legend` list.
         """
-        if not isinstance(new_legend, str):
-            raise ValueError("`legend` entried must be strings")
+        self._validate_text(new_legend, "legend")
         self.subtitles.append(new_legend)
     
     def set_legend(self, new_legend, overwrite=True):
@@ -215,8 +220,11 @@ class GPTable:
         are appended to the `legend` list.
         """
         if not isinstance(new_legend, list):
-            raise ValueError("legend must be provided as a list of strings")
-            
+            msg = ("`legend` must be provided as a list of text elements")
+            raise TypeError(msg)
+        for text in new_legend:
+            self._validate_text(text, "legend")
+        
         if overwrite:
             self.legend = new_legend
         else:
@@ -224,10 +232,12 @@ class GPTable:
             
     def add_annotation(self, new_annotation):
         """
-        Add a single note to the existing `annotations` dict.
+        Add one or more annotations to the existing `annotations` dictionary.
         """
         if not isinstance(new_annotation, dict):
-            raise ValueError("`notes` entries must be dictionaries")
+            raise TypeError("`annotations` entries must be dictionaries")
+        for text in new_annotation.values():
+            self._validate_text(text, "annotations")
         self.annotations.update(new_annotation)
     
     def set_annotations(self, new_annotations, overwrite=True):
@@ -237,8 +247,11 @@ class GPTable:
         appended to the `annotations` dict.
         """
         if not isinstance(new_annotations, dict):
-            msg = ("notes must be provided as a dict of {reference: note}")
-            raise ValueError(msg)
+            msg = ("annotations must be provided as a dictionary of"
+                   " {reference: note}")
+            raise TypeError(msg)
+        for text in new_annotations.values():
+            self._validate_text(text, "annotations")
             
         if overwrite:
             self.annotations = new_annotations
@@ -249,8 +262,7 @@ class GPTable:
         """
         Add a single note to the existing `notes` list.
         """
-        if not isinstance(new_note, str):
-            raise ValueError("`notes` entries must be strings")
+        self._validate_text(new_note, "notes")
         self.notes.append(new_note)
     
     def set_notes(self, new_notes, overwrite=True):
@@ -260,8 +272,10 @@ class GPTable:
         appended to the `notes` list.
         """
         if not isinstance(new_notes, list):
-            msg = ("`notes` must be provided as a list of strings")
-            raise ValueError(msg)
+            msg = ("`notes` must be a list of text elements")
+            raise TypeError(msg)
+        for text in new_notes:
+            self._validate_text(text, "notes")
             
         if overwrite:
             self.notes = new_notes
@@ -274,7 +288,7 @@ class GPTable:
         """
         if not isinstance(new_formatting, list):
             msg = ("`additional_formatting` must be a list of dictionaries")
-            raise ValueError(msg)
+            raise TypeError(msg)
         keys = [key for item in new_formatting for key in item.keys()]
         for key in keys:
             if key not in ["column", "row", "cell"]:
@@ -283,3 +297,29 @@ class GPTable:
                 raise ValueError(msg)
             
         self.additional_formatting = new_formatting
+    
+    @staticmethod
+    def _validate_text(obj, attr):
+        """
+        Validate that an object contains valid text elements. These are either
+        strings or list of strings and dictionaries.
+        """
+        if isinstance(obj, str) or obj is None:
+            return None
+        
+        msg = (f"{attr} text should be provided as strings or lists of"
+                   f" strings and dictionaries (rich-text). {type(obj)} are"
+                   " not valid text elements.")
+        if isinstance(obj, list):
+            for element in obj:
+                if not isinstance(element, (str, dict)):
+                    msg = (f"{attr} text should be provided as strings or"
+                           " lists of strings and dictionaries (rich-text)."
+                           f" {type(element)} are not valid rich text"
+                           " elements.")
+                    raise TypeError(msg)
+        else:
+            msg = (f"{attr} text should be provided as strings or lists of"
+                   f" strings and dictionaries (rich-text). {type(obj)} are"
+                   " not valid text elements.")
+            raise TypeError(msg)
