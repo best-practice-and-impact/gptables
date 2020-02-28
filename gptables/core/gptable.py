@@ -195,14 +195,14 @@ class GPTable:
         should be in the format {units:[column_indexes]}. Columns are
         0-indexed, excluding `index_columns`.
         """            
-        if isinstance(new_units, str):
+        if isinstance(new_units, (str, list)) or new_units is None:
             self._validate_text(new_units, "units")
-        elif isinstance(new_units, dict):
+        elif isinstance(new_units, dict) and len(new_units) > 0:
             for text in new_units.keys():
                 self._validate_text(text, "units")
         else:
             msg = ("`units` attribute must be a string or dictionary of"
-                   "{str: list of ints}")
+                   " {text: list of 0-indexed columns}")
             raise TypeError(msg)
             
         self.units = new_units
@@ -259,6 +259,10 @@ class GPTable:
             msg = ("annotations must be provided as a dictionary of"
                    " {reference: note}")
             raise TypeError(msg)
+        
+        if not all(isinstance(key, str) for key in new_annotations.keys()):
+            raise TypeError("`annotations` keys must be strings")
+        
         for text in new_annotations.values():
             self._validate_text(text, "annotations")
             
