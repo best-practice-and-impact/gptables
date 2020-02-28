@@ -1,9 +1,6 @@
 import unittest
 import pandas as pd
 from pandas.testing import assert_frame_equal
-from io import StringIO
-from contextlib import redirect_stdout
-from pkg_resources import resource_filename
 
 from gptables import GPTable
 
@@ -56,7 +53,19 @@ class TestAttrValidationGPTable(unittest.TestCase):
                 "source": "",
                 "index_columns": {}
                 }
-    
+
+        self.text_attrs = [
+                "title",
+                "scope",
+                "units",
+                "source"
+                ]
+        
+        self.list_text_attrs = [
+                "subtitles",
+                "legend",
+                "notes"
+                ]
     
     def test_invalid_index_level(self):
         """
@@ -123,45 +132,207 @@ class TestAttrValidationGPTable(unittest.TestCase):
         with self.assertRaises(TypeError):
             GPTable(**kwargs)
     
-    def test_invalid_title_type(self):
+    def test_invalid_text_in_str_attrs(self):
         """
-        Test that setting an invalid GPTable title type raises an error.
+        Test that setting an invalid GPTable text types raises a TypeError for
+        each attribute that holds a string.
         """
+        test_dict = dict()
+        test_set = set()
+        test_int = 1
+        test_float = 3.14
+        
         kwargs = self.default_kwargs.copy()
-        kwargs.update({"title": {}})
-        with self.assertRaises(TypeError):
-            GPTable(**kwargs)
+        for attr in self.text_attrs:
+                kwargs = self.default_kwargs.copy()
+                for test in [test_dict, test_set, test_int, test_float]:
+                    with self.subTest(
+                            attr = attr,
+                            test = test
+                            ):
+                        kwargs.update({
+                                attr: test
+                                })
+                        with self.assertRaises(TypeError):
+                            GPTable(**kwargs)
     
-    def test_valid_title_type(self):
+    def test_valid_text_in_str_attrs(self):
         """
-        Test that setting valid GPTable titles works as expected. Test strings
-        and list containing strings and format dicts (rich text). Also allow
-        None.
+        Test that setting valid GPTable text elements works as expected. Test
+        strings and list containing strings and format dicts (rich text).
+        Also test that None is allowed.
         """
+        test_string = "This is a string"
+        test_rich_text = ["This is ", {"bold": True}, "rich", "text"]
+        test_none = None
+        
+        for attr in self.text_attrs:
+            kwargs = self.default_kwargs.copy()
+            for test in [test_string, test_rich_text, test_none]:
+                with self.subTest(
+                        attr = attr,
+                        test = test
+                        ):
+                    kwargs.update({
+                            attr: test
+                            })
+                    gptable = GPTable(**kwargs)
+                    self.assertEqual(
+                            getattr(gptable, attr),
+                            test
+                            )
+    
+    def test_invalid_text_in_list_attrs(self):
+        """
+        Test that setting list of invalid text elements to GPTable list
+        parameters raises a TypeError.
+        """
+        test_dict = dict()
+        test_set = set()
+        test_int = 1
+        test_float = 3.14
+        
         kwargs = self.default_kwargs.copy()
-        kwargs.update({
-                "title": "This is a str title"
-                })
-        gptable = GPTable(**kwargs)
-        self.assertEqual(
-                gptable.title,
-                "This is a str title"
-                )
+        for attr in self.list_text_attrs:
+                kwargs = self.default_kwargs.copy()
+                for test in [test_dict, test_set, test_int, test_float]:
+                    test = [test, test]
+                    with self.subTest(
+                            attr = attr,
+                            test = test
+                            ):
+                        kwargs.update({
+                                attr: test
+                                })
+                        with self.assertRaises(TypeError):
+                            GPTable(**kwargs)
+
+    def test_valid_text_in_list_attrs(self):
+        """
+        Test that setting list of valid text elements to GPTable list
+        parameters works as expected.
+        """
+        test_string = "This is a string"
+        test_rich_text = ["This is ", {"bold": True}, "rich", "text"]
+        test_none = None
         
-        kwargs.update({
-                "title": ["This is a ", {"bold": True}, "rich", "text title"]
-                })
-        gptable = GPTable(**kwargs)
-        self.assertEqual(
-                gptable.title,
-                ["This is a ", {"bold": True}, "rich", "text title"]
-                )
+        for attr in self.list_text_attrs:
+                kwargs = self.default_kwargs.copy()
+                for test in [test_string, test_rich_text, test_none]:
+                    test = [test, test]
+                    with self.subTest(
+                            attr = attr,
+                            test = test
+                            ):
+                        kwargs.update({
+                            attr: test
+                            })
+                        gptable = GPTable(**kwargs)
+                        self.assertEqual(
+                                getattr(gptable, attr),
+                                test
+                                )
+
+    def test_invalid_annotations_keys(self):
+        """
+        Test that setting annotations keys that are not strings raise a
+        TypeError.
+        """
+        test_dict = dict()
+        test_set = set()
+        test_int = 1
+        test_float = 3.14
+        test_rich_text = ["This is ", {"bold": True}, "rich", "text"]
+        test_none = None
         
-        kwargs.update({
-                "title": None
+        kwargs = self.default_kwargs.copy()
+        attr = "annotations"
+        for test in [test_dict,
+                     test_set,
+                     test_int,
+                     test_float,
+                     test_rich_text,
+                     test_none
+                     ]:
+            with self.subTest(
+                    test = test
+                    ):
+                with self.assertRaises(TypeError):
+                    kwargs.update({
+                        attr: {test: "valid value"}
+                        })
+                    GPTable(**kwargs)
+    
+    def test_valid_annotations_keys(self):
+        """
+        Test that setting annotations keys that strings works as expected.
+        """
+        test_string = "This is a string"
+        
+        kwargs = self.default_kwargs.copy()
+        attr = "annotations"
+        test = test_string
+        with self.subTest(
+                attr = attr,
+                test = test
+                ):
+            kwargs.update({
+                attr: {"valid_key": test}
                 })
-        gptable = GPTable(**kwargs)
-        self.assertEqual(
-                gptable.title,
-                None
-                )
+            gptable = GPTable(**kwargs)
+            self.assertEqual(
+                    getattr(gptable, attr),
+                    {"valid_key": test}
+                    )
+    
+    def test_invalid_annotations_values(self):
+        """
+        Test that setting annotations values that are not valid text elements
+        raises a TypeError.
+        """
+        test_dict = dict()
+        test_set = set()
+        test_int = 1
+        test_float = 3.14
+        
+        kwargs = self.default_kwargs.copy()
+        attr = "annotations"
+        for test in [test_dict,
+                     test_set,
+                     test_int,
+                     test_float
+                     ]:
+            with self.subTest(
+                    attr = attr,
+                    test = test
+                    ):
+                kwargs.update({
+                        attr: {"valid_key": test}
+                        })
+                with self.assertRaises(TypeError):
+                    GPTable(**kwargs)
+    
+    def test_valid_annotations_values(self):
+        """
+        Test that setting annotations values that valid text elements works as
+        expected.
+        """
+        test_string = "This is a string"
+        test_rich_text = ["This is ", {"bold": True}, "rich", "text"]
+        test_none = None
+        
+        kwargs = self.default_kwargs.copy()
+        attr = "annotations"
+        for test in [test_string, test_rich_text, test_none]:
+            with self.subTest(
+                    attr = attr,
+                    test = test
+                    ):
+                kwargs.update({
+                    "annotations": {"valid_key": test}
+                    })
+                gptable = GPTable(**kwargs)
+                self.assertEqual(
+                        getattr(gptable, attr),
+                        {"valid_key": test}
+                        )
