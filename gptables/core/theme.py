@@ -306,7 +306,7 @@ class Theme:
         if not all(element in valid_elements for element in order_list):
             msg = (f"`footer_order` elements must be in {valid_elements}")
             raise ValueError(msg)
-
+        print(order_list)
         self.footer_order = order_list
 
     def update_missing_value(self, missing_val_text):

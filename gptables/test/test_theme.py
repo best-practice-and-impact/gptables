@@ -231,11 +231,54 @@ class TestOtherValidationTheme(unittest.TestCase):
                 False,
                 None
                 ]
+        attr = "footer_order"
         for test in tests:
             with self.subTest(
-                    attr = "footer_order",
+                    attr = attr,
                     test = test
                     ):
                 with self.assertRaises(TypeError):
                     self.theme.update_footer_order(test)
-        
+                    
+    def test_invalid_footer_order_values(self):
+        """
+        Test that list footer_order entries containing invalid elements raises
+        a ValueError.
+        """
+        tests = [
+                ["potatoe"],
+                [1],
+                [3.14],
+                [dict()],
+                [[]]
+                ]
+        attr = "footer_order"
+        for test in tests:
+            with self.subTest(
+                    attr = attr,
+                    test = test
+                    ):
+                with self.assertRaises(ValueError):
+                    self.theme.update_footer_order(test)
+    
+    def test_valid_footer_order_values(self):
+        """
+        Test that valid list footer_order entries are used to set
+        the corresponding attribute.
+        """
+        tests = [
+                [],
+                ["notes"],
+                ["legend", "notes", "annotations", "source"]
+                ]
+        attr = "footer_order"
+        for test in tests:
+            with self.subTest(
+                    attr = attr,
+                    test = test
+                    ):
+                self.theme.update_footer_order(test)
+                self.assertEqual(
+                        getattr(self.theme, attr),
+                                test
+                                )

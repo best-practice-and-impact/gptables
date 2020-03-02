@@ -354,7 +354,11 @@ class TestAttrValidationGPTable(unittest.TestCase):
                     test = test
                     ):
                 kwargs.update({
-                    "additional_formatting": [{test: {"bold": True}}]
+                    "additional_formatting": [
+                            {test:
+                                {"format": {"bold": True}}
+                                }
+                                ]
                     })
                 with self.assertRaises(ValueError):
                     GPTable(**kwargs)
@@ -374,12 +378,13 @@ class TestAttrValidationGPTable(unittest.TestCase):
                     test = test
                     ):
                 kwargs.update({
-                    "additional_formatting": [{test: {"bold": True}}]
+                    "additional_formatting": [
+                            {test: {"format": {"bold": True}}}]
                     })
                 gptable = GPTable(**kwargs)
                 self.assertEqual(
                         getattr(gptable, attr),
-                        [{test: {"bold": True}}]
+                        [{test: {"format": {"bold": True}}}]
                         )
     
     def test_invalid_addtional_format_labels(self):
@@ -400,7 +405,14 @@ class TestAttrValidationGPTable(unittest.TestCase):
                     ):
                 kwargs.update({
                         # Valid key, invalid format parameters
-                    "additional_formatting": [{"cell": {test: True}}]
+                    "additional_formatting": 
+                        [
+                            {"cell":
+                                {"format": {test: True},
+                                 "cells": (0, 0)
+                                 }
+                            }
+                        ]
                     })
                 with self.assertRaises(ValueError):
                     GPTable(**kwargs)
@@ -424,12 +436,22 @@ class TestAttrValidationGPTable(unittest.TestCase):
                     test = test
                     ):
                 kwargs.update({
-                    "additional_formatting": [{"cell": test}]
+                    "additional_formatting": [
+                            {"cell":
+                                {"format": test,
+                                 "cells": (0, 0)
+                                 }
+                            }
+                            ]
                     })
                 gptable = GPTable(**kwargs)
                 self.assertEqual(
                         getattr(gptable, attr),
-                        [{"cell": test}]
+                        [{"cell":
+                                {"format": test,
+                                 "cells": (0, 0)
+                                 }
+                            }]
                         )
 
 class TestOtherAttrSetting(unittest.TestCase):
