@@ -324,7 +324,7 @@ class GPTable:
         labels = [label
                   for item in format_list
                   for key in item.keys()
-                  for label in item[key].keys()
+                  for label in item[key]["format"]
                   ]
         for label in labels:
             if label not in self._valid_format_labels:
