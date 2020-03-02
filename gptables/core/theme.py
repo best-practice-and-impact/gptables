@@ -1,5 +1,5 @@
 from xlsxwriter.format import Format
-from gptables import GPTable
+from gptables.core.gptable import GPTable
 import yaml
 
 def validate_single_format(f):
