@@ -138,7 +138,7 @@ class TestConfigInitTheme(unittest.TestCase):
         """
         config_file = resource_filename(
                 "gptables",
-                "theme_configs/gptheme.yaml"
+                "themes/gptheme.yaml"
                 )
         self.theme = Theme(config_file)
         
@@ -210,3 +210,32 @@ class TestFormatValidationTheme(unittest.TestCase):
         got2 = self.theme.title_format
         
         self.assertEqual({}, got2)
+
+
+class TestOtherValidationTheme(unittest.TestCase):
+    """
+    Test validation of non-format Theme attributes.
+    """
+    def setUp(self):
+        self.theme = Theme()
+
+    def test_invalid_footer_order_type(self):
+        """
+        Test that non-list footer_order entries raise a TypeError.
+        """
+        tests = [
+                "notes",
+                {"annotations": 2},
+                1,
+                3.14,
+                False,
+                None
+                ]
+        for test in tests:
+            with self.subTest(
+                    attr = "footer_order",
+                    test = test
+                    ):
+                with self.assertRaises(TypeError):
+                    self.theme.update_footer_order(test)
+        
