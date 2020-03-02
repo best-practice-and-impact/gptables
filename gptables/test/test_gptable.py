@@ -433,4 +433,86 @@ class TestAttrValidationGPTable(unittest.TestCase):
                         )
 
 class TestOtherAttrSetting(unittest.TestCase):
-    pass
+    """
+    Test that other GPTable attributes are indirectly set correctly.
+    """
+    def setUp(self):
+        self.default_kwargs = {
+                "table": pd.DataFrame(),
+                "title": "",
+                "scope": "",
+                "units": "",
+                "source": "",
+                "index_columns": {}
+                }
+    
+    def test_index_levels_set(self):
+        """
+        Test that number of index levels are set, when one, two or three
+        indexes are used.
+        """
+        valid_index_columns = [
+                {},
+                {1: "one"},
+                {1: "one", 2: "two"},
+                {1: "one", 2: "two", 3: "three"}
+                ]
+        kwargs = self.default_kwargs.copy()
+        kwargs.update({
+                    "table": pd.DataFrame(
+                            columns = [
+                                    "one",
+                                    "two",
+                                    "three",
+                                    "four"
+                                    ])
+                    })
+        attr = "index_levels"
+        for test in valid_index_columns:
+            with self.subTest(
+                    attr = attr,
+                    index_cols = test
+                    ):
+                kwargs.update({"index_columns": test})
+                gptable = GPTable(**kwargs)
+                self.assertEqual(
+                        getattr(gptable, attr),
+                        len(test)
+                        )
+        
+    def test_column_headings_set(self):
+        """
+        Test that non-index columns are set as column headings.
+        """
+        valid_index_columns = [
+                {},
+                {1: "one"},
+                {1: "one", 2: "two"},
+                {1: "one", 2: "two", 3: "three"}
+                ]
+        kwargs = self.default_kwargs.copy()
+        kwargs.update({
+                    "table": pd.DataFrame(
+                            columns = [
+                                    "one",
+                                    "two",
+                                    "three",
+                                    "four"
+                                    ])
+                    })
+        attr = "_column_headings"
+        for test in valid_index_columns:
+            with self.subTest(
+                    attr = attr,
+                    index_cols = test
+                    ):
+                kwargs.update({"index_columns": test})
+                gptable = GPTable(**kwargs)
+                
+                # Expect all column numbers not set as index numbers
+                exp = set(range(4)) - set(range(len(test)))
+                
+                self.assertEqual(
+                        getattr(gptable, attr),
+                        exp
+                        )
