@@ -1,0 +1,217 @@
+reoffence_group,age,number_wider_reoffences,cost_basket,total_cost,major_cost_category
+Criminal damage and arson,Adults,48064,defensive_expenditure,2889289,Costs in anticipation of crime
+Criminal damage and arson,Adults,48064,harm,13796622,Costs as a consequence of crime
+Criminal damage and arson,Adults,48064,health_services,4653359,Costs as a consequence of crime
+Criminal damage and arson,Adults,48064,insurance_admin,2721014,Costs in anticipation of crime
+Criminal damage and arson,Adults,48064,lost_output,4349308,Costs as a consequence of crime
+Criminal damage and arson,Adults,48064,other_cjs_costs,21430136,Costs in response to crime
+Criminal damage and arson,Adults,48064,police_costs,8536417,Costs in response to crime
+Criminal damage and arson,Adults,48064,property_loss,18953157,Costs as a consequence of crime
+Criminal damage and arson,Adults,48064,victim_services,10955,Costs as a consequence of crime
+Drug offences,Adults,33267,defensive_expenditure,0,Costs in anticipation of crime
+Drug offences,Adults,33267,harm,0,Costs as a consequence of crime
+Drug offences,Adults,33267,health_services,4873059,Costs as a consequence of crime
+Drug offences,Adults,33267,insurance_admin,0,Costs in anticipation of crime
+Drug offences,Adults,33267,lost_output,4948889,Costs as a consequence of crime
+Drug offences,Adults,33267,other_cjs_costs,17696095,Costs in response to crime
+Drug offences,Adults,33267,police_costs,7497775,Costs in response to crime
+Drug offences,Adults,33267,property_loss,0,Costs as a consequence of crime
+Drug offences,Adults,33267,victim_services,0,Costs as a consequence of crime
+Fraud offences,Adults,861657,defensive_expenditure,155037969,Costs in anticipation of crime
+Fraud offences,Adults,861657,harm,178733230,Costs as a consequence of crime
+Fraud offences,Adults,861657,health_services,62508712,Costs as a consequence of crime
+Fraud offences,Adults,861657,insurance_admin,43964525,Costs in anticipation of crime
+Fraud offences,Adults,861657,lost_output,53715807,Costs as a consequence of crime
+Fraud offences,Adults,861657,other_cjs_costs,149479385,Costs in response to crime
+Fraud offences,Adults,861657,police_costs,52757430,Costs in response to crime
+Fraud offences,Adults,861657,property_loss,439836926,Costs as a consequence of crime
+Fraud offences,Adults,861657,victim_services,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Adults,22754,defensive_expenditure,15351216,Costs in anticipation of crime
+Miscellaneous crimes against society,Adults,22754,harm,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Adults,22754,health_services,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Adults,22754,insurance_admin,0,Costs in anticipation of crime
+Miscellaneous crimes against society,Adults,22754,lost_output,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Adults,22754,other_cjs_costs,30102825,Costs in response to crime
+Miscellaneous crimes against society,Adults,22754,police_costs,30392965,Costs in response to crime
+Miscellaneous crimes against society,Adults,22754,property_loss,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Adults,22754,victim_services,0,Costs as a consequence of crime
+Possession of weapons offences,Adults,8952,defensive_expenditure,0,Costs in anticipation of crime
+Possession of weapons offences,Adults,8952,harm,0,Costs as a consequence of crime
+Possession of weapons offences,Adults,8952,health_services,0,Costs as a consequence of crime
+Possession of weapons offences,Adults,8952,insurance_admin,0,Costs in anticipation of crime
+Possession of weapons offences,Adults,8952,lost_output,0,Costs as a consequence of crime
+Possession of weapons offences,Adults,8952,other_cjs_costs,3026481,Costs in response to crime
+Possession of weapons offences,Adults,8952,police_costs,2345761,Costs in response to crime
+Possession of weapons offences,Adults,8952,property_loss,0,Costs as a consequence of crime
+Possession of weapons offences,Adults,8952,victim_services,0,Costs as a consequence of crime
+Public order offences,Adults,106973,defensive_expenditure,3831191,Costs in anticipation of crime
+Public order offences,Adults,106973,harm,35365958,Costs as a consequence of crime
+Public order offences,Adults,106973,health_services,12276089,Costs as a consequence of crime
+Public order offences,Adults,106973,insurance_admin,2946839,Costs in anticipation of crime
+Public order offences,Adults,106973,lost_output,10535756,Costs as a consequence of crime
+Public order offences,Adults,106973,other_cjs_costs,36471640,Costs in response to crime
+Public order offences,Adults,106973,police_costs,13776048,Costs in response to crime
+Public order offences,Adults,106973,property_loss,0,Costs as a consequence of crime
+Public order offences,Adults,106973,victim_services,0,Costs as a consequence of crime
+Robbery,Adults,81311,defensive_expenditure,20366584,Costs in anticipation of crime
+Robbery,Adults,81311,harm,305692921,Costs as a consequence of crime
+Robbery,Adults,81311,health_services,64071071,Costs as a consequence of crime
+Robbery,Adults,81311,insurance_admin,12097360,Costs in anticipation of crime
+Robbery,Adults,81311,lost_output,81028944,Costs as a consequence of crime
+Robbery,Adults,81311,other_cjs_costs,311155008,Costs in response to crime
+Robbery,Adults,81311,police_costs,85631215,Costs in response to crime
+Robbery,Adults,81311,property_loss,87213039,Costs as a consequence of crime
+Robbery,Adults,81311,victim_services,870602,Costs as a consequence of crime
+Sexual offences,Adults,64213,defensive_expenditure,15248394,Costs in anticipation of crime
+Sexual offences,Adults,64213,harm,379068148,Costs as a consequence of crime
+Sexual offences,Adults,64213,health_services,30682849,Costs as a consequence of crime
+Sexual offences,Adults,64213,insurance_admin,669551,Costs in anticipation of crime
+Sexual offences,Adults,64213,lost_output,105331806,Costs as a consequence of crime
+Sexual offences,Adults,64213,other_cjs_costs,38833966,Costs in response to crime
+Sexual offences,Adults,64213,police_costs,74917685,Costs in response to crime
+Sexual offences,Adults,64213,property_loss,0,Costs as a consequence of crime
+Sexual offences,Adults,64213,victim_services,859983,Costs as a consequence of crime
+Summary motoring,Adults,45904,defensive_expenditure,0,Costs in anticipation of crime
+Summary motoring,Adults,45904,insurance_admin,0,Costs in anticipation of crime
+Summary motoring,Adults,45904,harm,0,Costs as a consequence of crime
+Summary motoring,Adults,45904,property_loss,0,Costs as a consequence of crime
+Summary motoring,Adults,45904,victim_services,0,Costs as a consequence of crime
+Summary motoring,Adults,45904,lost_output,0,Costs as a consequence of crime
+Summary motoring,Adults,45904,health_services,0,Costs as a consequence of crime
+Summary motoring,Adults,45904,other_cjs_costs,6893131,Costs in response to crime
+Summary motoring,Adults,45905,police_costs,0,Costs in response to crime
+Summary non-motoring,Adults,127017,defensive_expenditure,0,Costs in anticipation of crime
+Summary non-motoring,Adults,127017,insurance_admin,0,Costs in anticipation of crime
+Summary non-motoring,Adults,127017,harm,0,Costs as a consequence of crime
+Summary non-motoring,Adults,127017,property_loss,0,Costs as a consequence of crime
+Summary non-motoring,Adults,127017,victim_services,0,Costs as a consequence of crime
+Summary non-motoring,Adults,127017,lost_output,0,Costs as a consequence of crime
+Summary non-motoring,Adults,127017,health_services,0,Costs as a consequence of crime
+Summary non-motoring,Adults,127017,other_cjs_costs,84077775,Costs in response to crime
+Summary non-motoring,Adults,127018,police_costs,0,Costs in response to crime
+Theft offences,Adults,2384035,defensive_expenditure,1735659916,Costs in anticipation of crime
+Theft offences,Adults,2384035,harm,1144443127,Costs as a consequence of crime
+Theft offences,Adults,2384035,health_services,388744813,Costs as a consequence of crime
+Theft offences,Adults,2384035,insurance_admin,462585167,Costs in anticipation of crime
+Theft offences,Adults,2384035,lost_output,448725827,Costs as a consequence of crime
+Theft offences,Adults,2384035,other_cjs_costs,1608476852,Costs in response to crime
+Theft offences,Adults,2384035,police_costs,638581774,Costs in response to crime
+Theft offences,Adults,2384035,property_loss,2882583231,Costs as a consequence of crime
+Theft offences,Adults,2384035,victim_services,49340,Costs as a consequence of crime
+Violence against the person,Adults,394286,defensive_expenditure,94046118,Costs in anticipation of crime
+Violence against the person,Adults,394286,harm,2388778926,Costs as a consequence of crime
+Violence against the person,Adults,394286,health_services,242912234,Costs as a consequence of crime
+Violence against the person,Adults,394286,insurance_admin,7493410,Costs in anticipation of crime
+Violence against the person,Adults,394286,lost_output,564553450,Costs as a consequence of crime
+Violence against the person,Adults,394286,other_cjs_costs,535286993,Costs in response to crime
+Violence against the person,Adults,394286,police_costs,333711494,Costs in response to crime
+Violence against the person,Adults,394286,property_loss,37961557,Costs as a consequence of crime
+Violence against the person,Adults,394286,victim_services,1280286,Costs as a consequence of crime
+Criminal damage and arson,Children and young people,12920,defensive_expenditure,776654,Costs in anticipation of crime
+Criminal damage and arson,Children and young people,12920,harm,3708596,Costs as a consequence of crime
+Criminal damage and arson,Children and young people,12920,health_services,1250845,Costs as a consequence of crime
+Criminal damage and arson,Children and young people,12920,insurance_admin,731421,Costs in anticipation of crime
+Criminal damage and arson,Children and young people,12920,lost_output,1169114,Costs as a consequence of crime
+Criminal damage and arson,Children and young people,12920,other_cjs_costs,5760521,Costs in response to crime
+Criminal damage and arson,Children and young people,12920,police_costs,2294629,Costs in response to crime
+Criminal damage and arson,Children and young people,12920,property_loss,5094697,Costs as a consequence of crime
+Criminal damage and arson,Children and young people,12920,victim_services,2945,Costs as a consequence of crime
+Drug offences,Children and young people,5091,defensive_expenditure,0,Costs in anticipation of crime
+Drug offences,Children and young people,5091,harm,0,Costs as a consequence of crime
+Drug offences,Children and young people,5091,health_services,745707,Costs as a consequence of crime
+Drug offences,Children and young people,5091,insurance_admin,0,Costs in anticipation of crime
+Drug offences,Children and young people,5091,lost_output,757311,Costs as a consequence of crime
+Drug offences,Children and young people,5091,other_cjs_costs,2707971,Costs in response to crime
+Drug offences,Children and young people,5091,police_costs,1147358,Costs in response to crime
+Drug offences,Children and young people,5091,property_loss,0,Costs as a consequence of crime
+Drug offences,Children and young people,5091,victim_services,0,Costs as a consequence of crime
+Fraud offences,Children and young people,54992,defensive_expenditure,9894646,Costs in anticipation of crime
+Fraud offences,Children and young people,54992,harm,11406897,Costs as a consequence of crime
+Fraud offences,Children and young people,54992,health_services,3989356,Costs as a consequence of crime
+Fraud offences,Children and young people,54992,insurance_admin,2805851,Costs in anticipation of crime
+Fraud offences,Children and young people,54992,lost_output,3428185,Costs as a consequence of crime
+Fraud offences,Children and young people,54992,other_cjs_costs,9539893,Costs in response to crime
+Fraud offences,Children and young people,54992,police_costs,3367021,Costs in response to crime
+Fraud offences,Children and young people,54992,property_loss,28070742,Costs as a consequence of crime
+Fraud offences,Children and young people,54992,victim_services,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Children and young people,1962,defensive_expenditure,1323483,Costs in anticipation of crime
+Miscellaneous crimes against society,Children and young people,1962,harm,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Children and young people,1962,health_services,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Children and young people,1962,insurance_admin,0,Costs in anticipation of crime
+Miscellaneous crimes against society,Children and young people,1962,lost_output,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Children and young people,1962,other_cjs_costs,2595273,Costs in response to crime
+Miscellaneous crimes against society,Children and young people,1962,police_costs,2620287,Costs in response to crime
+Miscellaneous crimes against society,Children and young people,1962,property_loss,0,Costs as a consequence of crime
+Miscellaneous crimes against society,Children and young people,1962,victim_services,0,Costs as a consequence of crime
+Possession of weapons offences,Children and young people,2460,defensive_expenditure,0,Costs in anticipation of crime
+Possession of weapons offences,Children and young people,2460,harm,0,Costs as a consequence of crime
+Possession of weapons offences,Children and young people,2460,health_services,0,Costs as a consequence of crime
+Possession of weapons offences,Children and young people,2460,insurance_admin,0,Costs in anticipation of crime
+Possession of weapons offences,Children and young people,2460,lost_output,0,Costs as a consequence of crime
+Possession of weapons offences,Children and young people,2460,other_cjs_costs,831493,Costs in response to crime
+Possession of weapons offences,Children and young people,2460,police_costs,644473,Costs in response to crime
+Possession of weapons offences,Children and young people,2460,property_loss,0,Costs as a consequence of crime
+Possession of weapons offences,Children and young people,2460,victim_services,0,Costs as a consequence of crime
+Public order offences,Children and young people,10917,defensive_expenditure,390984,Costs in anticipation of crime
+Public order offences,Children and young people,10917,harm,3609199,Costs as a consequence of crime
+Public order offences,Children and young people,10917,health_services,1252811,Costs as a consequence of crime
+Public order offences,Children and young people,10917,insurance_admin,300733,Costs in anticipation of crime
+Public order offences,Children and young people,10917,lost_output,1075204,Costs as a consequence of crime
+Public order offences,Children and young people,10917,other_cjs_costs,3722037,Costs in response to crime
+Public order offences,Children and young people,10917,police_costs,1405886,Costs in response to crime
+Public order offences,Children and young people,10917,property_loss,0,Costs as a consequence of crime
+Public order offences,Children and young people,10917,victim_services,0,Costs as a consequence of crime
+Robbery,Children and young people,40732,defensive_expenditure,10202557,Costs in anticipation of crime
+Robbery,Children and young people,40732,harm,153135614,Costs as a consequence of crime
+Robbery,Children and young people,40732,health_services,32096140,Costs as a consequence of crime
+Robbery,Children and young people,40732,insurance_admin,6060123,Costs in anticipation of crime
+Robbery,Children and young people,40732,lost_output,40591117,Costs as a consequence of crime
+Robbery,Children and young people,40732,other_cjs_costs,155871824,Costs in response to crime
+Robbery,Children and young people,40732,police_costs,42896605,Costs in response to crime
+Robbery,Children and young people,40732,property_loss,43689014,Costs as a consequence of crime
+Robbery,Children and young people,40732,victim_services,436125,Costs as a consequence of crime
+Sexual offences,Children and young people,7042,defensive_expenditure,1672277,Costs in anticipation of crime
+Sexual offences,Children and young people,7042,harm,41572042,Costs as a consequence of crime
+Sexual offences,Children and young people,7042,health_services,3364959,Costs as a consequence of crime
+Sexual offences,Children and young people,7042,insurance_admin,73429,Costs in anticipation of crime
+Sexual offences,Children and young people,7042,lost_output,11551639,Costs as a consequence of crime
+Sexual offences,Children and young people,7042,other_cjs_costs,4258884,Costs in response to crime
+Sexual offences,Children and young people,7042,police_costs,8216151,Costs in response to crime
+Sexual offences,Children and young people,7042,property_loss,0,Costs as a consequence of crime
+Sexual offences,Children and young people,7042,victim_services,94313,Costs as a consequence of crime
+Summary motoring,Children and young people,4913,defensive_expenditure,0,Costs in anticipation of crime
+Summary motoring,Children and young people,4913,insurance_admin,0,Costs in anticipation of crime
+Summary motoring,Children and young people,4913,harm,0,Costs as a consequence of crime
+Summary motoring,Children and young people,4913,property_loss,0,Costs as a consequence of crime
+Summary motoring,Children and young people,4913,victim_services,0,Costs as a consequence of crime
+Summary motoring,Children and young people,4913,lost_output,0,Costs as a consequence of crime
+Summary motoring,Children and young people,4913,health_services,0,Costs as a consequence of crime
+Summary motoring,Children and young people,4913,other_cjs_costs,737756,Costs in response to crime
+Summary motoring,Children and young people,4913,police_costs,0,Costs in response to crime
+Summary non-motoring,Children and young people,21907,defensive_expenditure,0,Costs in anticipation of crime
+Summary non-motoring,Children and young people,21907,insurance_admin,0,Costs in anticipation of crime
+Summary non-motoring,Children and young people,21907,harm,0,Costs as a consequence of crime
+Summary non-motoring,Children and young people,21907,property_loss,0,Costs as a consequence of crime
+Summary non-motoring,Children and young people,21907,victim_services,0,Costs as a consequence of crime
+Summary non-motoring,Children and young people,21907,lost_output,0,Costs as a consequence of crime
+Summary non-motoring,Children and young people,21907,health_services,0,Costs as a consequence of crime
+Summary non-motoring,Children and young people,21907,other_cjs_costs,14501144,Costs in response to crime
+Summary non-motoring,Children and young people,21907,police_costs,0,Costs in response to crime
+Theft offences,Children and young people,136192,defensive_expenditure,99152476,Costs in anticipation of crime
+Theft offences,Children and young people,136192,harm,65378228,Costs as a consequence of crime
+Theft offences,Children and young people,136192,health_services,22207698,Costs as a consequence of crime
+Theft offences,Children and young people,136192,insurance_admin,26425952,Costs in anticipation of crime
+Theft offences,Children and young people,136192,lost_output,25634214,Costs as a consequence of crime
+Theft offences,Children and young people,136192,other_cjs_costs,91886931,Costs in response to crime
+Theft offences,Children and young people,136192,police_costs,36480052,Costs in response to crime
+Theft offences,Children and young people,136192,property_loss,164672389,Costs as a consequence of crime
+Theft offences,Children and young people,136192,victim_services,2819,Costs as a consequence of crime
+Violence against the person,Children and young people,24208,defensive_expenditure,5774062,Costs in anticipation of crime
+Violence against the person,Children and young people,24208,harm,146661636,Costs as a consequence of crime
+Violence against the person,Children and young people,24208,health_services,14913856,Costs as a consequence of crime
+Violence against the person,Children and young people,24208,insurance_admin,460066,Costs in anticipation of crime
+Violence against the person,Children and young people,24208,lost_output,34661363,Costs as a consequence of crime
+Violence against the person,Children and young people,24208,other_cjs_costs,32864517,Costs in response to crime
+Violence against the person,Children and young people,24208,police_costs,20488574,Costs in response to crime
+Violence against the person,Children and young people,24208,property_loss,2330690,Costs as a consequence of crime
+Violence against the person,Children and young people,24208,victim_services,78605,Costs as a consequence of crime
