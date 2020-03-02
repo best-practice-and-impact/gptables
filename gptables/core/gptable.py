@@ -112,13 +112,17 @@ class GPTable:
             # Check if levels and values are valid
             valid_levels = all(level in self._VALID_INDEX_LEVELS for level in new_index_columns.keys())
             if not valid_levels:
-                msg = ("Each `index_columns` dict key must be a valid index"
-                       f" level: {self._VALID_INDEX_LEVELS}")
+                msg = ("`index_columns` dictionary keys must be valid index"
+                       f" levels: {self._VALID_INDEX_LEVELS}")
                 raise ValueError(msg)
             
+            if not all(isinstance(col, int) for col in new_index_columns.values()):
+                # Convert col name to numeric index
+                for key, value in new_index_columns.items():
+                    col_iloc = self.table.columns.get_loc(value)
+                    new_index_columns.update({key: col_iloc})
+                    
             column_indexes = [col for col in new_index_columns.values()]
-            if not all(isinstance(col, int) for col in column_indexes):
-                raise TypeError("column_indexes must be integers")
                 
             valid_columns = all(self._valid_column_index(col) for col in column_indexes)
             if not valid_columns:
@@ -324,7 +328,7 @@ class GPTable:
                   ]
         for label in labels:
             if label not in self._valid_format_labels:
-                msg = ("`{label}` is not a valid XlsxWriter Format property")
+                msg = (f"`{label}` is not a valid XlsxWriter Format property")
                 raise ValueError(msg)
     
     @staticmethod
