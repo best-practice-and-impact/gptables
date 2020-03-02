@@ -179,8 +179,14 @@ class TestFormatValidationTheme(unittest.TestCase):
         labels in individual format dictionaries.
         """
         format_dict = {"font_bigness": 5}
-        with self.assertRaises(ValueError):
-            self.theme.update_notes_format(format_dict)
+        
+        for format_attr in self.theme._format_attributes:
+            with self.subTest(
+                    attr = format_attr,
+                    test = format_dict
+                    ): 
+                with self.assertRaises(ValueError):
+                    getattr(self.theme, "update_" + format_attr)(format_dict)
     
     def test_valid_format_label(self):
         """
