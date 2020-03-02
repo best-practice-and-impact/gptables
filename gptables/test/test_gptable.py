@@ -336,3 +336,101 @@ class TestAttrValidationGPTable(unittest.TestCase):
                         getattr(gptable, attr),
                         {"valid_key": test}
                         )
+    
+    def test_invalid_addtional_format_keys(self):
+        """
+        Test that adding addional formatting with an invalid key raises an
+        error.
+        """
+        test_string = "potatoe"
+        test_int = 1
+        test_float = 3.5
+        
+        kwargs = self.default_kwargs.copy()
+        attr = "additional_formatting"
+        for test in [test_string, test_int, test_float]:
+            with self.subTest(
+                    attr = attr,
+                    test = test
+                    ):
+                kwargs.update({
+                    "additional_formatting": [{test: {"bold": True}}]
+                    })
+                with self.assertRaises(ValueError):
+                    GPTable(**kwargs)
+        
+    
+    def test_valid_addtional_format_keys(self):
+        """
+        Test that adding additional formatting with a valid key (column, row or
+        cell) works as expected.
+        """
+        valid_keys = ["cell", "row", "column"]
+        kwargs = self.default_kwargs.copy()
+        attr = "additional_formatting"
+        for test in valid_keys:
+            with self.subTest(
+                    attr = attr,
+                    test = test
+                    ):
+                kwargs.update({
+                    "additional_formatting": [{test: {"bold": True}}]
+                    })
+                gptable = GPTable(**kwargs)
+                self.assertEqual(
+                        getattr(gptable, attr),
+                        [{test: {"bold": True}}]
+                        )
+    
+    def test_invalid_addtional_format_labels(self):
+        """
+        Test that adding addional formatting with a format parameter that is
+        not supported by XlsxWriter raises an error.
+        """
+        test_string = "potatoe"
+        test_int = 1
+        test_float = 3.5
+        
+        kwargs = self.default_kwargs.copy()
+        attr = "additional_formatting"
+        for test in [test_string, test_int, test_float]:
+            with self.subTest(
+                    attr = attr,
+                    test = test
+                    ):
+                kwargs.update({
+                        # Valid key, invalid format parameters
+                    "additional_formatting": [{"cell": {test: True}}]
+                    })
+                with self.assertRaises(ValueError):
+                    GPTable(**kwargs)
+    
+    def test_valid_addtional_format_labels(self):
+        """
+        Test that adding addional formatting with a format parameter that is
+         supported by XlsxWriter works as expected.
+        """
+        valid_formatting = [
+                {"bold": True},
+                {"font_size": 17},
+                {"align": "center"},
+                {"font_color": "red"}
+                ]
+        kwargs = self.default_kwargs.copy()
+        attr = "additional_formatting"
+        for test in valid_formatting:
+            with self.subTest(
+                    attr = attr,
+                    test = test
+                    ):
+                kwargs.update({
+                    "additional_formatting": [{"cell": test}]
+                    })
+                gptable = GPTable(**kwargs)
+                self.assertEqual(
+                        getattr(gptable, attr),
+                        [{"cell": test}]
+                        )
+
+class TestOtherAttrSetting(unittest.TestCase):
+    pass
