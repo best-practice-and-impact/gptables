@@ -1,4 +1,5 @@
 from xlsxwriter.format import Format
+from gptables import GPTable
 import yaml
 
 def validate_single_format(f):
@@ -297,15 +298,24 @@ class Theme:
         """
         Update the `footer_order` attribute. Overrides existing order.
         """
+        if not isinstance(order_list, list):
+            msg = ("`footer_order` must be a list of footer element names")
+            raise TypeError(msg)
+
+        valid_elements = ["source", "legend", "notes", "annotations"]
+        if not all(element in valid_elements for element in order_list):
+            msg = (f"`footer_order` elements must be in {valid_elements}")
+            raise ValueError(msg)
+
         self.footer_order = order_list
 
-    def update_missing_value(self, string):
+    def update_missing_value(self, missing_val_text):
         """
         Update the `missing_value` attribute. Overrides existing string.
         """
-        if not isinstance(string, str):
-            raise ValueError("Missing value representation must be a string.")
-        self.missing_value = string
+        GPTable._validate_text(missing_val_text, "missing_value")
+
+        self.missing_value = missing_val_text
 
     def print_attributes(self):
         """
