@@ -8,6 +8,7 @@ from xlsxwriter.worksheet import Worksheet
 
 from .theme import Theme
 from .gptable import GPTable
+from gptables.utils.unpickle_themes import gptheme
 
 class GPWorksheet(Worksheet):
     """
@@ -613,6 +614,7 @@ class GPWorksheet(Worksheet):
                        data,
                        wb.add_format(format_dict)
                        )
+
     @staticmethod
     def _merge_dict(base_dict, update_dict):
         """
@@ -669,7 +671,8 @@ class GPWorkbook(Workbook):
         super(GPWorkbook, self).__init__(filename=filename, options=options)
         self.theme = None
         
-        # self.set_theme(Theme(gptheme.yaml))  # Set default theme
+        # Set default theme
+        self.set_theme(gptheme)
         
     def add_worksheet(self, name=None):
         """
@@ -706,5 +709,5 @@ class GPWorkbook(Workbook):
         None
         """
         if not isinstance(theme, Theme):
-            raise ValueError("`theme` must be a gptables.Theme object")
+            raise TypeError("`theme` must be a gptables.Theme object")
         self.theme = theme
