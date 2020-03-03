@@ -59,7 +59,6 @@ class GPWorksheet(Worksheet):
                 theme.subtitle_format,
                 pos
                 )
-        pos[0] += 1
 
         pos = self._write_table_elements(
                 gptable,
