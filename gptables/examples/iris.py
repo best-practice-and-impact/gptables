@@ -3,8 +3,6 @@ import pandas as pd
 import numpy as np
 import os
 
-from gptables import gptheme
-
 ######################################
 ###### READ DATA IN AND FORMAT #######
 ######################################
@@ -131,8 +129,7 @@ iris_table = gpt.GPTable(
 
 wb = gpt.produce_workbook(
         file= parent_dir + "/iris_gptable.xlsx",
-        sheets={"iris flower dimensions":iris_table},
-        theme=gptheme
+        sheets={"iris flower dimensions":iris_table}
         )
 
 wb.close()

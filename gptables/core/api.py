@@ -1,7 +1,11 @@
 from gptables import GPWorkbook
 
-def produce_workbook(file, sheets, theme, cover_sheet=None):
-
+def produce_workbook(
+        file,
+        sheets,
+        theme = None,
+#        cover_sheet = None
+        ):
     """
     Produces a GPWorkbook.
 
@@ -25,7 +29,9 @@ def produce_workbook(file, sheets, theme, cover_sheet=None):
     workbook : gptables.GPWorkbook
     """
     wb = GPWorkbook(file)
-    wb.set_theme(theme)
+    
+    if theme is not None:
+        wb.set_theme(theme)
     
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
