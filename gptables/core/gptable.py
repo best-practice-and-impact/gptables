@@ -80,18 +80,17 @@ class GPTable:
         self.set_title(title)
         self.set_subtitles(subtitles)
         self.set_scope(scope)
-        self.set_units(units)
-        self.set_table(table, index_columns)
+        self.set_table(table, index_columns, units)
         self.set_source(source)
         self.set_legend(legend)
         self.set_annotations(annotations)
         self.set_notes(notes)
         self.set_additional_formatting(additional_formatting)
         
-    def set_table(self, new_table, new_index_columns=None):
+    def set_table(self, new_table, new_index_columns = None, new_units = None):
         """
-        Set the `table` and `index_columns` attributes. Overwrites existing
-        values for these attributes.
+        Set the `table`, `index_columns` and 'units' attributes. Overwrites
+        existing values for these attributes.
         """
         if not isinstance(new_table, pd.DataFrame):
             raise TypeError("`table` must be a pandas DataFrame")
@@ -100,6 +99,9 @@ class GPTable:
         if new_index_columns is None:
             new_index_columns = self.index_columns
         self.set_index_columns(new_index_columns)
+        if new_units is None:
+            new_units = self.units
+        self.set_units(new_units)
         
     def set_index_columns(self, new_index_columns):
         """
@@ -195,18 +197,34 @@ class GPTable:
 
     def set_units(self, new_units):
         """
-        Set the `units` attribute to the supplied str or dict. Units as a dict
-        should be in the format {units:[column_indexes]}. Columns are
-        0-indexed, excluding `index_columns`.
+        Set the `units` attribute using the supplied str, list or dictionary.
+        Units supplied as a list must match the length of columng headings,
+        excluding index columns. Units as a dict should be in the format
+        {column: units_text}. Column can be column name or 0-indexed column
+        number in `table`. Index columns cannot have units.
         """            
-        if isinstance(new_units, (str, list)) or new_units is None:
+        if isinstance(new_units, str) or new_units is None:
             self._validate_text(new_units, "units")
+        elif isinstance(new_units, list):
+            self._validate_text(new_units, "units")
+            if len(new_units) != len(self._column_headings):
+                msg = ("length of `units` list must match the number of"
+                       " non-index columns in the `table`")
+                raise ValueError(msg)
         elif isinstance(new_units, dict) and len(new_units) > 0:
-            for text in new_units.keys():
-                self._validate_text(text, "units")
+            units_list = [None for _ in range(len(self._column_headings))]
+            for key, value in new_units.items():
+                self._validate_text(value, "units")
+                if not isinstance(key, int):
+                    iloc = self.table.columns.get_loc(key)
+                else:
+                    iloc = key
+                units_list[iloc - self.index_levels] = value
+            new_units = units_list
+
         else:
-            msg = ("`units` attribute must be a string or dictionary of"
-                   " {text: list of 0-indexed columns}")
+            msg = ("`units` attribute must be a string, list or dictionary"
+                   " ({column: units_text})")
             raise TypeError(msg)
             
         self.units = new_units
