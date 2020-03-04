@@ -68,6 +68,6 @@ titanic_table = gpt.GPTable(
         )
 
 wb = gpt.write_workbook(
-        filename= parent_dir + "/titanic_gptable.xlsx",
+        filename= parent_dir + "/python_titanic_gptable.xlsx",
         sheets={"titanic analysis by sex":titanic_table}
         )
