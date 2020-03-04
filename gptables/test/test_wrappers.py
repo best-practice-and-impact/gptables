@@ -135,7 +135,12 @@ class TestGPWorksheetWriting(unittest.TestCase):
         ws._smart_write(0, 0, self.test_rich_string, {})
         # Strings are stored in a lookup table for efficiency
         got_string = ws.str_table.string_table
-        exp_string = {'<r><t xml:space="preserve">More than </t></r><r><rPr><i/><sz val="11"/><color theme="1"/><rFont val="Calibri"/><family val="2"/><scheme val="minor"/></rPr><t xml:space="preserve">just </t></r><r><rPr><sz val="11"/><color theme="1"/><rFont val="Calibri"/><family val="2"/><scheme val="minor"/></rPr><t>a string</t></r>': 0}
+        exp_string = {'<r><t xml:space="preserve">More than </t></r><r><rPr><i'
+                      '/><sz val="11"/><color theme="1"/><rFont val="Calibri"/'
+                      '><family val="2"/><scheme val="minor"/></rPr><t xml:spa'
+                      'ce="preserve">just </t></r><r><rPr><sz val="11"/><color'
+                      ' theme="1"/><rFont val="Calibri"/><family val="2"/><sch'
+                      'eme val="minor"/></rPr><t>a string</t></r>': 0}
         self.assertEqual(got_string, exp_string)
         
         # String is referenced using a named tuple (string, Format)
@@ -152,8 +157,12 @@ class TestGPWorksheetWriting(unittest.TestCase):
         ws._smart_write(1, 2, self.test_rich_string, {"bold": True})
         # Strings are stored in a lookup table for efficiency
         got_string = ws.str_table.string_table
-        print(got_string)
-        exp_string = {'<r><t xml:space="preserve">More than </t></r><r><rPr><b/><i/><sz val="11"/><color theme="1"/><rFont val="Calibri"/><family val="2"/><scheme val="minor"/></rPr><t xml:space="preserve">just </t></r><r><rPr><sz val="11"/><color theme="1"/><rFont val="Calibri"/><family val="2"/><scheme val="minor"/></rPr><t>a string</t></r>': 0}
+        exp_string = {'<r><t xml:space="preserve">More than </t></r><r><rPr><b'
+                      '/><i/><sz val="11"/><color theme="1"/><rFont val="Calib'
+                      'ri"/><family val="2"/><scheme val="minor"/></rPr><t xml'
+                      ':space="preserve">just </t></r><r><rPr><sz val="11"/><c'
+                      'olor theme="1"/><rFont val="Calibri"/><family val="2"/>'
+                      '<scheme val="minor"/></rPr><t>a string</t></r>': 0}
         self.assertEqual(got_string, exp_string)
         
         # String is referenced using a named tuple (string, Format)
