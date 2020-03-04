@@ -8,40 +8,23 @@ import os
 ######################################
 funcs = [np.mean, np.median]
 parent_dir = os.path.dirname(os.path.realpath(__file__))
-iris_data = pd.read_csv(parent_dir + "/iris.csv")
 
-iris_data.rename(
+iris_data = pd.read_csv(parent_dir + "/iris.csv")
+iris_data = iris_data.loc[:, ["class", "sepal_length", "sepal_width"]]
+
+iris_summ = iris_data.groupby("class").agg(np.mean)
+iris_summ.index = [_[5:].capitalize() for _ in iris_summ.index]
+iris_summ.rename(
         columns={
-            " class":"class",
-            "sepal_length":"Sepal Length",
-            " sepal_width":"Sepal Width"
+            "class":"class",
+            "sepal_length":"Mean Sepal Length",
+            "sepal_width":"Mean Sepal Width"
             }, 
         inplace=True
         )
-
-iris_data["class"] = iris_data.apply(
-        lambda row: row["class"][5:].capitalize(),
-        axis=1)
-
-# calculate summaries
-ls = []
-for func in funcs:
-    ls.append(iris_data.groupby("class").agg(func))
-    ls.append(pd.DataFrame(iris_data.agg(func).rename("All$$note3$$")).T)
-
-iris_summ = pd.concat(ls)
-iris_summ["func"] = ["Mean"] * 4 + ["Median"] * 4
-
-# reshape
-iris_summ = iris_summ.reset_index()
-iris_summ = iris_summ.melt(["index","func"])
-iris_summ = iris_summ.pivot_table(
-        index=["variable","func"],
-        columns="index",
-        values="value"
-        ).reset_index()
-
-######################################
+# Drop index into table
+iris_summ.reset_index(inplace=True)
+###################
 ####### DEFINE TABLE ELEMENTS ########
 ######################################
 
@@ -53,14 +36,10 @@ subtitles = [
 units = "cm$$note1$$"
 scope = "Iris$$note2$$"
 source = "Source: Office for Iris Statistics"
-index = {
-        1:0,
-        2:1
-        }
+index = {2: 0}  # Column 0 is a level 2 index
 annotations = {
         "note1": "I've got 99 problems and taxonomy is one.",
-        "note2": "Goo Goo Dolls, 1998.",
-        "note3": "All species of the Iris genus."
+        "note2": "Goo Goo Dolls, 1998."
         }
 notes = [
         "This note hath no reference."

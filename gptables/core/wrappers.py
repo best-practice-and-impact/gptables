@@ -593,6 +593,9 @@ class GPWorksheet(Worksheet):
                     data_with_formats.append(wb.add_format(rich_format))
                 else:
                     data_with_formats.append(item)
+            if len(data) > 3:
+                data_with_formats.insert(-1, wb.add_format(format_dict))
+
             self.write_rich_string(row,
                                    col,
                                    *data_with_formats,
