@@ -160,9 +160,10 @@ class TestGPWorksheetWriting(unittest.TestCase):
         exp_string = {'<r><t xml:space="preserve">More than </t></r><r><rPr><b'
                       '/><i/><sz val="11"/><color theme="1"/><rFont val="Calib'
                       'ri"/><family val="2"/><scheme val="minor"/></rPr><t xml'
-                      ':space="preserve">just </t></r><r><rPr><sz val="11"/><c'
-                      'olor theme="1"/><rFont val="Calibri"/><family val="2"/>'
-                      '<scheme val="minor"/></rPr><t>a string</t></r>': 0}
+                      ':space="preserve">just </t></r><r><rPr><b/><sz val="11"'
+                      '/><color theme="1"/><rFont val="Calibri"/><family val="'
+                      '2"/><scheme val="minor"/></rPr><t>a string</t></r>': 0}
+
         self.assertEqual(got_string, exp_string)
         
         # String is referenced using a named tuple (string, Format)
