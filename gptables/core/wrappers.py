@@ -447,7 +447,7 @@ class GPWorksheet(Worksheet):
         for level, col in gptable.index_columns.items():
             self._apply_format(
                 formats.iloc[1:, col],
-                index_level_formats[level]
+                index_level_formats[level - 1]  # Account for 0-indexing
                 )
         
         ## Add additional table-specific formatting from GPTable
