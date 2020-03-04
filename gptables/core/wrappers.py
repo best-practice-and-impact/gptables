@@ -108,7 +108,14 @@ class GPWorksheet(Worksheet):
         new_annotations = {}
         # Add to dict in order
         for n in range(len(ordered_refs)):
-            new_annotations.update({n+1: gptable.annotations[ordered_refs[n]]})
+            try:
+                new_annotations.update(
+                        {n + 1: gptable.annotations[ordered_refs[n]]}
+                        )
+            except KeyError:
+                msg = (f"`{ordered_refs[n]}` has been referenced, but is not"
+                       " defined in GPTable.annotations")
+                raise KeyError(msg)
         # Warn if all annotations not referenced
         annotations_diff = len(gptable.annotations) - len(new_annotations)
         if annotations_diff:
@@ -352,7 +359,6 @@ class GPWorksheet(Worksheet):
                 )
         
         # Write units above each col heading
-        # TODO: add support for dictionary {"Column_name":"unit"}
         pos[1] += gptable.index_levels
         n_cols = len(gptable._column_headings)
         units = gptable.units
@@ -441,7 +447,7 @@ class GPWorksheet(Worksheet):
         for level, col in gptable.index_columns.items():
             self._apply_format(
                 formats.iloc[1:, col],
-                index_level_formats[level]
+                index_level_formats[level - 1]  # Account for 0-indexing
                 )
         
         ## Add additional table-specific formatting from GPTable
