@@ -24,17 +24,17 @@ iris_summ.rename(
         )
 # Drop index into table
 iris_summ.reset_index(inplace=True)
-###################
+
+######################################
 ####### DEFINE TABLE ELEMENTS ########
 ######################################
-
 title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
 subtitles = [
         "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
         "Just another subtitile"
         ]
-units = "cm$$note1$$"
-scope = "Iris$$note2$$"
+units = "cm"
+scope = "Iris"
 source = "Source: Office for Iris Statistics"
 index = {2: 0}  # Column 0 is a level 2 index
 annotations = {
@@ -62,14 +62,10 @@ iris_table = gpt.GPTable(
         **kwargs
         )        
 
-
 ######################################
-#### USE PRODUCE_WORKBOOK TO WIN #####
+##### USE WRITE_WORKBOOK TO WIN ######
 ######################################
-
-wb = gpt.produce_workbook(
-        filename= parent_dir + "/iris_gptable.xlsx",
+wb = gpt.write_workbook(
+        filename= parent_dir + "/python_iris_gptable.xlsx",
         sheets={"iris flower dimensions":iris_table}
         )
-
-wb.close()

@@ -1,15 +1,9 @@
 import gptables as gpt
 import pandas as pd
 import os
-
-from gptables import gptheme
-
 ######################################
 ###### READ DATA IN AND FORMAT #######
 ######################################
-
-core_data = pd.read_csv("./coreB.csv")
-
 parent_dir = os.path.dirname(os.path.realpath(__file__))
 core_data = pd.read_csv(parent_dir + "/coreB.csv")
 
@@ -32,12 +26,11 @@ dct['summary'] = summ
 ######################################
 ####### DEFINE TABLE ELEMENTS ########
 ######################################
-
 elements = {'summary':
         {
             "title":"",
             "subtitles":[""],
-            "units":["","£"],
+            "units":"£",
             "scope":"England and Wales, 12-month follow-up period for the 2016 offender cohort",
             "source":"ONS",
             "index_columns":{
@@ -52,7 +45,7 @@ elements = {'summary':
         'Adults':{
             "title":"",
             "subtitles":[""],
-            "units":["","£"],
+            "units":"£",
             "scope":"England and Wales, 12-month follow-up period for the 2016 offender cohort",
             "source":"ONS",
             "index_columns":{
@@ -67,7 +60,7 @@ elements = {'summary':
         'Children and young people':{
             "title":"",
             "subtitles":[""],
-            "units":["","£"],
+            "units":"£",
             "scope":"England and Wales, 12-month follow-up period for the 2016 offender cohort",
             "source":"ONS",
             "index_columns":{
@@ -84,12 +77,9 @@ elements = {'summary':
 gptables = {name:gpt.GPTable(dct[name], **elements[name]) for name in dct}
 
 ######################################
-#### USE PRODUCE_WORKBOOK TO WIN #####
+##### USE WRITE_WORKBOOK TO WIN ######
 ######################################
-
-wb = gpt.produce_workbook(
-        file=parent_dir+"/core_gptable.xlsx",
-        sheets=gptables,
-        theme=gptheme,
+wb = gpt.write_workbook(
+        filename=parent_dir+"/python_core_gptable.xlsx",
+        sheets=gptables
         )
-wb.close()

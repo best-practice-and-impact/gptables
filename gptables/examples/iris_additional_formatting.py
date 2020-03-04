@@ -12,11 +12,11 @@ iris_data = pd.read_csv(parent_dir + "/iris.csv")
 
 iris_data.rename(
         columns={
-            " class":"class",
+            "class":"class",
             "sepal_length":"Sepal Length$$note4$$",
-            " petal_length":"Petal Length",
-            " petal_width":"Petal Width",
-            " sepal_width":"Sepal Width"
+            "petal_length":"Petal Length",
+            "petal_width":"Petal Width",
+            "sepal_width":"Sepal Width"
             }, 
         inplace=True
         )
@@ -128,7 +128,7 @@ iris_table = gpt.GPTable(
 ######################################
 
 wb = gpt.produce_workbook(
-        filename= parent_dir + "/iris_additional_formatting_gptable.xlsx",
+        filename= parent_dir + "/python_iris_additional_formatting_gptable.xlsx",
         sheets={"iris flower dimensions":iris_table}
         )
 
