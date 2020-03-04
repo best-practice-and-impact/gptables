@@ -13,7 +13,9 @@ iris_data = pd.read_csv(parent_dir + "/iris.csv")
 iris_data.rename(
         columns={
             " class":"class",
-            "sepal_length":"Sepal Length",
+            "sepal_length":"Sepal Length$$note4$$",
+            " petal_length":"Petal Length",
+            " petal_width":"Petal Width",
             " sepal_width":"Sepal Width"
             }, 
         inplace=True
@@ -41,11 +43,14 @@ iris_summ = iris_summ.pivot_table(
         values="value"
         ).reset_index()
 
+# Insert nan
+iris_summ.iloc[2, 3] = np.nan
+
 ######################################
 ####### DEFINE TABLE ELEMENTS ########
 ######################################
 
-title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
+title = "Iris$$note2$$ flower dimensions"
 subtitles = [
         "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
         "Just another subtitile"
@@ -60,11 +65,44 @@ index = {
 annotations = {
         "note1": "I've got 99 problems and taxonomy is one.",
         "note2": "Goo Goo Dolls, 1998.",
-        "note3": "All species of the Iris genus."
+        "note3": "All species of the Iris genus.",
+        "note4": "Length of the largest sepal.",
+        "note5": "This annotation is not referenced, so should not appear."
         }
 notes = [
         "This note hath no reference."
         ]
+
+
+# Additional formatting
+# Only columns can be references by name
+# Column and row numbers include indexes and column headings
+formatting = [
+        {"column":
+            {"columns": ["Setosa","Versicolor"],  # Str, int or list of either
+             "format": {"align":"center"},
+             "include_names": False  # Whether to include column headings (optional)
+            }
+        },
+        {"column":
+            {"columns": [3],
+             "format": {"left":1},
+             "include_names": True
+            }
+        },
+        {"row":
+            {"rows": 3,  # Numbers only
+             "format": {"bold":True},
+             "include_names": True
+             }
+        },
+        {"cell":
+            {"cells": (3, 3),  # tuple or list of tuples
+             "format": {"font_color": "red"}
+                }
+        }
+]
+
 
 # or just use kwargs
 kwargs = {"title":title,
@@ -74,7 +112,8 @@ kwargs = {"title":title,
         "source":source,
         "index_columns":index,
         "annotations":annotations,
-        "notes":notes
+        "notes":notes,
+        "additional_formatting": formatting
         }
 
 # define our GPTable
@@ -89,7 +128,7 @@ iris_table = gpt.GPTable(
 ######################################
 
 wb = gpt.produce_workbook(
-        filename= parent_dir + "/iris_gptable.xlsx",
+        filename= parent_dir + "/iris_additional_formatting_gptable.xlsx",
         sheets={"iris flower dimensions":iris_table}
         )
 

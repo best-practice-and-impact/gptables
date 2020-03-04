@@ -24,7 +24,9 @@ class TestInitGPTable(unittest.TestCase):
         self.assertEqual(self.gptable.scope, "")
         self.assertEqual(self.gptable.units, "")
         self.assertEqual(self.gptable.source, "")
-        assert_frame_equal(self.gptable.table, pd.DataFrame())
+        assert_frame_equal(
+                self.gptable.table, pd.DataFrame().reset_index(drop=True)
+                )
         
         # Optional args
         self.assertEqual(self.gptable.index_columns, {})
