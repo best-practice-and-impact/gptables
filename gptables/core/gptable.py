@@ -95,9 +95,8 @@ class GPTable:
         if not isinstance(new_table, pd.DataFrame):
             raise TypeError("`table` must be a pandas DataFrame")
         
-        empty_index = pd.Index([])
         default_index = pd.Index(range(new_table.shape[0]))
-        if not all(new_table.index == default_index) or new_table.index == empty_index:
+        if not all(new_table.index == default_index) and not new_table.empty:
             msg = ("`table` index must not contain index data. It can be reset"
                    " before adding to a GPTable (see DataFrame.reset_index())."
                    " Please ensure that index data is stored in the first 1-3"
