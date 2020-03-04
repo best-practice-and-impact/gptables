@@ -13,9 +13,7 @@ iris_data = pd.read_csv(parent_dir + "/iris.csv")
 iris_data.rename(
         columns={
             " class":"class",
-            "sepal_length":"Sepal Length$$note4$$",
-            " petal_length":"Petal Length",
-            " petal_width":"Petal Width",
+            "sepal_length":"Sepal Length",
             " sepal_width":"Sepal Width"
             }, 
         inplace=True
@@ -47,7 +45,7 @@ iris_summ = iris_summ.pivot_table(
 ####### DEFINE TABLE ELEMENTS ########
 ######################################
 
-title = "Iris$$note2$$ flower dimensions"
+title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
 subtitles = [
         "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
         "Just another subtitile"
@@ -62,8 +60,7 @@ index = {
 annotations = {
         "note1": "I've got 99 problems and taxonomy is one.",
         "note2": "Goo Goo Dolls, 1998.",
-        "note3": "All species of the Iris genus.",
-        "note4": "Length of the largest sepal."
+        "note3": "All species of the Iris genus."
         }
 notes = [
         "This note hath no reference."
