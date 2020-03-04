@@ -1,0 +1,51 @@
+global:
+    font_size: 9
+    font_name: Arial
+
+title:
+    bold: True
+    font_size: 11
+    
+subtitle:
+    font_size: 10
+
+scope:
+
+units:
+    align: right
+    italic: True
+
+column_heading:
+    bold: True
+    bottom: 1
+
+index_1:
+    bold: True
+
+index_2:
+
+index_3:
+    italic: True
+
+data:
+    num_format: '0.000'
+
+source:
+    font_size: 7
+
+legend:
+    font_size: 7
+
+annotations:
+    font_size: 7
+
+notes:
+    font_size: 7
+
+footer_order:
+    - source
+    - legend
+    - annotations
+    - notes
+
+missing_value: ':'
