@@ -95,7 +95,7 @@ class GPTable:
         if not isinstance(new_table, pd.DataFrame):
             raise TypeError("`table` must be a pandas DataFrame")
             
-        if not new_table.index.is_integer():
+        if not all(new_table.index == pd.Index(range(new_table.shape[0]))):
             msg = ("`table` index must not contain index data. It can be reset"
                    " before adding to a GPTable (see DataFrame.reset_index())."
                    " Please ensure that index data is stored in the first 1-3"
@@ -215,7 +215,8 @@ class GPTable:
             self._validate_text(new_units, "units")
         elif isinstance(new_units, list):
             self._validate_text(new_units, "units")
-            if len(new_units) != len(self._column_headings):
+            rich_text =  any(type(_) == dict for _ in new_units)
+            if len(new_units) != len(self._column_headings) and not rich_text:
                 msg = ("length of `units` list must match the number of"
                        " non-index columns in the `table`")
                 raise ValueError(msg)
