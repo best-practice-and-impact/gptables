@@ -23,6 +23,7 @@ before_deploy:
   - pip install sphinx_rtd_theme
   - pip install -e .
   - cd ./docs && make html
+  - cd ../
 
 deploy:
   provider: pages
@@ -32,7 +33,6 @@ deploy:
   on:
     branch: master
   local_dir: ./docs/build/html/
-
 
 deploy:
   provider: pypi
