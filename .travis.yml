@@ -20,7 +20,8 @@ after_success:
 
 before_deploy:
   - pip install sphinx
-  - cd ./docs && sphinx-build -nW -b html -d ./build/doctrees ./source ./build/html && touch ./build/html/.nojekyll
+  - pip install sphinx_rtd_theme
+  - cd ./docs && make html
 
 deploy:
   provider: pages
@@ -28,5 +29,5 @@ deploy:
   github_token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
   keep-history: true
   on:
-    branch: master
+    branch: bug/docs
   local_dir: ./docs/build/html/
