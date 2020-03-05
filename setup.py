@@ -18,11 +18,17 @@ setup(
     version='0.1.1',
     author='David Foster',
     author_email='david.foster@ons.gov.uk',
-    url='https://github.com/best-practice-and-impact/gptables/issues',
+    url='https://best-practice-and-impact.github.io/gptables/',
     description='Simplifying good practice in statistical tables.',
     long_description=long_description,
+    long_description_content_type="text/markdown",
     licence=licence,
     packages=find_packages(exclude=["test"]),
     include_package_data=True,
-    install_requires=required
+    install_requires=required,
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+    ],
+    python_requires='>=3.6',
 )
