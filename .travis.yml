@@ -21,6 +21,7 @@ after_success:
 before_deploy:
   - pip install sphinx
   - pip install sphinx_rtd_theme
+  - pip install -e .
   - cd ./docs && make html
 
 deploy:
