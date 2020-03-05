@@ -15,7 +15,7 @@ required = read_requirements("requirements.txt")
 
 setup(
     name='gptables',
-    version='0.1.0',
+    version='0.1.1',
     author='David Foster',
     author_email='david.foster@ons.gov.uk',
     url='https://github.com/best-practice-and-impact/gptables/issues',
