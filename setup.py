@@ -8,9 +8,8 @@ def read_file(file):
    with open(file) as f:
         return f.read()
     
-long_description = read_file("README.md")
+long_description = read_file("README.rst")
 version = read_file("VERSION")
-licence = read_file("LICENSE")
 required = read_requirements("requirements.txt")
 
 setup(
@@ -20,9 +19,9 @@ setup(
     author_email = 'david.foster@ons.gov.uk',
     url = 'https://best-practice-and-impact.github.io/gptables/',
     description = 'Simplifying good practice in statistical tables.',
+    long_description_content_type = "text/x-rst",
     long_description = long_description,
-    long_description_content_type = "text/markdown",
-    licence = licence,
+    license = "MIT license",
     packages = find_packages(exclude=["test"]),
     include_package_data = True,
     install_requires = required,
