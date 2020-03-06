@@ -1,5 +1,6 @@
 include README.rst
 include LICENSE
+include VERSION
 include requirements.txt
 recursive-include gptables/examples *.csv *.py
 recursive-include gptables/theme_pickles *.pickle
