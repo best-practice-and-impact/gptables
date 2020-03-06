@@ -1,25 +1,3 @@
-from gptables.core.theme import Theme
-from gptables.core.gptable import GPTable
-from gptables.core.wrappers import GPWorkbook
-
-from gptables.utils.unpickle_themes import gptheme
-
-
-from gptables.core.api import (
-        #datatypes
-
-
-
-        #classes
-
-
-
-        #functions
-        produce_workbook,
-	    write_workbook
-        )
-
-__doc__ = """
 *******************************
 Good Practice Tables (gptables)
 *******************************
@@ -63,4 +41,3 @@ You define your mapping with your data as a ``GPTable``.
 You can define the format of your mapping with a ``Theme``, or simply use the default - gptheme.
 
 You ``write_workbook()`` to win.
-"""
