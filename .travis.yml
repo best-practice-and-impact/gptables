@@ -38,7 +38,7 @@ jobs:
     - stage: "Test PyPI deployment"
       deploy:
         provider: pypi
-        server: https://testpypi.python.org/pypi
+        server: https://test.pypi.org/legacy/
         user: "__token__"
         password: $TESTPYPI_TOKEN  # Set in travis-ci.com dashboard
         skip_existing: true
