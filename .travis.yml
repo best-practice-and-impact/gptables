@@ -1,16 +1,19 @@
 language: python
 
+
+python:
+  - 3.6
+  - 3.7
+  - 3.8
+  
+install:
+  - pip install -r requirements.txt
+script:
+  - python -m unittest discover -p 'test_*.py'
+
+
 jobs:
   include:
-    - stage: "Python Version Tests"
-      python:
-        - 3.6
-        - 3.7
-        - 3.8
-      install:
-        - pip install -r requirements.txt
-      script:
-        - python -m unittest discover -p 'test_*.py'
     - stage: "Pandas 1.0.0 Test"
       python: 3.8
       install:
@@ -19,12 +22,11 @@ jobs:
       script:
         - python -m unittest discover -p 'test_*.py'
     - stage: "Documentation"
-      before_deploy:
+      script:
         - pip install sphinx
         - pip install sphinx_rtd_theme
         - pip install -e .
-        - cd ./docs && make html
-        - cd ../
+        - (cd docs && make html)
       deploy:
         provider: pages
         skip_cleanup: true
@@ -38,5 +40,6 @@ jobs:
         provider: pypi
         user: "__token__"
         password: $PYPI_TOKEN  # Set in travis-ci.com dashboard
+        skip_existing: true  # Don't deploy if version not incremented
         on:
           branch: master
