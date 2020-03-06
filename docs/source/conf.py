@@ -22,8 +22,8 @@ copyright = '2020, David Foster, Alexander Newton'
 author = 'David Foster, Alexander Newton'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.1'
-
+with open("VERSION") as f:
+    release = f.read()
 
 # -- General configuration ---------------------------------------------------
 
