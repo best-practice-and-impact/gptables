@@ -1,42 +1,42 @@
 language: python
-python:
-  - "3.6"      # current default Python on Travis CI
-  - "3.7"
-  - "3.8"
-  
-# install dependencies
-install:
-  - pip install -r requirements.txt
-  
-# command to run tests
-script:
-  - python -m unittest discover -p 'test_*.py'
 
-after_success:
-  - pip install python-coveralls
-  - pip install coverage codecov
-  - coveralls
-  - codecov
-
-before_deploy:
-  - pip install sphinx
-  - pip install sphinx_rtd_theme
-  - pip install -e .
-  - cd ./docs && make html
-  - cd ../
-
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN  # Set in travis-ci.com dashboard
-  keep-history: true
-  on:
-    branch: master
-  local_dir: ./docs/build/html/
-
-deploy:
-  provider: pypi
-  user: "__token__"
-  password: $PYPI_TOKEN  # Set in travis-ci.com dashboard
-  on:
-    branch: master
+jobs:
+  include:
+    - stage: "Python Version Tests"
+      python:
+        - 3.6
+        - 3.7
+        - 3.8
+      install:
+        - pip install -r requirements.txt
+      script:
+        - python -m unittest discover -p 'test_*.py'
+    - stage: "Pandas 1.0.0 Test"
+      python: 3.8
+      install:
+        - pip install -r requirements.txt
+        - pip install pandas==1.0.0
+      script:
+        - python -m unittest discover -p 'test_*.py'
+    - stage: "Documentation"
+      before_deploy:
+        - pip install sphinx
+        - pip install sphinx_rtd_theme
+        - pip install -e .
+        - cd ./docs && make html
+        - cd ../
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN  # Set in travis-ci.com dashboard
+        keep-history: true
+        on:
+          branch: master
+        local_dir: ./docs/build/html/
+    - stage: "Deploy to PyPI"
+      deploy:
+        provider: pypi
+        user: "__token__"
+        password: $PYPI_TOKEN  # Set in travis-ci.com dashboard
+        on:
+          branch: master
