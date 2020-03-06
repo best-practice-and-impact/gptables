@@ -9,26 +9,26 @@ def read_file(file):
         return f.read()
     
 long_description = read_file("README.md")
-licence = read_file("./LICENSE")
+version = read_file("VERSION")
+licence = read_file("LICENSE")
 required = read_requirements("requirements.txt")
 
-
 setup(
-    name='gptables',
-    version='0.1.1',
-    author='David Foster',
-    author_email='david.foster@ons.gov.uk',
-    url='https://best-practice-and-impact.github.io/gptables/',
-    description='Simplifying good practice in statistical tables.',
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    licence=licence,
-    packages=find_packages(exclude=["test"]),
-    include_package_data=True,
-    install_requires=required,
-    classifiers=[
+    name = 'gptables',
+    version = version,
+    author = 'David Foster',
+    author_email = 'david.foster@ons.gov.uk',
+    url = 'https://best-practice-and-impact.github.io/gptables/',
+    description = 'Simplifying good practice in statistical tables.',
+    long_description = long_description,
+    long_description_content_type = "text/markdown",
+    licence = licence,
+    packages = find_packages(exclude=["test"]),
+    include_package_data = True,
+    install_requires = required,
+    classifiers = [
         "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
+        "Operating System :: OS Independent"
     ],
-    python_requires='>=3.6',
+    python_requires = '>=3.6',
 )
