@@ -41,7 +41,10 @@ jobs:
         server: https://testpypi.python.org/pypi
         user: "__token__"
         password: $TESTPYPI_TOKEN  # Set in travis-ci.com dashboard
-        if: branch = dev AND type = pull_request
+        skip_existing: true
+        on:
+          branch: dev
+          type: pull_request
     - stage: "Deploy to PyPI"
       deploy:
         provider: pypi
