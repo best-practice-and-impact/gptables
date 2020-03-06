@@ -22,7 +22,7 @@ copyright = '2020, David Foster, Alexander Newton'
 author = 'David Foster, Alexander Newton'
 
 # The full version, including alpha/beta/rc tags
-with open("VERSION") as f:
+with open(os.path.abspath("../../VERSION")) as f:
     release = f.read()
 
 # -- General configuration ---------------------------------------------------

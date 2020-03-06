@@ -23,6 +23,25 @@ Unreleased
 Released (master)
 =================
 
+v0.1.2
+------
+:Date: 20202-03-06
+
+Fixed
+^^^^^
+* missing theme pickle file in binary distribution. v0.1.1 will be deleted from
+  PyPI to prevent use of this broken build.
+
+Added
+^^^^^
+* this changelog to the documentation!
+
+Changed
+^^^^^^^
+* README to reflect description of package. Dropped developer install
+  instructions.
+
+
 v0.1.1
 ------
 :Date: 20202-03-05
