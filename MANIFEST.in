@@ -2,6 +2,6 @@ include README.md
 include LICENSE
 include requirements.txt
 recursive-include gptables/examples *.csv *.py
-recursive-include theme_pickles *.pickle
+recursive-include gptables/theme_pickles *.pickle
 recursive-include gptables/themes *.yaml
 recursive-include gptables/test test*.py
