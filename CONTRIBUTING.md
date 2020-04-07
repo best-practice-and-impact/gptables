@@ -9,7 +9,7 @@ repository before making a change.
 1. Branch from the `dev` branch. If you are implementing a feature name it
    `feature/name_of_feature`, if you are implementing a bugfix name it
    `bug/issue_name`.
-1. Update the README.md and other documentation with details of major changes
+1. Update the README.rst and other documentation with details of major changes
    to the interface, this includes new environment variables, useful file
    locations and container parameters.
 1. Once you are ready for review please open a pull/merge request to the
