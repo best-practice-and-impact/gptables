@@ -27,7 +27,7 @@ repository before making a change.
   or `increment`.
 - We name functions using verbs in lowercase, e.g. `map_variables_to_names` or
   `change_values`.
-- We use the (numpydoc)[https://numpydoc.readthedocs.io/en/latest/format.html]
+- We use the [numpydoc](https://numpydoc.readthedocs.io/en/latest/format.html)
   format for documenting features using docstrings.
 
 ## Review process
