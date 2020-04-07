@@ -24,8 +24,6 @@ __doc__ = """
 Good Practice Tables (gptables)
 *******************************
 
-<!-- badges: start -->
-
 .. image:: https://travis-ci.org/best-practice-and-impact/gptables.svg?branch=master
     :target: https://travis-ci.org/best-practice-and-impact/gptables
     :alt: Travis build status
@@ -33,9 +31,6 @@ Good Practice Tables (gptables)
 .. image:: https://badge.fury.io/py/gptables.svg
     :target: https://badge.fury.io/py/gptables
     :alt: PyPI release
-    
-<!-- badges: end -->
-
 
 gptables - a highly opinionated package for spreadsheet production
 ==================================================================
