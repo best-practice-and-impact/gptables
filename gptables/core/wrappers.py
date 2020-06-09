@@ -2,6 +2,7 @@ import os
 import re
 import pandas as pd
 import numpy as np
+from copy import deepcopy
 
 from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
@@ -32,6 +33,8 @@ class GPWorksheet(Worksheet):
         """
         if not isinstance(gptable, GPTable):
             raise TypeError("`gptable` must be a gptables.GPTable object")
+        
+        gptable = deepcopy(gptable)
 
         theme = self.theme
 
