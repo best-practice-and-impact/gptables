@@ -42,7 +42,7 @@ class GPWorksheet(Worksheet):
         pos = [0, 0]
 
         self._reference_annotations(gptable)
-
+        print(gptable.title)
         pos = self._write_element(
                 pos,
                 gptable.title,
@@ -464,6 +464,10 @@ class GPWorksheet(Worksheet):
         
         ## Write table
         pos = self._write_array(pos, data, formats)
+
+        ## Set columns widths
+        widths = self._calculate_column_widths(data)
+        self._set_column_widths(widths)
         
         return pos
     
@@ -633,30 +637,65 @@ class GPWorksheet(Worksheet):
         elif isinstance(format_table_slice, dict):
             format_table_slice.update(format_dict)
 
+
+    def _set_column_widths(self, widths):
+        """
+        Set the column widths using a list of widths.
+        """
+        print(widths)
+        for col_number in range(len(widths)):
+            self.set_column(
+                col_number,
+                col_number,
+                widths[col_number]
+            )
+
+
+    def _calculate_column_widths(self, table):
+        """
+        Calculate Excel column widths using maximum length of strings
+        in each column of the data tables.
+
+        Parameters
+        ----------
+        table : pd.DataFrame
+            data table to calculate widths from
+        
+        Returns 
+        -------
+        col_widths : list
+            width to apply to Excel columns
+        """
+        cols = table.shape[1]
+        max_lengths = [table.iloc[:, col].apply(lambda x: len(x) if isinstance(x, str) else 0).max() for col in range(cols)]
+        col_widths = [self._excel_string_width(max_len) for max_len in max_lengths]
+        return col_widths
+
+        
     @staticmethod
-    def _excel_string_width(string):
+    def _excel_string_width(string_len):
         """
         Calculate the rough length of a string in Excel character units.
         This is highly inaccurate and doesn't account for font size etc.
         
         Parameters
         ----------
-        string : str
-            string to calculate width in Excel for
+        string_len : int
+            length of string to calculate width in Excel for
         
         Returns 
         -------
-        string_width : float
+        excel_width : float
             width of equivalent string in Excel
-        """
-        string_len = len(string)
-    
+        """    
         if string_len == 0:
             excel_width = 0
         else:
-            excel_width =  string_len * 1.1
+            font_size = 9
+            excel_width = string_len * ((font_size * 0.12) - 0.09)
         
         return excel_width
+
 
 
 class GPWorkbook(Workbook):
@@ -690,6 +729,7 @@ class GPWorkbook(Workbook):
         worksheet._workbook = self  # Create reference to wb, for formatting
         worksheet.hide_gridlines(2)
         return worksheet
+
 
     def set_theme(self, theme):
         """
