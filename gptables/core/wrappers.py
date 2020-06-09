@@ -92,7 +92,7 @@ class GPWorksheet(Worksheet):
                 "units",
                 "legend"
                 ]
-        # Store references in order detected
+        # Store annotation references in order detected
         ordered_refs = []
         
         # Loop through elements, replacing references in strings
@@ -355,9 +355,10 @@ class GPWorksheet(Worksheet):
         theme = self.theme
         
         # Write scope
+        scope = gptable.scope
         self._smart_write(
                 *pos,
-                gptable.scope,
+                scope,
                 theme.scope_format
                 )
         
@@ -384,7 +385,8 @@ class GPWorksheet(Worksheet):
                 pos[1] += 1
         
         # Reset position to left col on next row
-        pos[0] += 1
+        if (units is not None) and (scope is not None):
+            pos[0] += 1
         pos[1] = 0
         
         ## Create data array
