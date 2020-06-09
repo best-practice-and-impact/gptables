@@ -183,12 +183,18 @@ class GPTable:
         Set a list of subtitles to the `subtitles` attribute. Overwrites
         existing ist of subtitles by default. If `overwrite` is False, new list
         is appended to existing list of subtitles.
+
+        Use an empty list or None to omit subtitles.
         """
-        if not isinstance(new_subtitles, list):
+        if new_subtitles is None:
+            new_subtitles = []
+
+        if not isinstance(new_subtitles, (list)):
             msg =("`subtitles` must be provided as a list containing strings"
                   " and/or lists of strings and format dictionaries"
                   " (rich text)")
             raise TypeError(msg)
+
         for text in new_subtitles:
             self._validate_text(text, "subtitles")
             
