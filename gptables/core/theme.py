@@ -178,9 +178,9 @@ class Theme:
         """
         Updates all theme attributes with a global format dictionary.
         """
-        for attr in self._valid_attrs:
+        for attr in self._format_attributes:
             if attr.endswith("_format"):
-                getattr(self, "update_" + str(attr))(global_dict)
+                getattr(self, "update_" + attr)(global_dict)
 
     @validate_single_format
     def update_column_heading_format(self, format_dict):
