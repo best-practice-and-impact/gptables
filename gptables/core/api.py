@@ -4,6 +4,7 @@ def produce_workbook(
         filename,
         sheets,
         theme = None,
+        auto_width = True,
 #      cover_sheet = None
         ):
     """
@@ -22,19 +23,21 @@ def produce_workbook(
     theme : gptables.Theme (optional)
         The formatting to be applied tot GPTable elements. gptheme is used by
         default
+    auto_width : bool (optional)
+        Select if column widths should be automatically determined. True by default.
         
     Returns
     -------
     workbook : gptables.GPWorkbook
     """
     wb = GPWorkbook(filename)
-    
+
     if theme is not None:
         wb.set_theme(theme)
     
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
-        ws.write_gptable(gptable)
+        ws.write_gptable(gptable, auto_width)
     
     return wb
 
@@ -42,6 +45,7 @@ def write_workbook(
         filename,
         sheets,
         theme = None,
+        auto_width = True,
 #        cover_sheet = None
         ):
 
@@ -61,10 +65,12 @@ def write_workbook(
     theme : gptables.Theme (optional)
         The formatting to be applied tot GPTable elements. gptheme is used by
         default
+    auto_width : bool (optional)
+        Select if column widths should be automatically determined. True by default.
 
     Returns
     -------
     None
     """
-    wb = produce_workbook(filename, sheets, theme)
+    wb = produce_workbook(filename, sheets, theme, auto_width)
     wb.close()
