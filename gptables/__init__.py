@@ -6,17 +6,10 @@ from gptables.utils.unpickle_themes import gptheme
 
 
 from gptables.core.api import (
-        #datatypes
-
-
-
-        #classes
-
-
-
         #functions
         produce_workbook,
-	    write_workbook
+	    write_workbook,
+        quick_and_dirty_workbook
         )
 
 __doc__ = """
