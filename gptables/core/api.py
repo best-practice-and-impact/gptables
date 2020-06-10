@@ -1,4 +1,4 @@
-from gptables import GPWorkbook
+from gptables import GPWorkbook, GPTable
 
 def produce_workbook(
         filename,
@@ -8,22 +8,18 @@ def produce_workbook(
 #      cover_sheet = None
         ):
     """
-    Produces a GPWorkbook.
-
-    This is the main function that will take in data and theme information,
-    It calls upon the packages to return a formatted ``.xlsx`` file, ready to
-    be written using `workbook.close()`.
+    Produces a GPWorkbook, ready to be written to the specified ``.xlsx`` using the `.close()` method.
 
     Parameters
     ----------
     filename : str
-        Path to write final workbook to (an .xlsx file)
+        Path to write final workbook to (an ``.xlsx`` file)
     sheets : dict
         A dictionary mapping worksheet labels to gptables.GPTable objects
-    theme : gptables.Theme (optional)
+    theme : gptables.Theme, optional)
         The formatting to be applied tot GPTable elements. gptheme is used by
         default
-    auto_width : bool (optional)
+    auto_width : bool, optional)
         Select if column widths should be automatically determined. True by default.
         
     Returns
@@ -50,22 +46,22 @@ def write_workbook(
         ):
 
     """
-    Writes a GPWorkbook to the specified file.
+    Writes a GPWorkbook to the specified ``.xlsx`` file.
 
     This is an alternative main function that will take in data and theme
-    information. It calls upon the packages to write a formatted ``.xlsx``
+    information. It calls upon the package to write a formatted ``.xlsx``
     file to the specified path.
 
     Parameters
     ----------
     filename : str
-        Path to write final workbook to (an .xlsx file)
+        Path to write final workbook to (an ``.xlsx`` file)
     sheets : dict
         A dictionary mapping worksheet labels to gptables.GPTable objects
-    theme : gptables.Theme (optional)
+    theme : gptables.Theme, optional
         The formatting to be applied tot GPTable elements. gptheme is used by
         default
-    auto_width : bool (optional)
+    auto_width : bool, optional
         Select if column widths should be automatically determined. True by default.
 
     Returns
@@ -74,3 +70,33 @@ def write_workbook(
     """
     wb = produce_workbook(filename, sheets, theme, auto_width)
     wb.close()
+
+
+def quick_and_dirty_workbook(filename, tables, theme = None, auto_width = True):
+    """
+    Writes a list of tables to the specified ``.xlsx`` file, with no metadata.
+
+    This function may be useful for creating simple outputs,
+    with no Title, Notes or other associated metadata.
+
+    Parameters
+    ----------
+    filename : str
+        Path to write final workbook to (an .xlsx file)
+    tables : list[pd.DataFrame]
+        ordered tables to be written to file
+    theme : gptables.Theme, optional
+        The formatting to be applied tot GPTable elements. gptheme is used by
+        default
+    auto_width : bool, optional
+        Select if column widths should be automatically determined. True by default.
+
+    Returns
+    -------
+    None
+    """
+    sheets = dict()
+    for table_n in range(len(tables)):
+        sheets["Table " + str(table_n + 1)] = GPTable(tables[table_n], None, None, None, None)
+
+    write_workbook(filename, sheets, theme = theme, auto_width = auto_width)
