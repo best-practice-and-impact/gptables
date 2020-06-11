@@ -1,4 +1,7 @@
+import pandas as pd
+
 from gptables import GPWorkbook, GPTable
+
 
 def produce_workbook(
         filename,
@@ -78,6 +81,8 @@ def quick_and_dirty_workbook(filename, tables, theme = None, auto_width = True):
 
     This function may be useful for creating simple outputs,
     with no Title, Notes or other associated metadata.
+    Tables must be pandas.DataFrame objects with the row indexes
+    in the first 1, 2 or 3 columns.
 
     Parameters
     ----------
@@ -97,6 +102,28 @@ def quick_and_dirty_workbook(filename, tables, theme = None, auto_width = True):
     """
     sheets = dict()
     for table_n in range(len(tables)):
-        sheets["Table " + str(table_n + 1)] = GPTable(tables[table_n], None, None, None, None)
+        current_table = tables[table_n]
+        if not isinstance(current_table, pd.DataFrame):
+            raise TypeError("All tables must be pandas.DataFrame objects")
+        
+        index_columns = dict()
+        index_column_map = {
+            0: {2: 0},
+            1: {1: 0, 2: 1},
+            2: {1: 0, 2: 1, 3: 2}
+        }
+        cols = current_table.shape[1]
+        for n in range(min(cols, 3)):
+            if any(current_table.iloc[:, n].apply(lambda x: isinstance(x, str))):
+                index_columns.update(index_column_map[n])
+            
+        sheets["Table " + str(table_n + 1)] = GPTable(
+            current_table,
+            None,
+            None,
+            None,
+            None,
+            index_columns = index_columns
+            )
 
     write_workbook(filename, sheets, theme = theme, auto_width = auto_width)
