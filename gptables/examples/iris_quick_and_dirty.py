@@ -1,11 +1,28 @@
+"""
+Iris Quick and Dirty Example
+
+This example demonstrates use of the ``gptables.quick_and_dirty_workbook`` function.
+This function takes a list of ``pandas.DataFrame`` objects and writes each to a
+separate sheet of the specified output `.xlsx` file. Formatting is taken from
+the default ``gptables.Theme`` - gptheme - unless an alternative theme is provided
+using the ``theme`` parameter. Column widths are automatically adjusted,
+unless the ``auto_width`` parameter is set to False.
+
+Unlike the other API functions, ``quick_and_dirty_workbook`` does not require
+the user to specify table metadata or indicate which columns are row indexes.
+Up to 3 row index levels are automatically detected. However, as with the other
+API functions, row indices must be columns in the table instead of set as a ``pandas.Index``.
+
+This function is intended for use when only data, and no metadata, is required.
+It should **not** be used for production of reference statistical tables for publication.
+"""
 import gptables as gpt
 import pandas as pd
 import numpy as np
 import os
 
-######################################
-###### READ DATA IN AND FORMAT #######
-######################################
+
+## Read data and arrange
 funcs = [np.mean, np.median]
 parent_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -36,10 +53,11 @@ iris_summary_3 = iris_summary_2.copy()
 iris_summary_3.insert(2, "bottom_index", ["x", "y", "z"])
 
 
-#################################################
-###### WRITE USING QUICK AND DIRTY METHOD #######
-#################################################
+## Write using quick and dirty method
+output_path = parent_dir + "/python_iris_quick_and_dirty.xlsx"
 gpt.quick_and_dirty_workbook(
-        filename = parent_dir + "/python_iris_quick_and_dirty.xlsx",
+        filename = output_path,
         tables = [iris_summary_0, iris_summary, iris_summary_2, iris_summary_3]
         )
+print("Output written at: ", output_path)
+

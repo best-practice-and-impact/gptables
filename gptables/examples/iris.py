@@ -1,20 +1,32 @@
+"""
+Iris Basic Example
+
+This example demonstrates use of the ``gptables.write_workbook`` function.
+Summary statistics from the classic iris dataset are used to build a ``gptables.GPTable``
+object. Elements of metadata are provided to the corresponding parameters of the class.
+Where you wish to provide no metadata in required parameters, use None.
+
+Table formatting can be defined as a ``gptable.Theme`` using the ``theme`` parameter,
+or you can reply on the default - gptheme.
+
+This API function is intended to produce consistently structured and formatted tables.
+"""
 import gptables as gpt
 import pandas as pd
 import numpy as np
 import os
 
-######################################
-###### READ DATA IN AND FORMAT #######
-######################################
+
+## Read data and arrange
 funcs = [np.mean, np.median]
 parent_dir = os.path.dirname(os.path.realpath(__file__))
 
 iris_data = pd.read_csv(parent_dir + "/iris.csv")
 iris_data = iris_data.loc[:, ["class", "sepal_length", "sepal_width"]]
 
-iris_summ = iris_data.groupby("class").agg(np.mean)
-iris_summ.index = [_[5:].capitalize() for _ in iris_summ.index]
-iris_summ.rename(
+iris_summary = iris_data.groupby("class").agg(np.mean)
+iris_summary.index = [_[5:].capitalize() for _ in iris_summary.index]
+iris_summary.rename(
         columns={
             "class":"class",
             "sepal_length":"Mean Sepal Length",
@@ -22,12 +34,14 @@ iris_summ.rename(
             }, 
         inplace=True
         )
-# Drop index into table
-iris_summ.reset_index(inplace=True)
 
-######################################
-####### DEFINE TABLE ELEMENTS ########
-######################################
+# Drop index into table
+iris_summary.reset_index(inplace=True)
+
+# Insert NA to demonstrate missing value representation
+iris_summary.iloc[1, 1] = np.nan
+
+## Define table elements
 title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
 subtitles = [
         "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
@@ -45,27 +59,27 @@ notes = [
         "This note hath no reference."
         ]
 
-# or just use kwargs
-kwargs = {"title":title,
-        "subtitles":subtitles,
-        "units":units,
+# or use kwargs to pass these to the appropriate parameters
+kwargs = {"title": title,
+        "subtitles": subtitles,
+        "units": units,
         "scope": scope,
-        "source":source,
-        "index_columns":index,
-        "annotations":annotations,
-        "notes":notes
+        "source": source,
+        "index_columns": index,
+        "annotations": annotations,
+        "notes": notes
         }
 
-# define our GPTable
+## Define our GPTable
 iris_table = gpt.GPTable(
-        table=iris_summ,
+        table = iris_summary,
         **kwargs
         )        
 
-######################################
-##### USE WRITE_WORKBOOK TO WIN ######
-######################################
-wb = gpt.write_workbook(
-        filename= parent_dir + "/python_iris_gptable.xlsx",
-        sheets={"iris flower dimensions":iris_table}
+## Use write_workbook to win!
+output_path = parent_dir + "/python_iris_gptable.xlsx"
+gpt.write_workbook(
+        filename = output_path,
+        sheets = {"iris flower dimensions": iris_table}
         )
+print("Output written at: ", output_path)
