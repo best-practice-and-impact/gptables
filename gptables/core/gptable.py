@@ -33,7 +33,7 @@ class GPTable:
     Methods
     -------
     
-    """  
+    """
     def __init__(self,
                  table,
                  title,
