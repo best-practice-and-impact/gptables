@@ -7,7 +7,7 @@ def produce_workbook(
         filename,
         sheets,
         theme = None,
-        auto_width = True,
+        auto_width = False,
 #      cover_sheet = None
         ):
     """
@@ -22,8 +22,8 @@ def produce_workbook(
     theme : gptables.Theme, optional)
         The formatting to be applied tot GPTable elements. gptheme is used by
         default
-    auto_width : bool, optional)
-        Select if column widths should be automatically determined. True by default.
+    auto_width : bool, optional
+        Select if column widths should be automatically determined. False by default.
         
     Returns
     -------
@@ -44,7 +44,7 @@ def write_workbook(
         filename,
         sheets,
         theme = None,
-        auto_width = True,
+        auto_width = False,
 #        cover_sheet = None
         ):
 
@@ -65,7 +65,7 @@ def write_workbook(
         The formatting to be applied tot GPTable elements. gptheme is used by
         default
     auto_width : bool, optional
-        Select if column widths should be automatically determined. True by default.
+        Select if column widths should be automatically determined. False by default.
 
     Returns
     -------
