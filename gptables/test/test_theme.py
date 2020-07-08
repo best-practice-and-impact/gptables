@@ -99,8 +99,7 @@ class TestConfigInitTheme(unittest.TestCase):
             "index_3":
                 {"italic": True},
             
-            "data":
-                {"num_format": '0.000'},
+            "data": None,
             
             "source":
                 {"font_size": 7},
