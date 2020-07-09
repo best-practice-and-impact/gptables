@@ -1,5 +1,6 @@
 """
 Cost of Reoffending - Multiple Sheets Example
+---------------------------------------------
 
 This example demonstrates how multiple sheets can be defined and written
 to a single .xlsx file using ``gptables``.

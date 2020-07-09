@@ -1,11 +1,12 @@
 """
-Iris Additional Formatting Example
+Iris - Additional Formatting Example
+------------------------------------
 
 This example demonstrates additional formatting that is not supported in
 the ``gptable.Theme``.
 
 Specific columns, rows and cells of the table elements (indexes, column headings and data)
-can be formatted using the ``gptable.GPTable(..., additional_formatting = ...) parameter.
+can be formatted using the ``gptable.GPTable(..., additional_formatting = ...)`` parameter.
 This parameter takes a list of dictionaries, allowing you to select as many rows, columns
 or cells as you like.
 
@@ -14,10 +15,10 @@ As with all formatting, supported arguments are desribed in the
 
 Any formatting not possibly through this means can be achieved using
 ``XlsxWriter`` `Workbook <https://xlsxwriter.readthedocs.io/workbook.html>`_
-and Worksheet `<https://xlsxwriter.readthedocs.io/worksheet.html>`_ functionality.
+and `Worksheet <https://xlsxwriter.readthedocs.io/worksheet.html>`_ functionality.
 A ``gptable.GPWorkbook`` object is returned when using the
 ``gptables.produce_workbook`` API function.
-The ``GPWorkbook.worksheets`` function returns a list of ``GPWorksheet`` objects,
+The ``GPWorkbook.worksheets()`` function returns a list of ``GPWorksheet`` objects,
 which can also be modified.
 """
 import gptables as gpt

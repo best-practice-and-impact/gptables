@@ -1,15 +1,16 @@
 """
-Iris Basic Example
+Iris - Minimal Example
+----------------------
 
 This example demonstrates use of the ``gptables.write_workbook`` function.
+This API function is designed for production of consistently structured and formatted tables.
+
 Summary statistics from the classic iris dataset are used to build a ``gptables.GPTable``
 object. Elements of metadata are provided to the corresponding parameters of the class.
-Where you wish to provide no metadata in required parameters, use None.
+Where you wish to provide no metadata in required parameters, use ``None``.
 
-Table formatting can be defined as a ``gptable.Theme`` using the ``theme`` parameter,
-or you can reply on the default - gptheme.
-
-This API function is intended to produce consistently structured and formatted tables.
+Table formatting can be defined as a ``gptable.Theme``, which is passed to the API functions
+ using the ``theme`` parameter. Or you can reply on our default - gptheme.
 """
 import gptables as gpt
 import pandas as pd
