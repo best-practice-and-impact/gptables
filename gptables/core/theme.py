@@ -116,6 +116,7 @@ class Theme:
         if config:
             self.apply_config(config)
     
+
     @staticmethod
     def _parse_config(config):
         """
@@ -135,6 +136,7 @@ class Theme:
             
         return cfg
 
+
     def _validate_config(self, config):
         """
         Assert that format dictionary lower level keys are valid XlsxWriter
@@ -146,6 +148,7 @@ class Theme:
                 for fmt in attr_config.keys():
                     self._validate_format_label(fmt)
      
+
     def _validate_format_label(self, format_name):
         """
         Assert that format is a valid XlsxWriter Format attribute.
@@ -153,6 +156,7 @@ class Theme:
         if format_name not in self._valid_format_labels:
             raise ValueError(f"`{format_name}` is not a valid format label")
     
+
     def apply_config(self, config):
         """
         Update multiple Theme attributes using a YAML or dictionary config.
@@ -176,6 +180,7 @@ class Theme:
             else:
                 raise ValueError(f"`{key}` is not a valid Theme attribute")
     
+
     def _update_all_formats(self, global_dict):
         """
         Updates all theme attributes with a global format dictionary.
@@ -183,6 +188,7 @@ class Theme:
         for attr in self._format_attributes:
             if attr.endswith("_format"):
                 getattr(self, "update_" + attr)(global_dict)
+
 
     @validate_single_format
     def update_column_heading_format(self, format_dict):
@@ -192,6 +198,7 @@ class Theme:
         """
         self.column_heading_format.update(format_dict)
     
+
     @validate_single_format
     def update_index_1_format(self, format_dict):
         """
@@ -199,6 +206,7 @@ class Theme:
         items are replaced.
         """
         self.index_1_format.update(format_dict)
+
 
     @validate_single_format    
     def update_index_2_format(self, format_dict):
@@ -208,6 +216,7 @@ class Theme:
         """
         self.index_2_format.update(format_dict)
 
+
     @validate_single_format
     def update_index_3_format(self, format_dict):
         """
@@ -215,6 +224,7 @@ class Theme:
         items are replaced.
         """
         self.index_3_format.update(format_dict)
+
 
     @validate_single_format
     def update_data_format(self, format_dict):
@@ -224,6 +234,7 @@ class Theme:
         """
         self.data_format.update(format_dict)
 
+
     @validate_single_format
     def update_title_format(self, format_dict):
         """
@@ -231,6 +242,7 @@ class Theme:
         items are replaced..
         """
         self.title_format.update(format_dict)
+
 
     @validate_single_format
     def update_subtitle_format(self, format_dict):
@@ -240,6 +252,7 @@ class Theme:
         """
         self.subtitle_format.update(format_dict)
 
+
     @validate_single_format    
     def update_scope_format(self, format_dict):
         """
@@ -247,6 +260,7 @@ class Theme:
         items are replaced.
         """
         self.scope_format.update(format_dict)
+
 
     @validate_single_format
     def update_location_format(self, format_dict):
@@ -256,6 +270,7 @@ class Theme:
         """
         self.location_format.update(format_dict)
 
+
     @validate_single_format
     def update_units_format(self, format_dict):
         """
@@ -263,6 +278,7 @@ class Theme:
         items are replaced.
         """
         self.units_format.update(format_dict)
+
 
     @validate_single_format
     def update_source_format(self, format_dict):
@@ -272,6 +288,7 @@ class Theme:
         """
         self.source_format.update(format_dict)
 
+
     @validate_single_format
     def update_legend_format(self, format_dict):
         """
@@ -279,6 +296,7 @@ class Theme:
         existing items are replaced.
         """
         self.legend_format.update(format_dict)
+
 
     @validate_single_format
     def update_annotations_format(self, format_dict):
@@ -288,6 +306,7 @@ class Theme:
         """
         self.annotations_format.update(format_dict)
 
+
     @validate_single_format
     def update_notes_format(self, format_dict):
         """
@@ -295,6 +314,7 @@ class Theme:
         items are replaced.
         """
         self.notes_format.update(format_dict)
+
 
     def update_footer_order(self, order_list):
         """
@@ -310,6 +330,7 @@ class Theme:
             raise ValueError(msg)
         self.footer_order = order_list
 
+
     def update_missing_value(self, missing_val_text):
         """
         Update the `missing_value` attribute. Overrides existing string.
@@ -317,6 +338,7 @@ class Theme:
         GPTable._validate_text(missing_val_text, "missing_value")
 
         self.missing_value = missing_val_text
+
 
     def print_attributes(self):
         """
@@ -330,6 +352,7 @@ class Theme:
         for attr in obj_attr:
             print(attr, ":", getattr(self, attr))
             
+
     def __eq__(self, other):
         """
         Comparison operator, for testing.
@@ -348,4 +371,3 @@ class Theme:
                 for attr in obj_attr
                 ])
         
-    
