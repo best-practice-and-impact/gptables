@@ -4,6 +4,9 @@ import glob
 from os.path import abspath, dirname, join, basename, splitext
 
 def pickle_themes():
+    """
+    Utility function for updating theme pickles.
+    """
     package_dir = dirname(dirname(dirname(abspath(__file__))))
     theme_configs = glob.glob(join(
             package_dir,

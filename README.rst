@@ -8,9 +8,8 @@ Good Practice Tables (gptables)
     :target: https://badge.fury.io/py/gptables
     :alt: PyPI release
 
-gptables - a highly opinionated package for spreadsheet production
-------------------------------------------------------------------
-``gptables`` is a highly opinionated python package.
+
+``gptables`` is an opinionated python package for spreadsheet production.
 It produces ``.xlsx`` files from your ``pandas`` dataframes or using
 ``reticulate`` in R. You define the mapping from your data to elements of the
 table. It does the rest.
@@ -27,10 +26,11 @@ division of the Office for National Statistics, UK.
 
 .. _`Best Practice and Impact`: https://gss.civilservice.gov.uk/about-us/support-for-the-gss/
 
-Main Features
--------------
-You define your mapping with your data as a ``GPTable``.
+3 Simple Steps
+--------------
 
-You can define the format of your mapping with a ``Theme``, or simply use the default - gptheme.
+1. You define your mapping with your data as a ``GPTable``.
 
-You ``write_workbook()`` to win.
+2. You can define the format of your mapping with a ``Theme``, or simply use the default - gptheme.
+
+3. You ``write_workbook()`` to win.

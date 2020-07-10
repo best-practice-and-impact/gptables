@@ -8,8 +8,9 @@ repository before making a change.
 
 1. Branch from the `dev` branch. If you are implementing a feature name it
    `feature/name_of_feature`, if you are implementing a bugfix name it
-   `bug/issue_name`.
-1. Update the README.md and other documentation with details of major changes
+   `bug/issue_name`. If they are associated with a specific issue, you
+   may use the issue number in place of the name.
+1. Update the README.rst and other documentation with details of major changes
    to the interface, this includes new environment variables, useful file
    locations and container parameters.
 1. Once you are ready for review please open a pull/merge request to the
@@ -27,7 +28,7 @@ repository before making a change.
   or `increment`.
 - We name functions using verbs in lowercase, e.g. `map_variables_to_names` or
   `change_values`.
-- We use the (numpydoc)[https://numpydoc.readthedocs.io/en/latest/format.html]
+- We use the [numpydoc](https://numpydoc.readthedocs.io/en/latest/format.html)
   format for documenting features using docstrings.
 
 ## Review process

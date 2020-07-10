@@ -12,14 +12,14 @@
 #
 import os
 import sys
-import sphinx_rtd_theme
+import alabaster
 sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'gptables'
-copyright = '2020, David Foster, Alexander Newton'
-author = 'David Foster, Alexander Newton'
+copyright = ' Crown Copyright'
+author = 'David Foster & Alexander Newton'
 
 # The full version, including alpha/beta/rc tags
 with open(os.path.abspath("../../VERSION")) as f:
@@ -32,9 +32,14 @@ with open(os.path.abspath("../../VERSION")) as f:
 # ones.
 extensions = [
         'sphinx.ext.autodoc',
+        'sphinx.ext.viewcode',
+        'sphinx.ext.todo',
         'sphinx.ext.githubpages',
         'sphinx.ext.napoleon'
         ]
+
+
+todo_include_todos = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -45,12 +50,47 @@ templates_path = ['_templates']
 exclude_patterns = []
 
 
+# The master toctree document.
+master_doc = 'index'
+
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'alabaster'
+
+custom_fonts = '"Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif'
+html_theme_options = {
+    "description": "An opinionated python package for spreadsheet production.",
+    'fixed_sidebar': 'true',
+    'caption_font_family': custom_fonts,
+    'font_family': custom_fonts,
+    'head_font_family': custom_fonts,
+    "github_user": "best-practice-and-impact",
+    "github_repo": "gptables",
+    "github_button": True,
+    "github_type": "watch",
+    "github_count": False,
+    "sidebar_includehidden": True,
+    "show_relbar_bottom": True,
+    "page_width": "60rem",
+    "sidebar_width": "15rem",
+    }
+
+html_show_sourcelink = False
+
+
+html_sidebars = {
+        '**': [
+            'about.html',
+            'navigation.html',
+            'relations.html',
+            'searchbox.html'
+            ]
+
+        }
+
+
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
