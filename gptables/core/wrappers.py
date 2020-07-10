@@ -11,11 +11,13 @@ from .theme import Theme
 from .gptable import GPTable
 from gptables.utils.unpickle_themes import gptheme
 
+
 class GPWorksheet(Worksheet):
     """
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
+    
     def write_gptable(self, gptable, auto_width, disable_footer_parentheses):
         """
         Write data from a GPTable object to the worksheet using the workbook
@@ -71,6 +73,7 @@ class GPWorksheet(Worksheet):
                     getattr(gptable, element),
                     getattr(theme, element + "_format")
                     )
+
 
     def _reference_annotations(self, gptable):
         """
@@ -132,6 +135,7 @@ class GPWorksheet(Worksheet):
         # Replace old notes refs
         gptable.annotations = new_annotations
         
+
     def _reference_table_annotations(self, gptable, ordered_refs):
          """
          Reference annotations in the table column headings and index columns.
@@ -151,7 +155,8 @@ class GPWorksheet(Worksheet):
                      )
 
          setattr(gptable, "table", table)
-         
+
+
     def _replace_reference_in_attr(self, data, ordered_refs):
         """
         Replaces references in a string or list/dict of strings. Works
@@ -190,6 +195,7 @@ class GPWorksheet(Worksheet):
 
         return data
     
+
     @staticmethod
     def _replace_reference(string, ordered_refs):
         """
@@ -221,6 +227,7 @@ class GPWorksheet(Worksheet):
 
         return string
 
+
     def _enclose_footer_elements(self, gptable):
         """
         Flank text footer elements with parentheses.
@@ -234,6 +241,7 @@ class GPWorksheet(Worksheet):
             [("(" + str(k), v + ")") for k, v in gptable.annotations.items()]
             )
 
+
     @staticmethod
     def _enclose_text(element):
         """
@@ -244,6 +252,7 @@ class GPWorksheet(Worksheet):
             return  "(" + element + ")"
         elif isinstance(element, list):
             return ["("] + element + [")"]
+
 
     def _write_element(self, pos, element, format_dict):
         """
@@ -268,6 +277,7 @@ class GPWorksheet(Worksheet):
             pos[0] += 1
         
         return pos       
+
 
     def _write_element_list(self, pos, element_list, format_dict):
         """
@@ -294,11 +304,13 @@ class GPWorksheet(Worksheet):
         
         return pos
 
+
     def _write_source(self, pos, element, format_dict):
         """
         Alias for writting footer elements by name.
         """
         return self._write_element(pos, element, format_dict)
+
 
     def _write_legend(self, pos, element_list, format_dict):
         """
@@ -306,11 +318,13 @@ class GPWorksheet(Worksheet):
         """
         return self._write_element_list(pos, element_list, format_dict)
 
+
     def _write_notes(self, pos, element_list, format_dict):
         """
         Alias for writting footer elements by name.
         """
         return self._write_element_list(pos, element_list, format_dict)
+
 
     def _write_annotations(self, pos, annotations_dict, format_dict):
         """
@@ -335,6 +349,7 @@ class GPWorksheet(Worksheet):
             pos = self._write_element(pos, element, format_dict)
 
         return pos
+
 
     def _write_table_elements(self, pos, gptable, auto_width):
         """
@@ -477,6 +492,7 @@ class GPWorksheet(Worksheet):
             self._set_column_widths(widths)
         
         return pos
+
     
     def _apply_additional_formatting(
             self,
@@ -533,6 +549,7 @@ class GPWorksheet(Worksheet):
                 formatting
                 )
 
+
     def _write_array(self, pos, data, formats):
         """
         Write a two-dimensional array to the current Worksheet, starting from
@@ -573,6 +590,7 @@ class GPWorksheet(Worksheet):
         
         return pos
         
+
     def _smart_write(self, row, col, data, format_dict):
         """
         Depending on the input data, this function will write rich strings or
@@ -625,6 +643,7 @@ class GPWorksheet(Worksheet):
                     data,
                     wb.add_format(format_dict)
                     )
+
 
     @staticmethod
     def _apply_format(format_table_slice, format_dict):
@@ -727,6 +746,7 @@ class GPWorkbook(Workbook):
     Wrapper for and XlsxWriter Workbook object. The Worksheets class has been
     replaced by an alternative with a method for writting GPTable objects.
     """
+
     def __init__(self, filename=None, options={}):
         super(GPWorkbook, self).__init__(filename=filename, options=options)
         self.theme = None
@@ -734,6 +754,7 @@ class GPWorkbook(Workbook):
         # Set default theme
         self.set_theme(gptheme)
         
+
     def add_worksheet(self, name=None):
         """
         Overwrite add_worksheet() to create a GPWorksheet object.

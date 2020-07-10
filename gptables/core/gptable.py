@@ -29,11 +29,8 @@ class GPTable:
         Default is a level two index in the first column ({2: 0}).
     additional_formatting : dict
         table-specific formatting for columns, rows or individual cells
-    
-    Methods
-    -------
-    
     """
+
     def __init__(self,
                  table,
                  title,
@@ -87,6 +84,7 @@ class GPTable:
         self.set_notes(notes)
         self.set_additional_formatting(additional_formatting)
         
+
     def set_table(self, new_table, new_index_columns = None, new_units = None):
         """
         Set the `table`, `index_columns` and 'units' attributes. Overwrites
@@ -112,6 +110,7 @@ class GPTable:
             new_units = self.units
         self.set_units(new_units)
         
+
     def set_index_columns(self, new_index_columns):
         """
         Set the `index_columns` attribute. Overwrites any existing values.
@@ -150,12 +149,14 @@ class GPTable:
                    " to a 0-indexed column number")
             raise ValueError(msg)
     
+
     def _valid_column_index(self, column_index):
         """
         Check if `column_index` is valid, given the `table` shape.
         """
         return column_index in range(self.table.shape[1])
         
+
     def _set_column_headings(self):
         """
         Sets the `column_headings` attribute to the set of column indexes that
@@ -164,6 +165,7 @@ class GPTable:
         index_cols = set(self.index_columns.values())
         self._column_headings = {x for x in range(self.table.shape[1])} - index_cols
     
+
     def set_title(self, new_title):
         """
         Set the `title` attribute.
@@ -171,6 +173,7 @@ class GPTable:
         self._validate_text(new_title, "title")
         self.title = new_title
     
+
     def add_subtitle(self, new_subtitle):
         """
         Add a single subtitle to the existing list of `subtitles`.
@@ -178,6 +181,7 @@ class GPTable:
         self._validate_text(new_subtitle, "subtitles")
         self.subtitles.append(new_subtitle)
     
+
     def set_subtitles(self, new_subtitles, overwrite=True):
         """
         Set a list of subtitles to the `subtitles` attribute. Overwrites
@@ -201,12 +205,14 @@ class GPTable:
         else:
             self.subtitles += new_subtitles
             
+
     def set_scope(self, new_scope):
         """
         Set the `scope` attribute.
         """
         self._validate_text(new_scope, "scope")
         self.scope = new_scope        
+
 
     def set_units(self, new_units):
         """
@@ -243,6 +249,7 @@ class GPTable:
             
         self.units = new_units
 
+
     def set_source(self, new_source):
         """
         Set the source attribute to the specified str.
@@ -251,6 +258,7 @@ class GPTable:
             
         self.source = new_source
     
+
     def add_legend(self, new_legend):
         """
         Add a single legend entry to the existing `legend` list.
@@ -258,6 +266,7 @@ class GPTable:
         self._validate_text(new_legend, "legend")
         self.subtitles.append(new_legend)
     
+
     def set_legend(self, new_legend, overwrite=True):
         """
         Set a list of legend entries to the `legend` attribute. Overwrites
@@ -275,6 +284,7 @@ class GPTable:
         else:
             self.legend += new_legend
             
+
     def add_annotation(self, new_annotation):
         """
         Add one or more annotations to the existing `annotations` dictionary.
@@ -285,6 +295,7 @@ class GPTable:
             self._validate_text(text, "annotations")
         self.annotations.update(new_annotation)
     
+
     def set_annotations(self, new_annotations, overwrite=True):
         """
         Set a list of notes to the `annotations` attribute. Overwrites existing
@@ -307,6 +318,7 @@ class GPTable:
         else:
             self.annotations.update(new_annotations)
             
+
     def add_note(self, new_note):
         """
         Add a single note to the existing `notes` list.
@@ -314,6 +326,7 @@ class GPTable:
         self._validate_text(new_note, "notes")
         self.notes.append(new_note)
     
+
     def set_notes(self, new_notes, overwrite=True):
         """
         Set a list of notes to the `notes` attribute. Overwrites existing
@@ -330,7 +343,8 @@ class GPTable:
             self.notes = new_notes
         else:
             self.notes += new_notes
-            
+
+
     def set_additional_formatting(self, new_formatting):
         """
         Set a dictionary of additional formatting to be applied to this table.
@@ -349,6 +363,7 @@ class GPTable:
             
         self.additional_formatting = new_formatting
     
+
     def _validate_format_labels(self, format_list):
         """
         Validate that format labels are valid property of XlsxWriter Format.
@@ -362,6 +377,7 @@ class GPTable:
             if label not in self._valid_format_labels:
                 msg = (f"`{label}` is not a valid XlsxWriter Format property")
                 raise ValueError(msg)
+    
     
     @staticmethod
     def _validate_text(obj, attr):
