@@ -27,14 +27,9 @@ class Theme:
     This class associates a dict of format attributes with table elements.
 
     See XlsxWriter
-    `format properties <https://xlsxwriter.readthedocs.io/format.html>`_
+    `format properties <https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties>`_
     for valid options.
 
-    Parameters
-    ----------
-    config : dict or .yaml/.yml file
-        theme specification
-    
     Attributes
     ----------
     title_format : dict
@@ -73,7 +68,12 @@ class Theme:
             config=None,
             ):
         """
-        Initialise theme object
+        Initialise theme object.
+
+        Parameters
+        ----------
+        config : dict or .yaml/.yml file
+          theme specification
         """
         ## Formats
         self._format_attributes = [

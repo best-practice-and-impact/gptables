@@ -115,7 +115,7 @@ class GPTable:
     def set_index_columns(self, new_index_columns):
         """
         Set the `index_columns` attribute. Overwrites any existing values.
-        An dict must be supplied. This dict should map index level to a
+        A dict must be supplied. This dict should map index level to a
         single 0-indexed column number. All other columns will be considered
         as data columns.
         """
@@ -183,8 +183,6 @@ class GPTable:
         Set a list of subtitles to the `subtitles` attribute. Overwrites
         existing ist of subtitles by default. If `overwrite` is False, new list
         is appended to existing list of subtitles.
-
-        Use an empty list or None to omit subtitles.
         """
         if new_subtitles is None:
             new_subtitles = []
@@ -291,7 +289,7 @@ class GPTable:
         """
         Set a list of notes to the `annotations` attribute. Overwrites existing
         `annotations` dict by default. If overwrite is False, new entries are
-        appended to the `annotations` dict.
+        used to update the `annotations` dict.
         """
         if not isinstance(new_annotations, dict):
             msg = ("annotations must be provided as a dictionary of"
