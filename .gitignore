@@ -5,3 +5,4 @@ env/
 *.pyc
 *~lock*
 docs/build/**
+gptables/examples/*.xlsx
