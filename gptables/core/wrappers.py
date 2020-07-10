@@ -16,7 +16,7 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
-    def write_gptable(self, gptable, auto_width):
+    def write_gptable(self, gptable, auto_width, disable_footer_parentheses):
         """
         Write data from a GPTable object to the worksheet using the workbook
         Theme object for formatting.
@@ -42,6 +42,7 @@ class GPWorksheet(Worksheet):
         pos = [0, 0]
 
         self._reference_annotations(gptable)
+
         pos = self._write_element(
                 pos,
                 gptable.title,
@@ -60,7 +61,8 @@ class GPWorksheet(Worksheet):
                 auto_width
                 )
 
-        self._format_footer_elements(gptable)
+        if not disable_footer_parentheses:
+            self._enclose_footer_elements(gptable)
 
         footer = theme.footer_order
         for element in footer:
@@ -132,7 +134,7 @@ class GPWorksheet(Worksheet):
         
     def _reference_table_annotations(self, gptable, ordered_refs):
          """
-         Reference annotaitons in the table column headings and index columns.
+         Reference annotations in the table column headings and index columns.
          """
          table = getattr(gptable, "table")
          
@@ -219,17 +221,18 @@ class GPWorksheet(Worksheet):
 
         return string
 
-    def _format_footer_elements(self, gptable):
+    def _enclose_footer_elements(self, gptable):
         """
         Flank text footer elements with parentheses.
         """
         gptable.source = self._enclose_text(gptable.source)
-
-        for n in range(len(gptable.notes)):
-            gptable.notes[n] = self._enclose_text(gptable.notes[n])
-
-        for n in range(len(gptable.legend)):
-            gptable.legend[n] = self._enclose_text(gptable.legend[n])
+        gptable.notes = [self._enclose_text(note) for note in gptable.notes]
+        gptable.legend = [
+            self._enclose_text(symbol) for symbol in gptable.legend
+            ]
+        gptable.annotations = dict(
+            [("(" + str(k), v + ")") for k, v in gptable.annotations.items()]
+            )
 
     @staticmethod
     def _enclose_text(element):
@@ -328,7 +331,7 @@ class GPWorksheet(Worksheet):
             new position to write next element from
         """
         for ref, annotation in annotations_dict.items():
-            element = f"({ref}: {annotation})"
+            element = f"{ref}: {annotation}"
             pos = self._write_element(pos, element, format_dict)
 
         return pos
@@ -346,7 +349,8 @@ class GPWorksheet(Worksheet):
         pos : tuple
             the position of the worksheet cell to write the units to
         auto_width : bool
-            select if column widths should be determined automatically using length of text in index and columns
+            select if column widths should be determined automatically using
+            length of text in index and columns
 
         Returns
         -------
@@ -671,9 +675,22 @@ class GPWorksheet(Worksheet):
             width to apply to Excel columns
         """
         cols = table.shape[1]
-        max_lengths = [table.iloc[:, col].apply(lambda x: len(x) if isinstance(x, str) else 0).max() for col in range(cols)]
-        max_font_sizes = [formats_table.iloc[:, col].apply(lambda x: x.get("font_size") or 10).max() for col in range(cols)]
-        col_widths = [self._excel_string_width(l, f) for l, f in zip(max_lengths, max_font_sizes)]
+        max_lengths = [
+            table.iloc[:, col].apply(lambda x: len(x)
+            if isinstance(x, str) else 0).max()
+            for col in range(cols)
+            ]
+
+        max_font_sizes = [
+            formats_table.iloc[:, col]
+            .apply(lambda x: x.get("font_size") or 10).max()
+            for col in range(cols)
+            ]
+
+        col_widths = [
+            self._excel_string_width(l, f)
+            for l, f in zip(max_lengths, max_font_sizes)
+            ]
         return col_widths
 
         
@@ -681,7 +698,8 @@ class GPWorksheet(Worksheet):
     def _excel_string_width(string_len, font_size):
         """
         Calculate the rough length of a string in Excel character units.
-        This crude estimate does not account for font name or other font format (e.g. wrapping).
+        This crude estimate does not account for font name or other font format
+        (e.g. wrapping).
         
         Parameters
         ----------
