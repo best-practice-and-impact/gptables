@@ -8,10 +8,12 @@ def produce_workbook(
         sheets,
         theme = None,
         auto_width = False,
+        disable_footer_parentheses = False,
 #      cover_sheet = None
         ):
     """
-    Produces a GPWorkbook, ready to be written to the specified `.xlsx` file using the ``.close()`` method.
+    Produces a GPWorkbook, ready to be written to the specified `.xlsx` file
+    using the ``.close()`` method.
 
     Parameters
     ----------
@@ -23,7 +25,11 @@ def produce_workbook(
         formatting to be applied tot GPTable elements. gptheme is used by
         default
     auto_width : bool, optional
-        indicate if column widths should be automatically determined. False by default.
+        indicate if column widths should be automatically determined. False
+        by default.
+    disable_footer_parentheses : bool, optional
+        indicate if addition of parentheses to footer elements should be
+        disabled. Note that disabling this decreases machine-readability.
         
     Returns
     -------
@@ -36,7 +42,7 @@ def produce_workbook(
     
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
-        ws.write_gptable(gptable, auto_width)
+        ws.write_gptable(gptable, auto_width, disable_footer_parentheses)
     
     return wb
 
@@ -45,6 +51,7 @@ def write_workbook(
         sheets,
         theme = None,
         auto_width = False,
+        disable_footer_parentheses = False,
 #        cover_sheet = None
         ):
 
@@ -66,16 +73,30 @@ def write_workbook(
         default
     auto_width : bool, optional
         indicate if column widths should be automatically determined. False by default.
+    disable_footer_parentheses : bool, optional
+        indicate if addition of parentheses to footer elements should be
+        disabled. Note that disabling this decreases machine-readability.
 
     Returns
     -------
     None
     """
-    wb = produce_workbook(filename, sheets, theme, auto_width)
+    wb = produce_workbook(
+        filename,
+        sheets,
+        theme,
+        auto_width,
+        disable_footer_parentheses
+        )
     wb.close()
 
 
-def quick_and_dirty_workbook(filename, tables, theme = None, auto_width = True):
+def quick_and_dirty_workbook(
+    filename,
+    tables,
+    theme = None,
+    auto_width = True
+    ):
     """
     Writes a list of tables to the specified `.xlsx` file, with no metadata.
 
@@ -126,4 +147,10 @@ def quick_and_dirty_workbook(filename, tables, theme = None, auto_width = True):
             index_columns = index_columns
             )
 
-    write_workbook(filename, sheets, theme = theme, auto_width = auto_width)
+    write_workbook(
+        filename = filename,
+        sheets = sheets,
+        theme = theme,
+        auto_width = auto_width,
+        disable_footer_parentheses = True
+        )
