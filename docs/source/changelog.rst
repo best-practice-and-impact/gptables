@@ -16,7 +16,7 @@ and this project tries its very best to adhere to
 Released (master)
 =================
 
-v0.1.4
+v0.2.0
 ------
 :Date: 2020-07-10
 
