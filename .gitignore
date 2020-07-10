@@ -4,4 +4,4 @@ env/
 *.log
 *.pyc
 *~lock*
-docs/build/
+docs/build/**

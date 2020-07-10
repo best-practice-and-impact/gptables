@@ -1,7 +1,11 @@
 """
-Iris Quick and Dirty Example
+Iris - Quick and Dirty Example
+------------------------------
 
 This example demonstrates use of the ``gptables.quick_and_dirty_workbook`` function.
+This function is intended for use when only data, and no metadata, is required.
+It should **not** be used for production of reference statistical tables for publication.
+
 This function takes a list of ``pandas.DataFrame`` objects and writes each to a
 separate sheet of the specified output `.xlsx` file. Formatting is taken from
 the default ``gptables.Theme`` - gptheme - unless an alternative theme is provided
@@ -12,9 +16,6 @@ Unlike the other API functions, ``quick_and_dirty_workbook`` does not require
 the user to specify table metadata or indicate which columns are row indexes.
 Up to 3 row index levels are automatically detected. However, as with the other
 API functions, row indices must be columns in the table instead of set as a ``pandas.Index``.
-
-This function is intended for use when only data, and no metadata, is required.
-It should **not** be used for production of reference statistical tables for publication.
 """
 import gptables as gpt
 import pandas as pd

@@ -1,8 +1,10 @@
 from xlsxwriter.format import Format
 from gptables.core.gptable import GPTable
 import yaml
+from functools import wraps
 
 def validate_single_format(f):
+    @wraps(f)
     def wrapper(cls, format_dict):
         """
         Decorator to validate that input is a dictionary dictionary.
@@ -25,14 +27,9 @@ class Theme:
     This class associates a dict of format attributes with table elements.
 
     See XlsxWriter
-    [format properties](https://xlsxwriter.readthedocs.io/format.html)
+    `format properties <https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties>`_
     for valid options.
 
-    Parameters
-    ----------
-    config : dict or .yaml/.yml
-        theme specification
-    
     Attributes
     ----------
     title_format : dict
@@ -71,7 +68,12 @@ class Theme:
             config=None,
             ):
         """
-        Initialise theme object
+        Initialise theme object.
+
+        Parameters
+        ----------
+        config : dict or .yaml/.yml file
+          theme specification
         """
         ## Formats
         self._format_attributes = [
