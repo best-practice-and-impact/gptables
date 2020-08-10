@@ -6,10 +6,10 @@ from gptables import GPWorkbook, GPTable
 def produce_workbook(
         filename,
         sheets,
+        cover = None,
         theme = None,
         auto_width = False,
         disable_footer_parentheses = False,
-#      cover_sheet = None
         ):
     """
     Produces a GPWorkbook, ready to be written to the specified `.xlsx` file
@@ -24,6 +24,8 @@ def produce_workbook(
     theme : gptables.Theme, optional)
         formatting to be applied tot GPTable elements. gptheme is used by
         default
+    cover : gptables.Cover, optional
+        cover page text. Including this argument will generat a cover page
     auto_width : bool, optional
         indicate if column widths should be automatically determined. False
         by default.
@@ -50,10 +52,10 @@ def produce_workbook(
 def write_workbook(
         filename,
         sheets,
+        cover = None,
         theme = None,
         auto_width = False,
         disable_footer_parentheses = False,
-#        cover_sheet = None
         ):
 
     """
@@ -72,6 +74,8 @@ def write_workbook(
     theme : gptables.Theme, optional
         formatting to be applied tot GPTable elements. ``gptheme`` is used by
         default
+    cover : gptables.Cover, optional
+        cover page text. Including this argument will generat a cover page
     auto_width : bool, optional
         indicate if column widths should be automatically determined. False by default.
     disable_footer_parentheses : bool, optional
