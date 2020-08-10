@@ -8,6 +8,7 @@ from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
 
 from .theme import Theme
+from .cover import Cover
 from .gptable import GPTable
 from gptables.utils.unpickle_themes import gptheme
 
@@ -750,7 +751,7 @@ class GPWorkbook(Workbook):
     def __init__(self, filename=None, options={}):
         super(GPWorkbook, self).__init__(filename=filename, options=options)
         self.theme = None
-        
+        self.cover = None
         # Set default theme
         self.set_theme(gptheme)
         
@@ -793,3 +794,17 @@ class GPWorkbook(Workbook):
         if not isinstance(theme, Theme):
             raise TypeError("`theme` must be a gptables.Theme object")
         self.theme = theme
+
+
+    def set_cover(self, cover):
+        """
+        Sets the cover page information for the Workbook.
+
+        Parameters
+        ----------
+        cover : gptables.Cover
+            cover page text
+        """
+        if not isinstance(cover, Cover):
+            raise TypeError("`cover` must be a gptables.Cover object")
+        self.cover = cover
