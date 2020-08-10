@@ -18,7 +18,56 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
-    
+    def write_cover(self, cover, contents):
+        pos = [0, 0]
+        theme = self.theme
+        self._smart_write(*pos, cover.title, theme.title_format)
+        pos[0] += 2
+
+        if cover.intro is not None:
+            self._smart_write(*pos, "Introductory information", theme.title_format)
+            pos[0] += 1
+            self._smart_write(*pos, cover.intro, theme.subtitle_format)
+            pos[0] += 2
+
+        if contents:
+            self._smart_write(*pos, "Contents", theme.title_format)
+            pos[0] += 1
+            for sheet in contents:
+                link = f"internal:'{sheet}'!A1"
+                hyperlink_format = deepcopy(theme.subtitle_format)
+                hyperlink_format.update({"underline": True, "font_color": "blue"})
+                print(hyperlink_format)
+                self._smart_write(
+                    *pos,
+                    link,
+                    hyperlink_format,
+                    sheet
+                    )
+                title = contents[sheet]["title"]
+                if isinstance(title, str):
+                    title_no_annotations = re.sub("\$\$.*\$\$", "", title)
+                elif isinstance(title, list):
+                    title_no_annotations = [
+                        re.sub("\$\$.*\$\$", "", part)
+                        if isinstance(part, str) else part
+                        for part in title
+                        ]
+                self._smart_write(
+                    pos[0], pos[1] + 1,
+                    title_no_annotations,
+                    theme.subtitle_format
+                    )
+                pos[0] += 1
+            pos[0] += 1
+
+        if cover.about is not None:
+            self._smart_write(*pos, "About these data", theme.title_format)
+            pos[0] += 1
+            self._smart_write(*pos, cover.about, theme.subtitle_format)
+            pos[0] += 2
+
+
     def write_gptable(self, gptable, auto_width, disable_footer_parentheses):
         """
         Write data from a GPTable object to the worksheet using the workbook
@@ -27,7 +76,7 @@ class GPWorksheet(Worksheet):
         Parameters
         ----------
         gptable : gptables.GPTable
-            object contianing elements of the gptable to be written to the
+            object containing elements of the gptable to be written to the
             Worksheet
         
         Returns
@@ -592,7 +641,7 @@ class GPWorksheet(Worksheet):
         return pos
         
 
-    def _smart_write(self, row, col, data, format_dict):
+    def _smart_write(self, row, col, data, format_dict, *args):
         """
         Depending on the input data, this function will write rich strings or
         use the standard `write()` method. For rich strings, the base format is
@@ -630,11 +679,12 @@ class GPWorksheet(Worksheet):
                     data_with_formats.append(item)
             if len(data) > 3:
                 data_with_formats.insert(-1, wb.add_format(format_dict))
-
+            
             self.write_rich_string(row,
                                    col,
                                    *data_with_formats,
-                                   wb.add_format(format_dict)
+                                   wb.add_format(format_dict),
+                                   *args
                                    )
         else:
             # Write handles all other write types dynamically
@@ -642,7 +692,8 @@ class GPWorksheet(Worksheet):
                     row,
                     col,
                     data,
-                    wb.add_format(format_dict)
+                    wb.add_format(format_dict),
+                    *args
                     )
 
 
@@ -680,7 +731,7 @@ class GPWorksheet(Worksheet):
     def _calculate_column_widths(self, table, formats_table):
         """
         Calculate Excel column widths using maximum length of strings
-        and the maxium font size in each column of the data table.
+        and the maximum font size in each column of the data table.
 
         Parameters
         ----------
@@ -751,7 +802,6 @@ class GPWorkbook(Workbook):
     def __init__(self, filename=None, options={}):
         super(GPWorkbook, self).__init__(filename=filename, options=options)
         self.theme = None
-        self.cover = None
         # Set default theme
         self.set_theme(gptheme)
         
@@ -792,19 +842,5 @@ class GPWorkbook(Workbook):
         None
         """
         if not isinstance(theme, Theme):
-            raise TypeError("`theme` must be a gptables.Theme object")
+            raise TypeError(f"`theme` must be a gptables.Theme object, not: {type(theme)}")
         self.theme = theme
-
-
-    def set_cover(self, cover):
-        """
-        Sets the cover page information for the Workbook.
-
-        Parameters
-        ----------
-        cover : gptables.Cover
-            cover page text
-        """
-        if not isinstance(cover, Cover):
-            raise TypeError("`cover` must be a gptables.Cover object")
-        self.cover = cover

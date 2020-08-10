@@ -6,8 +6,8 @@ from gptables import GPWorkbook, GPTable
 def produce_workbook(
         filename,
         sheets,
-        cover = None,
         theme = None,
+        cover = None,
         auto_width = False,
         disable_footer_parentheses = False,
         ):
@@ -41,6 +41,11 @@ def produce_workbook(
 
     if theme is not None:
         wb.set_theme(theme)
+
+    if cover is not None:
+        contents = {sheet: {"title": gptable.title} for sheet, gptable in sheets.items()}
+        ws = wb.add_worksheet("Cover")
+        ws.write_cover(cover, contents)
     
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
@@ -52,8 +57,8 @@ def produce_workbook(
 def write_workbook(
         filename,
         sheets,
-        cover = None,
         theme = None,
+        cover = None,
         auto_width = False,
         disable_footer_parentheses = False,
         ):
@@ -90,6 +95,7 @@ def write_workbook(
         filename,
         sheets,
         theme,
+        cover,
         auto_width,
         disable_footer_parentheses
         )
