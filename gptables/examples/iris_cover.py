@@ -1,21 +1,20 @@
 """
-Iris - Minimal Example
-----------------------
+Iris - Cover Page
+-----------------
 
-This example demonstrates use of the ``gptables.write_workbook`` function.
-This API function is designed for production of consistently structured and formatted tables.
+This example demonstrates use of the ``gptables.Cover`` class to create a cover page.
 
-Summary statistics from the classic iris dataset are used to build a ``gptables.GPTable``
-object. Elements of metadata are provided to the corresponding parameters of the class.
-Where you wish to provide no metadata in required parameters, use ``None``.
-
-Table formatting can be defined as a ``gptable.Theme``, which is passed to the API functions
- using the ``theme`` parameter. Or you can reply on our default - gptheme.
+A gptables cover pages contain a range of custom text elements, along with a hyperlinked table of contents.
+Text elements are defined as a ``gptables.Cover`` instance, which is passed to the ``cover`` parameter of ``gptables.write_worbook()`` or ``gptables.produce_worbook()``.
+In this example, we have also set ``auto_width`` to ``True``.
+This automatically determines the width of the first column on the cover sheet, as well as all columns of the tables of the workbook.
 """
 import gptables as gpt
 import pandas as pd
 import numpy as np
+import os
 from pathlib import Path
+from copy import deepcopy
 
 ## Read data and arrange
 parent_dir = Path(__file__).parent
@@ -75,11 +74,27 @@ iris_table = gpt.GPTable(
         **kwargs
         )
 
+iris_table_copy = deepcopy(iris_table)
+iris_table_copy.set_title("A copy of the first sheet$$note2$$")
+
+cover = gpt.Cover(
+        cover_label = "Notes",
+        title = "A Worbook containing good practice tables",
+        intro = ["This is some introductory information", "And some more"],
+        about = ["Even more info about my data", "And a little more"],
+        contact = ["John Doe", "Tel: 345345345"],
+        additional_elements = ["subtitles", "scope", "source", "notes"]
+        )
+
 ## Use write_workbook to win!
 if __name__ is "__main__":
-        output_path = parent_dir / "python_iris_gptable.xlsx"
+        output_path = parent_dir / "python_iris_cover_gptable.xlsx"
         gpt.write_workbook(
                 filename = output_path,
-                sheets = {"Iris Flower Dimensions": iris_table}
+                sheets = {
+                        "Iris Flower Dimensions": iris_table,
+                        "Copy of Iris Flower Dimensions": iris_table_copy},
+                cover = cover,
+                auto_width=True,
                 )
         print("Output written at: ", output_path)

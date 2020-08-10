@@ -2,3 +2,4 @@ pandas>=0.25.3
 xlrd>=1.2.0
 XlsxWriter>=1.2.6
 pyyaml>=3.12
+dataclasses>=0.6

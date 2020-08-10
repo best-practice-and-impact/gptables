@@ -1,4 +1,5 @@
 import pandas as pd
+from pathlib import Path
 
 from gptables import GPWorkbook, GPTable
 
@@ -7,9 +8,9 @@ def produce_workbook(
         filename,
         sheets,
         theme = None,
+        cover = None,
         auto_width = False,
         disable_footer_parentheses = False,
-#      cover_sheet = None
         ):
     """
     Produces a GPWorkbook, ready to be written to the specified `.xlsx` file
@@ -24,6 +25,8 @@ def produce_workbook(
     theme : gptables.Theme, optional)
         formatting to be applied tot GPTable elements. gptheme is used by
         default
+    cover : gptables.Cover, optional
+        cover page text. Including this argument will generat a cover page
     auto_width : bool, optional
         indicate if column widths should be automatically determined. False
         by default.
@@ -35,10 +38,17 @@ def produce_workbook(
     -------
     workbook : gptables.GPWorkbook
     """
+    if isinstance(filename, Path):
+        filename = filename.as_posix()
+
     wb = GPWorkbook(filename)
 
     if theme is not None:
         wb.set_theme(theme)
+
+    if cover is not None:
+        ws = wb.add_worksheet(cover.cover_label)
+        ws.write_cover(cover, sheets, auto_width)
     
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
@@ -51,9 +61,9 @@ def write_workbook(
         filename,
         sheets,
         theme = None,
+        cover = None,
         auto_width = False,
         disable_footer_parentheses = False,
-#        cover_sheet = None
         ):
 
     """
@@ -72,6 +82,8 @@ def write_workbook(
     theme : gptables.Theme, optional
         formatting to be applied tot GPTable elements. ``gptheme`` is used by
         default
+    cover : gptables.Cover, optional
+        cover page text. Including this argument will generat a cover page
     auto_width : bool, optional
         indicate if column widths should be automatically determined. False by default.
     disable_footer_parentheses : bool, optional
@@ -86,6 +98,7 @@ def write_workbook(
         filename,
         sheets,
         theme,
+        cover,
         auto_width,
         disable_footer_parentheses
         )

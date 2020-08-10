@@ -15,28 +15,35 @@ examples_ directory of the package.
 
 .. automodule:: gptables.examples.iris
 
-.. literalinclude:: ..\..\gptables\examples\iris.py
+.. literalinclude:: ../../gptables/examples/iris.py
     :language: python
     :lines: 15-
 
 
+.. automodule:: gptables.examples.iris_cover
+
+.. literalinclude:: ../../gptables/examples/iris_cover.py
+    :language: python
+    :lines: 12-
+
+
 .. automodule:: gptables.examples.iris_additional_formatting
 
-.. literalinclude:: ..\..\gptables\examples\iris_additional_formatting.py
+.. literalinclude:: ../../gptables/examples/iris_additional_formatting.py
     :language: python
     :lines: 24-
 
 
 .. automodule:: gptables.examples.cor_multiple_sheets
 
-.. literalinclude:: ..\..\gptables\examples\cor_multiple_sheets.py
+.. literalinclude:: ../../gptables/examples/cor_multiple_sheets.py
     :language: python
     :lines: 16-
 
 
 .. automodule:: gptables.examples.iris_quick_and_dirty
 
-.. literalinclude:: ..\..\gptables\examples\iris_quick_and_dirty.py
+.. literalinclude:: ../../gptables/examples/iris_quick_and_dirty.py
     :language: python
     :lines: 20-
 
@@ -50,5 +57,5 @@ This example demonstrates basic usage of the pacakge in R. More advanced usage w
 use a similar approach to python (above), but may require use of ``reticulate`` functions
 to create/modify python objects.
 
-.. literalinclude:: ..\..\gptables\examples\iris.R
+.. literalinclude:: ../../gptables/examples/iris.R
     :language: R

@@ -32,6 +32,12 @@ class Theme:
 
     Attributes
     ----------
+    cover_title_format : dict
+
+    cover_subtitle_format : dict
+
+    cover_text_format : dict
+    
     title_format : dict
 
     subtitle_format : dict
@@ -77,6 +83,9 @@ class Theme:
         """
         ## Formats
         self._format_attributes = [
+            "cover_title_format",
+            "cover_subtitle_format",
+            "cover_text_format",
             "title_format",
             "subtitle_format",
             "scope_format",
@@ -236,10 +245,36 @@ class Theme:
 
 
     @validate_single_format
+    def update_cover_title_format(self, format_dict):
+        """
+        Update the `cover_title_format` attribute. Where keys already exist, existing
+        items are replaced.
+        """
+        self.cover_title_format.update(format_dict)
+    
+    
+    @validate_single_format
+    def update_cover_subtitle_format(self, format_dict):
+        """
+        Update the `cover_subtitle_format` attribute. Where keys already exist, existing
+        items are replaced.
+        """
+        self.cover_subtitle_format.update(format_dict)
+
+
+    @validate_single_format
+    def update_cover_text_format(self, format_dict):
+        """
+        Update the `cover_text_format` attribute. Where keys already exist, existing
+        items are replaced.
+        """
+        self.cover_text_format.update(format_dict)
+
+    @validate_single_format
     def update_title_format(self, format_dict):
         """
         Update the `title_format` attribute. Where keys already exist, existing
-        items are replaced..
+        items are replaced.
         """
         self.title_format.update(format_dict)
 

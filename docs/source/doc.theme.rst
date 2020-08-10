@@ -8,10 +8,14 @@ The easiest way to design your own theme is to create a
 YAML configuration file. You should take a copy of our default theme
 configuration file and adjust it to suit your needs.
 
-Most of the top level names in the config file represent elements of the table.
+Most of the top level names in the config file represent table elements or their metadata.
 The parameters passed below these names are `XlsxWriter format properties`_, so you
 should check out their documentation to find the appropriate properties and valid
 options for your formatting.
+
+``global`` refers to the base format that all others will be built upon.
+Any format parameter that is repeated for a specific element will override the global format for that element.
+The three ``cover_`` format names refer to elements of the cover page generated from a :class:`~.core.gptable.Cover`.
 
 .. _`XlsxWriter format properties`: https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties
 
@@ -28,7 +32,7 @@ XlsxWriter properties. They do the following:
 
 The configuration file for our default theme looks like this:
 
-.. literalinclude:: ..\..\gptables\themes\gptheme.yaml
+.. literalinclude:: ../../gptables/themes/gptheme.yaml
     :language: yaml
 
 

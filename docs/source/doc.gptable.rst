@@ -60,7 +60,7 @@ Additional formatting
 In some cases you may want to apply one-off formatting on specific rows, columns or cells of the data.
 As mentioned above, this formatting should not be used to represent data or important information.
 
-Bespoke formatting can be applied to an individual ``GPTable`` via the ``additonal_formatting`` parameter,
+Bespoke formatting can be applied to an individual ``GPTable`` via the ``additional_formatting`` parameter,
 when creating a ``GPTable`` instance. This parameter takes a list of dictionaries, where each dictionary
 defines formatting for one or more rows, columns or cells.
 
