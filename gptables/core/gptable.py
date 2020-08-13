@@ -13,7 +13,7 @@ class GPTable:
     title : str
         description of the table
     subtitles : list
-        subtitiles as a list of strings
+        subtitles as a list of strings
     scope : str
         description of scope/basis of data in table
     units : str or dict
@@ -217,7 +217,7 @@ class GPTable:
     def set_units(self, new_units):
         """
         Set the `units` attribute using the supplied str, list or dictionary.
-        Units supplied as a list must match the length of columng headings,
+        Units supplied as a list must match the length of column headings,
         excluding index columns. Units as a dict should be in the format
         {column: units_text}. Column can be column name or 0-indexed column
         number in `table`. Index columns cannot have units.
