@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 @dataclass
 class Cover():
@@ -12,5 +13,6 @@ class Cover():
         about (str): optional about/notes text
     """
     title: str
-    intro: str = None
-    about: str = None
+    intro: List = None
+    about: List = None
+    
