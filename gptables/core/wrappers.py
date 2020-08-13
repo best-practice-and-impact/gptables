@@ -19,53 +19,44 @@ class GPWorksheet(Worksheet):
     a good practice table (GPTable) to a Worksheet.
     """
     def write_cover(self, cover, contents):
-        pos = [0, 0]
+        """
+        Write a cover page to the Worksheet. Uses text from a Cover object and
+        details of the Workbook contents.
+
+        Parameters
+        ----------
+        cover : gptables.Cover
+            object containing cover sheet text
+        contents : dict
+            sheet names mapped to data for cover sheet (e.g. table title) for
+            all tables in the Workbook
+        """
         theme = self.theme
-        self._smart_write(*pos, cover.title, theme.title_format)
-        pos[0] += 2
+        pos = [0, 0]
+
+        pos = self._write_element(pos, cover.title, theme.cover_title_format)
+        pos[0] += 1
 
         if cover.intro is not None:
-            self._smart_write(*pos, "Introductory information", theme.title_format)
+            pos = self._write_element(pos, "Introductory information", theme.cover_subtitle_format)
+            pos = self._write_element_list(pos, cover.intro, theme.cover_text_format)
             pos[0] += 1
-            self._smart_write(*pos, cover.intro, theme.subtitle_format)
-            pos[0] += 2
 
         if contents:
-            self._smart_write(*pos, "Contents", theme.title_format)
-            pos[0] += 1
-            for sheet in contents:
-                link = f"internal:'{sheet}'!A1"
-                hyperlink_format = deepcopy(theme.subtitle_format)
-                hyperlink_format.update({"underline": True, "font_color": "blue"})
-                print(hyperlink_format)
-                self._smart_write(
-                    *pos,
-                    link,
-                    hyperlink_format,
-                    sheet
-                    )
-                title = contents[sheet]["title"]
-                if isinstance(title, str):
-                    title_no_annotations = re.sub("\$\$.*\$\$", "", title)
-                elif isinstance(title, list):
-                    title_no_annotations = [
-                        re.sub("\$\$.*\$\$", "", part)
-                        if isinstance(part, str) else part
-                        for part in title
-                        ]
-                self._smart_write(
-                    pos[0], pos[1] + 1,
-                    title_no_annotations,
-                    theme.subtitle_format
-                    )
-                pos[0] += 1
+            pos = self._write_element(pos, "Contents", theme.cover_subtitle_format)
+            for sheet, table_info in contents.items():
+                pos = self._write_hyperlinked_toc_entry(pos, sheet, table_info)
             pos[0] += 1
 
         if cover.about is not None:
-            self._smart_write(*pos, "About these data", theme.title_format)
+            pos = self._write_element(pos, "About these data", theme.cover_subtitle_format)
+            pos = self._write_element_list(pos, cover.about, theme.cover_text_format)
             pos[0] += 1
-            self._smart_write(*pos, cover.about, theme.subtitle_format)
-            pos[0] += 2
+
+        if cover.contact is not None:
+            pos = self._write_element(pos, "Contact", theme.cover_subtitle_format)
+            pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
+            pos[0] += 1
 
 
     def write_gptable(self, gptable, auto_width, disable_footer_parentheses):
@@ -123,6 +114,22 @@ class GPWorksheet(Worksheet):
                     getattr(gptable, element),
                     getattr(theme, element + "_format")
                     )
+
+    @staticmethod
+    def _strip_annotation_references(text):
+        """
+        Strip annotation references (as $$ $$) from a str or list text element.
+        """
+        if isinstance(text, str):
+            no_annotations = re.sub("\$\$.*\$\$", "", text)
+        elif isinstance(text, list):
+            no_annotations = [
+                re.sub("\$\$.*\$\$", "", part)
+                if isinstance(part, str) else part
+                for part in text
+                ]
+        
+        return no_annotations
 
 
     def _reference_annotations(self, gptable):
@@ -226,7 +233,7 @@ class GPWorksheet(Worksheet):
         -------
         string : str
             input string with references replaced with numerical reference (n),
-            where n is the order of appearence in the resulting document
+            where n is the order of appearance in the resulting document
         """
         if isinstance(data, str):
             data = self._replace_reference(data, ordered_refs)
@@ -249,7 +256,7 @@ class GPWorksheet(Worksheet):
     @staticmethod
     def _replace_reference(string, ordered_refs):
         """
-        Given a single string, record occurences of new references (denoted by
+        Given a single string, record occurrences of new references (denoted by
         flanking dollar signs [$$reference$$]) and replace with number
         reference reflecting order of detection.
         
@@ -354,6 +361,49 @@ class GPWorksheet(Worksheet):
         
         return pos
 
+
+    def _write_hyperlinked_toc_entry(self, pos, sheet, table_info):
+        """
+        Write a table of contents entry. Includes a hyperlink to the sheet
+        in the first column. Then data for that sheet in the second column.
+
+        Parameters
+        ----------
+        pos : list
+            the position of the worksheet cell to write the elements to
+        sheet : str
+            name of sheet to hyperlink to
+        table_info : dict
+            table information to be written on cover page
+        format_dict : dict
+            format to be applied to string
+
+        Returns
+        -------
+        pos: list
+            new position to write next element from
+
+        """
+        theme = self.theme
+
+        link = f"internal:'{sheet}'!A1"
+        hyperlink_format = deepcopy(theme.cover_text_format)
+        hyperlink_format.update({"underline": True, "font_color": "blue"})
+        self._smart_write(
+            *pos,
+            link,
+            hyperlink_format,
+            sheet
+            )
+        
+        title = self._strip_annotation_references(table_info["title"])
+        self._smart_write(
+            pos[0], pos[1] + 1,
+            title,
+            theme.cover_text_format
+            )
+        
+        return [pos[0] + 1, 0]
 
     def _write_source(self, pos, element, format_dict):
         """
