@@ -16,7 +16,7 @@ table. It does the rest.
 
 ``gptables`` uses the official `guidance on good practice spreadsheets`_.
 It advocates a strong adherence to the guidance by restricting the range of operations possible.
-The default theme ``gptheme`` should accomodate most use cases.
+The default theme ``gptheme`` should accommodate most use cases.
 However, the ``Theme`` object allows development of custom themes, where other formatting is required.
 
 ``gptables`` is developed and maintained by the `Best Practice and Impact`_

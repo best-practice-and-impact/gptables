@@ -2,6 +2,12 @@ global:
     font_size: 9
     font_name: Arial
 
+cover_title:
+    bold: True
+    font_size: 12
+
+cover_text:
+
 title:
     bold: True
     font_size: 11
