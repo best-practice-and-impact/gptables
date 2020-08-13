@@ -6,6 +6,10 @@ cover_title:
     bold: True
     font_size: 12
 
+cover_subtitle:
+    bold: True
+    font_size: 10
+
 cover_text:
 
 title:
