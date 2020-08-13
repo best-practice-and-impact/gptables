@@ -4,7 +4,7 @@ from typing import List
 @dataclass
 class Cover():
     """
-    Class for storing cover sheet text.
+    dataclass for storing cover sheet text.
 
     Attributes
     ----------
@@ -15,4 +15,3 @@ class Cover():
     title: str
     intro: List = None
     about: List = None
-    
