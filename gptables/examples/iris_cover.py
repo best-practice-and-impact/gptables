@@ -77,10 +77,19 @@ iris_table = gpt.GPTable(
         **kwargs
         )
 
+cover = gpt.Cover(
+        cover_label = "Notes",
+        title = "My title",
+        intro = ["This is some extra stuff", "And some more"],
+        about = ["Even more extra stuff", "And some more"],
+        contact = ["John Doe", "Tel: 345345345"]
+        )
+
 ## Use write_workbook to win!
 output_path = parent_dir + "/python_iris_gptable.xlsx"
 gpt.write_workbook(
         filename = output_path,
-        sheets = {"iris flower dimensions": iris_table}
+        sheets = {"iris flower dimensions": iris_table},
+        cover = cover,
         )
 print("Output written at: ", output_path)
