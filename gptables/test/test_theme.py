@@ -61,10 +61,7 @@ missing_value : None
 class TestConfigInitTheme(unittest.TestCase):
     """
     Test initialisation of the Theme class using a config dictionary.
-    """cover_title_format : {'font_size': 12, 'font_name': 'Arial', 'bold': True}
-cover_subtitle_format : {'font_size': 10, 'font_name': 'Arial', 'bold': True}
-cover_text_format : {'font_size': 9, 'font_name': 'Arial'}
-
+    """
     def test_dict_init(self):
         config = {
             "global":
