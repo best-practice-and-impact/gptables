@@ -70,19 +70,19 @@ class TestConfigInitTheme(unittest.TestCase):
                 "font_name": "Arial"
                 },
 
-            "cover_title_format":
+            "cover_title":
                 {
                     'font_size': 12,
                     'bold': True
                 },
             
-            "cover_subtitle_format":
+            "cover_subtitle":
                 {
                     'font_size': 10,
                     'bold': True
                 },
 
-            "cover_text_format": None,
+            "cover_text": None,
 
             "title":
                 {
