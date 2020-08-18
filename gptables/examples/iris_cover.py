@@ -4,8 +4,10 @@ Iris - Cover Page
 
 This example demonstrates use of the ``gptables.Cover`` class to create a cover page.
 
-gptables cover pages contain a range of custom text elements, along with a hyperlinked table of contents.
-Text elements are defines as a ``gptables.Cover`` instance, which is passed to the ``cover`` parameter of ``gptables.write_worbook()`` or ``gptables.produce_worbook()``.
+A gptables cover pages contain a range of custom text elements, along with a hyperlinked table of contents.
+Text elements are defined as a ``gptables.Cover`` instance, which is passed to the ``cover`` parameter of ``gptables.write_worbook()`` or ``gptables.produce_worbook()``.
+In this example, we have also set ``auto_width`` to ``True``.
+This automatically determines the width of the first column on the cover sheet, as well as all columns of the tables of the workbook.
 """
 import gptables as gpt
 import pandas as pd
@@ -86,5 +88,6 @@ gpt.write_workbook(
         filename = output_path,
         sheets = {"iris flower dimensions": iris_table},
         cover = cover,
+        auto_width=True,
         )
 print("Output written at: ", output_path)
