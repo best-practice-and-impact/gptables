@@ -18,7 +18,7 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
-    def write_cover(self, cover, contents):
+    def write_cover(self, cover, contents, auto_width):
         """
         Write a cover page to the Worksheet. Uses text from a Cover object and
         details of the Workbook contents.
@@ -57,6 +57,16 @@ class GPWorksheet(Worksheet):
             pos = self._write_element(pos, "Contact", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
             pos[0] += 1
+
+
+        if contents and auto_width:
+            max_link_len = max([len(key) for key in contents.keys()])
+            first_col_width = self._excel_string_width(
+                max_link_len,
+                theme.cover_text_format.get("font_size") or 10
+                )        
+            self._set_column_widths([first_col_width])
+        
 
 
     def write_gptable(self, gptable, auto_width, disable_footer_parentheses):
