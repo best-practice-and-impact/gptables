@@ -68,9 +68,10 @@ titanic_table = gpt.GPTable(
         **kwargs
         )
 
-output_path = parent_dir / "python_titanic_gptable.xlsx"
-wb = gpt.write_workbook(
-        filename = output_path,
-        sheets = {"titanic analysis by sex": titanic_table}
-        )
-print("Output written at: ", output_path)
+if __name__ is "__main__":
+        output_path = parent_dir / "python_titanic_gptable.xlsx"
+        gpt.write_workbook(
+                filename = output_path,
+                sheets = {"titanic analysis by sex": titanic_table}
+                )
+        print("Output written at: ", output_path)

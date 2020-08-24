@@ -59,9 +59,10 @@ elements = {
 sheets = {name: gpt.GPTable(dct[name], **elements[name]) for name in dct}
 
 ## Use write_workbook to win!
-output_path = parent_dir / "python_cor_multiple_gptables.xlsx"
-gpt.write_workbook(
-        filename = output_path,
-        sheets = sheets
-        )
-print("Output written at: ", output_path)
+if __name__ is "__main__":
+    output_path = parent_dir / "python_cor_multiple_gptables.xlsx"
+    gpt.write_workbook(
+            filename = output_path,
+            sheets = sheets
+            )
+    print("Output written at: ", output_path)

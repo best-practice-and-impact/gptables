@@ -83,11 +83,12 @@ cover = gpt.Cover(
         )
 
 ## Use write_workbook to win!
-output_path = parent_dir / "python_iris_cover_gptable.xlsx"
-gpt.write_workbook(
-        filename = output_path,
-        sheets = {"iris flower dimensions": iris_table},
-        cover = cover,
-        auto_width=True,
-        )
-print("Output written at: ", output_path)
+if __name__ is "__main__":
+        output_path = parent_dir / "python_iris_cover_gptable.xlsx"
+        gpt.write_workbook(
+                filename = output_path,
+                sheets = {"Iris Flower Dimensions": iris_table},
+                cover = cover,
+                auto_width=True,
+                )
+        print("Output written at: ", output_path)

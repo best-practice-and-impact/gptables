@@ -54,10 +54,11 @@ iris_summary_3.insert(2, "bottom_index", ["x", "y", "z"])
 
 
 ## Write using quick and dirty method
-output_path = parent_dir / "python_iris_quick_and_dirty.xlsx"
-gpt.quick_and_dirty_workbook(
-        filename = output_path,
-        tables = [iris_summary_0, iris_summary, iris_summary_2, iris_summary_3]
-        )
-print("Output written at: ", output_path)
+if __name__ is "__main__":
+        output_path = parent_dir / "python_iris_quick_and_dirty.xlsx"
+        gpt.quick_and_dirty_workbook(
+                filename = output_path,
+                tables = [iris_summary_0, iris_summary, iris_summary_2, iris_summary_3]
+                )
+        print("Output written at: ", output_path)
 

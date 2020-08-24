@@ -76,9 +76,10 @@ iris_table = gpt.GPTable(
         )
 
 ## Use write_workbook to win!
-output_path = parent_dir / "python_iris_gptable.xlsx"
-gpt.write_workbook(
-        filename = output_path,
-        sheets = {"Iris Flower Dimensions": iris_table}
-        )
-print("Output written at: ", output_path)
+if __name__ is "__main__":
+        output_path = parent_dir / "python_iris_gptable.xlsx"
+        gpt.write_workbook(
+                filename = output_path,
+                sheets = {"Iris Flower Dimensions": iris_table}
+                )
+        print("Output written at: ", output_path)
