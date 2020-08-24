@@ -35,14 +35,16 @@ division of the Office for National Statistics, UK.
 .. _`Best Practice and Impact`: https://gss.civilservice.gov.uk/about-us/support-for-the-gss/
 
 
-3 Simple Steps
+4 Simple Steps
 --------------
 
 1. You map your data to the elements of a :class:`~.core.gptable.GPTable`.
 
 2. You can define the format of each element with a custom :class:`~.core.theme.Theme`, or simply use the default - gptheme.
 
-3. You :func:`~.core.api.write_workbook` to win.
+3. Optionally design a :class:`~.core.gptable.Cover` to provide information that relates to all of the tables in your Workbook.
+
+4. You :func:`~.core.api.write_workbook` to win.
 
 
 .. toctree::
