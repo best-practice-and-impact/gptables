@@ -43,9 +43,8 @@ def produce_workbook(
         wb.set_theme(theme)
 
     if cover is not None:
-        contents = {sheet: {"title": gptable.title} for sheet, gptable in sheets.items()}
         ws = wb.add_worksheet(cover.cover_label)
-        ws.write_cover(cover, contents, auto_width)
+        ws.write_cover(cover, sheets, auto_width)
     
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
