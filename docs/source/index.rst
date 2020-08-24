@@ -24,7 +24,7 @@ Table element mapping:
 
 ``gptables`` uses the official `guidance on good practice spreadsheets`_
 It advocates a strong adherence to the guidance by restricting the range of possible operations.
-The default formatting theme ``gptheme`` accomodates many use cases.
+The default formatting theme ``gptheme`` accommodates many use cases.
 However, the :class:`~.core.theme.Theme` Class allows development of custom themes, where alternative formatting is required.
 
 ``gptables`` is developed and maintained by the `Best Practice and Impact`_
@@ -40,7 +40,7 @@ division of the Office for National Statistics, UK.
 
 1. You map your data to the elements of a :class:`~.core.gptable.GPTable`.
 
-2. You can define the format of each elements with a custom :class:`~.core.theme.Theme`, or simply use the default - gptheme.
+2. You can define the format of each element with a custom :class:`~.core.theme.Theme`, or simply use the default - gptheme.
 
 3. You :func:`~.core.api.write_workbook` to win.
 

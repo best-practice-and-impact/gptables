@@ -28,7 +28,7 @@ XlsxWriter properties. They do the following:
 
 The configuration file for our default theme looks like this:
 
-.. literalinclude:: ..\..\gptables\themes\gptheme.yaml
+.. literalinclude:: ../../gptables/themes/gptheme.yaml
     :language: yaml
 
 
