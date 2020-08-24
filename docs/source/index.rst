@@ -53,6 +53,7 @@ division of the Office for National Statistics, UK.
    usage.rst
    doc.gptable.rst
    doc.theme.rst
+   doc.cover.rst
    doc.wrappers.rst
    changelog.rst
    

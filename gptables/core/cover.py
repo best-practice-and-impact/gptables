@@ -8,14 +8,19 @@ class Cover():
 
     Attributes
     ----------
-    title str: cover page title
-    intro List[str, dict], optional: introductory text
-    about List[str, dict], optional: about/notes text
-    contact List[str, dict], optional: contact details text
-    cover_label (str): cover page tab label, defaults to Cover
-    additional_elements List[str], optional: additional GPTable elements to
-        display in the contents table. Allowed elements are "subtitles",
-        "scope", "source" and "notes".
+    title : str
+        cover page title
+    intro : List[str, dict], optional
+        introductory text
+    about : List[str, dict], optional
+        about/notes text
+    contact : List[str, dict], optional
+        contact details text
+    cover_label : str 
+        cover page tab label, defaults to Cover
+    additional_elements : List[str], optional
+        additional GPTable elements to display in the contents table. Allowed
+        elements are "subtitles", "scope", "source" and "notes".
     """
     title: str
     intro: List = None
