@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 import os
 from pathlib import Path
+from copy import deepcopy
 
 ## Read data and arrange
 parent_dir = Path(__file__).parent
@@ -73,6 +74,9 @@ iris_table = gpt.GPTable(
         **kwargs
         )
 
+iris_table_copy = deepcopy(iris_table)
+iris_table_copy.set_title("A copy of the first sheet$$note2$$")
+
 cover = gpt.Cover(
         cover_label = "Notes",
         title = "A Worbook containing good practice tables",
@@ -87,7 +91,10 @@ if __name__ is "__main__":
         output_path = parent_dir / "python_iris_cover_gptable.xlsx"
         gpt.write_workbook(
                 filename = output_path,
-                sheets = {"Iris Flower Dimensions": iris_table},
+                sheets = {
+                        "Iris Flower Dimensions": iris_table,
+                        "Copy of Iris Flower Dimensions" : iris_table_copy
+                        },
                 cover = cover,
                 auto_width=True,
                 )
