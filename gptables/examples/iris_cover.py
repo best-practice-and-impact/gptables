@@ -13,13 +13,12 @@ import gptables as gpt
 import pandas as pd
 import numpy as np
 import os
-
+from pathlib import Path
 
 ## Read data and arrange
-funcs = [np.mean, np.median]
-parent_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = Path(__file__).parent
 
-iris_data = pd.read_csv(parent_dir + "/iris.csv")
+iris_data = pd.read_csv(parent_dir / "iris.csv")
 iris_data = iris_data.loc[:, ["class", "sepal_length", "sepal_width"]]
 
 iris_summary = iris_data.groupby("class").agg(np.mean)
@@ -76,7 +75,7 @@ iris_table = gpt.GPTable(
 
 cover = gpt.Cover(
         cover_label = "Notes",
-        title = "My book of tables",
+        title = "A Worbook containing good practice tables",
         intro = ["This is some introductory information", "And some more"],
         about = ["Even more info about my data", "And a little more"],
         contact = ["John Doe", "Tel: 345345345"],
@@ -84,7 +83,7 @@ cover = gpt.Cover(
         )
 
 ## Use write_workbook to win!
-output_path = parent_dir + "/python_iris_cover_gptable.xlsx"
+output_path = parent_dir / "python_iris_cover_gptable.xlsx"
 gpt.write_workbook(
         filename = output_path,
         sheets = {"iris flower dimensions": iris_table},

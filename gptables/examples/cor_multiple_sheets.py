@@ -16,11 +16,11 @@ one way to make this definition concise.
 import gptables as gpt
 import pandas as pd
 import os
-
+from pathlib import Path
 
 ## Read data and arrange
-parent_dir = os.path.dirname(os.path.realpath(__file__))
-core_data = pd.read_csv(parent_dir + "\coreB.csv")
+parent_dir = Path(__file__).parent
+core_data = pd.read_csv(parent_dir / "coreB.csv")
 
 # 3 tables: summary, children and young people, and adults
 summ = core_data.loc[:,['age','total_cost']]
@@ -59,7 +59,7 @@ elements = {
 sheets = {name: gpt.GPTable(dct[name], **elements[name]) for name in dct}
 
 ## Use write_workbook to win!
-output_path = parent_dir + "\python_cor_multiple_gptables.xlsx"
+output_path = parent_dir / "python_cor_multiple_gptables.xlsx"
 gpt.write_workbook(
         filename = output_path,
         sheets = sheets
