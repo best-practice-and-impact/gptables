@@ -1,4 +1,5 @@
 import pandas as pd
+from pathlib import Path
 
 from gptables import GPWorkbook, GPTable
 
@@ -37,6 +38,9 @@ def produce_workbook(
     -------
     workbook : gptables.GPWorkbook
     """
+    if isinstance(filename, Path):
+        filename = filename.as_posix()
+
     wb = GPWorkbook(filename)
 
     if theme is not None:
