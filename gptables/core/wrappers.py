@@ -18,7 +18,7 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
-    def write_cover(self, cover, contents, auto_width):
+    def write_cover(self, cover, sheets, auto_width):
         """
         Write a cover page to the Worksheet. Uses text from a Cover object and
         details of the Workbook contents.
@@ -27,9 +27,8 @@ class GPWorksheet(Worksheet):
         ----------
         cover : gptables.Cover
             object containing cover sheet text
-        contents : dict
-            sheet names mapped to data for cover sheet (e.g. table title) for
-            all tables in the Workbook
+        sheets : dict
+            mapping worksheet labels to gptables.GPTable objects
         """
         theme = self.theme
         pos = [0, 0]
@@ -42,10 +41,24 @@ class GPWorksheet(Worksheet):
             pos = self._write_element_list(pos, cover.intro, theme.cover_text_format)
             pos[0] += 1
 
-        if contents:
+        if sheets:
             pos = self._write_element(pos, "Contents", theme.cover_subtitle_format)
-            for sheet, table_info in contents.items():
-                pos = self._write_hyperlinked_toc_entry(pos, sheet, table_info)
+            for sheet, gptable in sheets.items():
+                pos = self._write_hyperlinked_toc_entry(pos, sheet)
+                        
+                title = self._strip_annotation_references(gptable.title)
+                pos = self._write_element(pos, title, theme.cover_text_format)
+
+                if cover.additional_elements is not None:
+                    for element in cover.additional_elements:
+                        content = getattr(gptable, element)        
+                        if element in ["subtitles", "notes"]:
+                            content = [self._strip_annotation_references(element) for element in content]
+                            pos = self._write_element_list(pos, content, theme.cover_text_format)
+                        else:
+                            content = self._strip_annotation_references(content)
+                            pos = self._write_element(pos, content, theme.cover_text_format)
+                pos[1] = 0
             pos[0] += 1
 
         if cover.about is not None:
@@ -59,15 +72,14 @@ class GPWorksheet(Worksheet):
             pos[0] += 1
 
 
-        if contents and auto_width:
-            max_link_len = max([len(key) for key in contents.keys()])
+        if sheets and auto_width:
+            max_link_len = max([len(key) for key in sheets.keys()])
             first_col_width = self._excel_string_width(
                 max_link_len,
                 theme.cover_text_format.get("font_size") or 10
                 )        
             self._set_column_widths([first_col_width])
         
-
 
     def write_gptable(self, gptable, auto_width, disable_footer_parentheses):
         """
@@ -331,7 +343,7 @@ class GPWorksheet(Worksheet):
             the string or list of rich string elements to be written
         format_dict : dict
             format to be applied to string
-        pos : tuple
+        pos : list
             the position of the worksheet cell to write the element to
 
         Returns
@@ -357,7 +369,7 @@ class GPWorksheet(Worksheet):
             one per row
         format_dict : dict
             format to be applied to string
-        pos : tuple
+        pos : list
             the position of the worksheet cell to write the elements to
 
         Returns
@@ -372,7 +384,7 @@ class GPWorksheet(Worksheet):
         return pos
 
 
-    def _write_hyperlinked_toc_entry(self, pos, sheet, table_info):
+    def _write_hyperlinked_toc_entry(self, pos, sheet_name):
         """
         Write a table of contents entry. Includes a hyperlink to the sheet
         in the first column. Then data for that sheet in the second column.
@@ -381,39 +393,27 @@ class GPWorksheet(Worksheet):
         ----------
         pos : list
             the position of the worksheet cell to write the elements to
-        sheet : str
+        sheet_name : str
             name of sheet to hyperlink to
-        table_info : dict
-            table information to be written on cover page
-        format_dict : dict
-            format to be applied to string
 
         Returns
         -------
         pos: list
             new position to write next element from
-
         """
         theme = self.theme
 
-        link = f"internal:'{sheet}'!A1"
+        link = f"internal:'{sheet_name}'!A1"
         hyperlink_format = deepcopy(theme.cover_text_format)
         hyperlink_format.update({"underline": True, "font_color": "blue"})
         self._smart_write(
             *pos,
             link,
             hyperlink_format,
-            sheet
-            )
-        
-        title = self._strip_annotation_references(table_info["title"])
-        self._smart_write(
-            pos[0], pos[1] + 1,
-            title,
-            theme.cover_text_format
-            )
-        
-        return [pos[0] + 1, 0]
+            sheet_name
+            )        
+
+        return [pos[0] , pos[1] + 1]
 
     def _write_source(self, pos, element, format_dict):
         """
@@ -446,7 +446,7 @@ class GPWorksheet(Worksheet):
             note associate with each references, as {reference: note}
         format_dict : dict
             format to be applied to string
-        pos : tuple
+        pos : list
             the position of the worksheet cell to write the elements to
 
         Returns
@@ -471,7 +471,7 @@ class GPWorksheet(Worksheet):
         ----------
         gptable : gptables.GPTable
             object containing the table and additional formatting data
-        pos : tuple
+        pos : list
             the position of the worksheet cell to write the units to
         auto_width : bool
             select if column widths should be determined automatically using
@@ -672,7 +672,7 @@ class GPWorksheet(Worksheet):
         formats : pandas.DataFrame
             array of dictionaries that specify the formatting to be applied
             to each cell of data
-        pos : tuple
+        pos : list
             the position of the top left cell to start writing the array from
             
         Returns
