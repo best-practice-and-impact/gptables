@@ -20,6 +20,13 @@ examples_ directory of the package.
     :lines: 15-
 
 
+.. automodule:: gptables.examples.iris_cover
+
+.. literalinclude:: ..\..\gptables\examples\iris_cover.py
+    :language: python
+    :lines: 12-
+    
+
 .. automodule:: gptables.examples.iris_additional_formatting
 
 .. literalinclude:: ..\..\gptables\examples\iris_additional_formatting.py
