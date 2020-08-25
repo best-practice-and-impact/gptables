@@ -15,7 +15,7 @@ options for your formatting.
 
 ``global`` refers to the base format that all others will be built upon.
 Any format parameter that is repeated for a specific element will override the global format for that element.
-The three ``cover_`` format names refer to elements of the cover page generated from a :class:`~.core.gptable.Cover`.
+The three ``cover_`` format names refer to elements of the cover page generated from a :class:`~.core.cover.Cover`.
 
 .. _`XlsxWriter format properties`: https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties
 

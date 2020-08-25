@@ -18,7 +18,7 @@ Text attributes which take a list (most except for title) will write one element
 Formatting
 ----------
 
-Formatting of cover sheet text is managed by the ``cover_`` attributes of the Workbook's :class:`~.core.gptable.Theme`.
+Formatting of cover sheet text is managed by the ``cover_`` attributes of the Workbook's :class:`~.core.theme.Theme`.
 
 ``Cover`` Class
 ---------------
