@@ -32,13 +32,13 @@ iris_data = iris_data.loc[:, ["class", "sepal_length", "sepal_width"]]
 iris_summary = iris_data.groupby("class").agg(np.mean)
 iris_summary.index = [_[5:].capitalize() for _ in iris_summary.index]
 iris_summary.rename(
-        columns={
-            "class":"class",
-            "sepal_length":"Mean Sepal Length",
-            "sepal_width":"Mean Sepal Width"
-            }, 
-        inplace=True
-        )
+    columns={
+        "class":"class",
+        "sepal_length":"Mean Sepal Length",
+        "sepal_width":"Mean Sepal Width"
+    }, 
+    inplace=True
+    )
 
 # Drop index into table
 iris_summary.reset_index(inplace=True)
@@ -54,11 +54,11 @@ iris_summary_3.insert(2, "bottom_index", ["x", "y", "z"])
 
 
 ## Write using quick and dirty method
-if __name__ is "__main__":
-        output_path = parent_dir / "python_iris_quick_and_dirty.xlsx"
-        gpt.quick_and_dirty_workbook(
-                filename = output_path,
-                tables = [iris_summary_0, iris_summary, iris_summary_2, iris_summary_3]
-                )
-        print("Output written at: ", output_path)
+if __name__ == "__main__":
+    output_path = parent_dir / "python_iris_quick_and_dirty.xlsx"
+    gpt.quick_and_dirty_workbook(
+        filename=output_path,
+        tables=[iris_summary_0, iris_summary, iris_summary_2, iris_summary_3]
+    )
+    print("Output written at: ", output_path)
 

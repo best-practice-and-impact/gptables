@@ -16,6 +16,16 @@ and this project tries its very best to adhere to
 Released (master)
 =================
 
+v0.2.1
+------
+:Date: 2020-08-24
+
+
+**Fixed**
+
+* incorrect ``if __name__ == "__main__"`` in example files 
+* minor typos in docs
+
 
 v0.2.0
 ------

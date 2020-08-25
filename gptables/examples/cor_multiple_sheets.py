@@ -23,8 +23,8 @@ parent_dir = Path(__file__).parent
 core_data = pd.read_csv(parent_dir / "coreB.csv")
 
 # 3 tables: summary, children and young people, and adults
-summ = core_data.loc[:,['age','total_cost']]
-summ = summ.groupby('age').sum().reset_index()
+summ = core_data.loc[:, ["age", "total_cost"]]
+summ = summ.groupby("age").sum().reset_index()
 
 # This returns adults first as per the data
 ages = core_data.age.unique()
@@ -35,34 +35,27 @@ for key in dct:
     frame = frame.groupby("reoffence_group").sum().reset_index()
     dct[key] = frame
 
-dct['summary'] = summ
+dct["summary"] = summ
 
 
 ## Define table elements for each table
 
 example = {
-            "title": "Cost of Reoffending",
-            "subtitles": ["12-month follow-up period for the 2016 offender cohort"],
-            "units": "£",
-            "scope": "England and Wales",
-            "source": "Office for National Statistics"
-        }
-
-elements = {
-    'summary': example,
-    'Adults': example,
-    'Children and young people': example
+    "title": "Cost of Reoffending",
+    "subtitles": ["12-month follow-up period for the 2016 offender cohort"],
+    "units": "£",
+    "scope": "England and Wales",
+    "source": "Office for National Statistics",
     }
+
+elements = {"summary": example, "Adults": example, "Children and young people": example}
 
 ## Generate a dictionary of sheet names to GPTable objects
 ## using the elements defined above
 sheets = {name: gpt.GPTable(dct[name], **elements[name]) for name in dct}
 
 ## Use write_workbook to win!
-if __name__ is "__main__":
+if __name__ == "__main__":
     output_path = parent_dir / "python_cor_multiple_gptables.xlsx"
-    gpt.write_workbook(
-            filename = output_path,
-            sheets = sheets
-            )
+    gpt.write_workbook(filename=output_path, sheets=sheets)
     print("Output written at: ", output_path)

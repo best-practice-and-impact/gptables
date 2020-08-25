@@ -33,19 +33,17 @@ parent_dir = Path(__file__).parent
 iris_data = pd.read_csv(parent_dir / "iris.csv")
 
 iris_data.rename(
-        columns={
-            "class":"class",
-            "sepal_length":"Sepal Length",
-            "petal_length":"Petal Length",
-            "petal_width":"Petal Width",
-            "sepal_width":"Sepal Width"
-            }, 
-        inplace=True
-        )
+    columns={
+        "class": "class",
+        "sepal_length": "Sepal Length",
+        "petal_length": "Petal Length",
+        "petal_width": "Petal Width",
+        "sepal_width": "Sepal Width",
+    },
+    inplace=True,
+    )
 
-iris_data["class"] = iris_data.apply(
-        lambda row: row["class"][5:].capitalize(),
-        axis=1)
+iris_data["class"] = iris_data.apply(lambda row: row["class"][5:].capitalize(), axis=1)
 
 # Calculate summaries
 subtables = []
@@ -61,85 +59,74 @@ iris_summary["func"] = ["Mean"] * 4 + ["Median"] * 4
 iris_summary = iris_summary.reset_index()
 iris_summary = iris_summary.melt(["index", "func"])
 iris_summary = iris_summary.pivot_table(
-        index=["variable", "func"],
-        columns="index",
-        values="value"
-        ).reset_index()
+    index=["variable", "func"], columns="index", values="value"
+    ).reset_index()
 
 ## Define table elements
 title = "Iris flower dimensions"
 subtitles = [
-        "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems",
-        "Just another subtitile"
-        ]
+    "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems",
+    "Just another subtitile",
+    ]
 units = "cm"
 scope = "Iris"
-index = {
-        1: 0,
-        2: 1
-        }
+index = {1: 0, 2: 1}
 
 ## Define additional formatting
 # Columns can be references by name or number
 # Rows may only be referenced by number
 # Column and row numbers refer to the table elements, including indexes and column headings
 additional_formatting = [
-        {"column":
-            {"columns": ["Setosa", "Versicolor"],  # str, int or list of either
-             "format": {"align": "center"},
-             "include_names": False  # Whether to include column headings (optional)
-            }
-        },
-        {"column":
-            {"columns": [3],
-             "format": {"left": 1},
-             "include_names": True
-            }
-        },
-        {"row":
-            {"rows": -1,  # Numbers only, but can refer to last row using -1
-             "format": {"bottom": 1},  # Underline row
-             "include_names": True  # Whether to include row indexes
-             }
-        },
-        {"cell":
-            {"cells": (3, 3),  # tuple or list of tuples
-             "format": {"font_color": "red"}
-                }
+    {
+        "column": {
+            "columns": ["Setosa", "Versicolor"],  # str, int or list of either
+            "format": {"align": "center"},
+            "include_names": False,  # Whether to include column headings (optional)
         }
-]
+    },
+    {"column": {"columns": [3], "format": {"left": 1}, "include_names": True}},
+    {
+        "row": {
+            "rows": -1,  # Numbers only, but can refer to last row using -1
+            "format": {"bottom": 1},  # Underline row
+            "include_names": True,  # Whether to include row indexes
+        }
+    },
+    {
+        "cell": {
+            "cells": (3, 3),  # tuple or list of tuples
+            "format": {"font_color": "red"},
+        }
+    },
+    ]
 
 # or just use kwargs
 kwargs = {
-        "title": title,
-        "subtitles": subtitles,
-        "units": units,
-        "scope": scope,
-        "source": None,
-        "index_columns": index,
-        "additional_formatting": additional_formatting
-        }
+    "title": title,
+    "subtitles": subtitles,
+    "units": units,
+    "scope": scope,
+    "source": None,
+    "index_columns": index,
+    "additional_formatting": additional_formatting,
+    }
 
 ## Define our GPTable
-iris_table = gpt.GPTable(
-        table = iris_summary,
-        **kwargs
-        )        
+iris_table = gpt.GPTable(table=iris_summary, **kwargs)
 
 ## Use produce workbook to return GPWorkbook
-if __name__ is "__main__":
-        output_path = parent_dir / "python_iris_additional_formatting_gptable.xlsx"
-        wb = gpt.produce_workbook(
-                filename = output_path,
-                sheets = {"Iris Flower Dimensions": iris_table}
-                )
+if __name__ == "__main__":
+    output_path = parent_dir / "python_iris_additional_formatting_gptable.xlsx"
+    wb = gpt.produce_workbook(
+        filename=output_path, sheets={"Iris Flower Dimensions": iris_table}
+        )
 
-        # Carry out additional modifications on the GPWorkbook or GPWorksheets
-        # This supports all `XlsxWriter` package functionality
-        ws = wb.worksheets()[0]
-        ws.set_row(0, 30)  # Set the height of the first row
+    # Carry out additional modifications on the GPWorkbook or GPWorksheets
+    # This supports all `XlsxWriter` package functionality
+    ws = wb.worksheets()[0]
+    ws.set_row(0, 30)  # Set the height of the first row
 
-        # Finally use the close method to save the output
-        wb.close()
-        print("Output written at: ", output_path)
+    # Finally use the close method to save the output
+    wb.close()
+    print("Output written at: ", output_path)
 
