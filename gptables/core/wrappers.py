@@ -8,6 +8,7 @@ from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
 
 from .theme import Theme
+from .cover import Cover
 from .gptable import GPTable
 from gptables.utils.unpickle_themes import gptheme
 
@@ -17,7 +18,69 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
-    
+    def write_cover(self, cover, sheets, auto_width):
+        """
+        Write a cover page to the Worksheet. Uses text from a Cover object and
+        details of the Workbook contents.
+
+        Parameters
+        ----------
+        cover : gptables.Cover
+            object containing cover sheet text
+        sheets : dict
+            mapping worksheet labels to gptables.GPTable objects
+        """
+        theme = self.theme
+        pos = [0, 0]
+
+        pos = self._write_element(pos, cover.title, theme.cover_title_format)
+        pos[0] += 1
+
+        if cover.intro is not None:
+            pos = self._write_element(pos, "Introductory information", theme.cover_subtitle_format)
+            pos = self._write_element_list(pos, cover.intro, theme.cover_text_format)
+            pos[0] += 1
+
+        if sheets:
+            pos = self._write_element(pos, "Contents", theme.cover_subtitle_format)
+            for sheet, gptable in sheets.items():
+                pos = self._write_hyperlinked_toc_entry(pos, sheet)
+                        
+                title = self._strip_annotation_references(gptable.title)
+                pos = self._write_element(pos, title, theme.cover_text_format)
+
+                if cover.additional_elements is not None:
+                    for element in cover.additional_elements:
+                        content = getattr(gptable, element)        
+                        if element in ["subtitles", "notes"]:
+                            content = [self._strip_annotation_references(element) for element in content]
+                            pos = self._write_element_list(pos, content, theme.cover_text_format)
+                        else:
+                            content = self._strip_annotation_references(content)
+                            pos = self._write_element(pos, content, theme.cover_text_format)
+                pos[1] = 0
+            pos[0] += 1
+
+        if cover.about is not None:
+            pos = self._write_element(pos, "About these data", theme.cover_subtitle_format)
+            pos = self._write_element_list(pos, cover.about, theme.cover_text_format)
+            pos[0] += 1
+
+        if cover.contact is not None:
+            pos = self._write_element(pos, "Contact", theme.cover_subtitle_format)
+            pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
+            pos[0] += 1
+
+
+        if sheets and auto_width:
+            max_link_len = max([len(key) for key in sheets.keys()])
+            first_col_width = self._excel_string_width(
+                max_link_len,
+                theme.cover_text_format.get("font_size") or 10
+                )        
+            self._set_column_widths([first_col_width])
+        
+
     def write_gptable(self, gptable, auto_width, disable_footer_parentheses):
         """
         Write data from a GPTable object to the worksheet using the workbook
@@ -26,7 +89,7 @@ class GPWorksheet(Worksheet):
         Parameters
         ----------
         gptable : gptables.GPTable
-            object contianing elements of the gptable to be written to the
+            object containing elements of the gptable to be written to the
             Worksheet
         
         Returns
@@ -73,6 +136,22 @@ class GPWorksheet(Worksheet):
                     getattr(gptable, element),
                     getattr(theme, element + "_format")
                     )
+
+    @staticmethod
+    def _strip_annotation_references(text):
+        """
+        Strip annotation references (as $$ $$) from a str or list text element.
+        """
+        if isinstance(text, str):
+            no_annotations = re.sub("\$\$.*\$\$", "", text)
+        elif isinstance(text, list):
+            no_annotations = [
+                re.sub("\$\$.*\$\$", "", part)
+                if isinstance(part, str) else part
+                for part in text
+                ]
+        
+        return no_annotations
 
 
     def _reference_annotations(self, gptable):
@@ -176,7 +255,7 @@ class GPWorksheet(Worksheet):
         -------
         string : str
             input string with references replaced with numerical reference (n),
-            where n is the order of appearence in the resulting document
+            where n is the order of appearance in the resulting document
         """
         if isinstance(data, str):
             data = self._replace_reference(data, ordered_refs)
@@ -199,7 +278,7 @@ class GPWorksheet(Worksheet):
     @staticmethod
     def _replace_reference(string, ordered_refs):
         """
-        Given a single string, record occurences of new references (denoted by
+        Given a single string, record occurrences of new references (denoted by
         flanking dollar signs [$$reference$$]) and replace with number
         reference reflecting order of detection.
         
@@ -264,7 +343,7 @@ class GPWorksheet(Worksheet):
             the string or list of rich string elements to be written
         format_dict : dict
             format to be applied to string
-        pos : tuple
+        pos : list
             the position of the worksheet cell to write the element to
 
         Returns
@@ -290,7 +369,7 @@ class GPWorksheet(Worksheet):
             one per row
         format_dict : dict
             format to be applied to string
-        pos : tuple
+        pos : list
             the position of the worksheet cell to write the elements to
 
         Returns
@@ -304,6 +383,37 @@ class GPWorksheet(Worksheet):
         
         return pos
 
+
+    def _write_hyperlinked_toc_entry(self, pos, sheet_name):
+        """
+        Write a table of contents entry. Includes a hyperlink to the sheet
+        in the first column. Then data for that sheet in the second column.
+
+        Parameters
+        ----------
+        pos : list
+            the position of the worksheet cell to write the elements to
+        sheet_name : str
+            name of sheet to hyperlink to
+
+        Returns
+        -------
+        pos: list
+            new position to write next element from
+        """
+        theme = self.theme
+
+        link = f"internal:'{sheet_name}'!A1"
+        hyperlink_format = deepcopy(theme.cover_text_format)
+        hyperlink_format.update({"underline": True, "font_color": "blue"})
+        self._smart_write(
+            *pos,
+            link,
+            hyperlink_format,
+            sheet_name
+            )        
+
+        return [pos[0] , pos[1] + 1]
 
     def _write_source(self, pos, element, format_dict):
         """
@@ -336,7 +446,7 @@ class GPWorksheet(Worksheet):
             note associate with each references, as {reference: note}
         format_dict : dict
             format to be applied to string
-        pos : tuple
+        pos : list
             the position of the worksheet cell to write the elements to
 
         Returns
@@ -361,7 +471,7 @@ class GPWorksheet(Worksheet):
         ----------
         gptable : gptables.GPTable
             object containing the table and additional formatting data
-        pos : tuple
+        pos : list
             the position of the worksheet cell to write the units to
         auto_width : bool
             select if column widths should be determined automatically using
@@ -562,7 +672,7 @@ class GPWorksheet(Worksheet):
         formats : pandas.DataFrame
             array of dictionaries that specify the formatting to be applied
             to each cell of data
-        pos : tuple
+        pos : list
             the position of the top left cell to start writing the array from
             
         Returns
@@ -591,7 +701,7 @@ class GPWorksheet(Worksheet):
         return pos
         
 
-    def _smart_write(self, row, col, data, format_dict):
+    def _smart_write(self, row, col, data, format_dict, *args):
         """
         Depending on the input data, this function will write rich strings or
         use the standard `write()` method. For rich strings, the base format is
@@ -629,11 +739,12 @@ class GPWorksheet(Worksheet):
                     data_with_formats.append(item)
             if len(data) > 3:
                 data_with_formats.insert(-1, wb.add_format(format_dict))
-
+            
             self.write_rich_string(row,
                                    col,
                                    *data_with_formats,
-                                   wb.add_format(format_dict)
+                                   wb.add_format(format_dict),
+                                   *args
                                    )
         else:
             # Write handles all other write types dynamically
@@ -641,7 +752,8 @@ class GPWorksheet(Worksheet):
                     row,
                     col,
                     data,
-                    wb.add_format(format_dict)
+                    wb.add_format(format_dict),
+                    *args
                     )
 
 
@@ -679,7 +791,7 @@ class GPWorksheet(Worksheet):
     def _calculate_column_widths(self, table, formats_table):
         """
         Calculate Excel column widths using maximum length of strings
-        and the maxium font size in each column of the data table.
+        and the maximum font size in each column of the data table.
 
         Parameters
         ----------
@@ -750,7 +862,6 @@ class GPWorkbook(Workbook):
     def __init__(self, filename=None, options={}):
         super(GPWorkbook, self).__init__(filename=filename, options=options)
         self.theme = None
-        
         # Set default theme
         self.set_theme(gptheme)
         
@@ -791,5 +902,5 @@ class GPWorkbook(Workbook):
         None
         """
         if not isinstance(theme, Theme):
-            raise TypeError("`theme` must be a gptables.Theme object")
+            raise TypeError(f"`theme` must be a gptables.Theme object, not: {type(theme)}")
         self.theme = theme

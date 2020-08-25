@@ -16,6 +16,24 @@ and this project tries its very best to adhere to
 Released (master)
 =================
 
+
+v0.2.0
+------
+:Date: 2020-08-24
+
+**Added**
+
+* ``Cover`` dataclass, to provide text elements for cover pages. Provided via ``cover`` parameter of API functions.
+* ``write_cover`` and associated ``GPWorksheet`` methods, for writing a cover page as the first sheet in a GPWorkbook
+* additional ``Theme`` attributes for ``Cover`` text elements
+* documentation for ``Cover`` class and example usage
+
+**Fixed**
+
+* loads of typos in documentation
+* broken CI deployment of docs - code includes were not working
+
+
 v0.2.0
 ------
 :Date: 2020-07-10

@@ -1,4 +1,5 @@
 from gptables.core.theme import Theme
+from gptables.core.cover import Cover
 from gptables.core.gptable import GPTable
 from gptables.core.wrappers import GPWorkbook
 
@@ -6,7 +7,7 @@ from gptables.utils.unpickle_themes import gptheme
 
 
 from gptables.core.api import (
-        #functions
+        # API functions
         produce_workbook,
 	    write_workbook,
         quick_and_dirty_workbook
@@ -33,7 +34,7 @@ table. It does the rest.
 
 ``gptables`` uses the official `guidance on good practice spreadsheets`_
 It advocates a strong adherence to the guidance by restricting the range of
-operations possible. The default theme ``gptheme`` should accomodate most use
+operations possible. The default theme ``gptheme`` should accommodate most use
 cases. However, the ``Theme`` object allows development of custom themes, where
 other formatting is required.
 
@@ -46,12 +47,14 @@ division of the Office for National Statistics, UK.
 
 
 
-3 Simple Steps
--------------
+4 Simple Steps
+--------------
 
-1. You define your mapping with your data as a ``GPTable``.
+1. You map your data to the elements of a ``GPTable``.
 
-2. You can define the format of your mapping with a ``Theme``, or simply use the default - gptheme.
+2. You can define the format of each element with a custom ``Theme``, or simply use the default - gptheme.
 
-3. You ``write_workbook()`` to win.
+3. Optionally design a ``Cover`` page to provide information that relates to all of the tables in your Workbook.
+
+4. You ``write_workbook`` to win.
 """

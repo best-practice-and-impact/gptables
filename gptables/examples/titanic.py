@@ -7,9 +7,10 @@ import gptables as gpt
 import pandas as pd
 import numpy as np
 import os
+from pathlib import Path
 
-parent_dir = os.path.dirname(os.path.realpath(__file__))
-titanic = pd.read_csv(parent_dir + "/titanic.csv")
+parent_dir = Path(__file__).parent
+titanic = pd.read_csv(parent_dir / "titanic.csv")
 
 titanic["Child"] = np.where(titanic['Age'] < 18, 1, 0)
 
@@ -67,7 +68,10 @@ titanic_table = gpt.GPTable(
         **kwargs
         )
 
-wb = gpt.write_workbook(
-        filename= parent_dir + "/python_titanic_gptable.xlsx",
-        sheets={"titanic analysis by sex":titanic_table}
-        )
+if __name__ is "__main__":
+        output_path = parent_dir / "python_titanic_gptable.xlsx"
+        gpt.write_workbook(
+                filename = output_path,
+                sheets = {"titanic analysis by sex": titanic_table}
+                )
+        print("Output written at: ", output_path)

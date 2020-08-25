@@ -25,12 +25,12 @@ import gptables as gpt
 import pandas as pd
 import numpy as np
 import os
-
+from pathlib import Path
 
 ## Read data and arrange
-funcs = [np.mean, np.median]
-parent_dir = os.path.dirname(os.path.realpath(__file__))
-iris_data = pd.read_csv(parent_dir + "/iris.csv")
+parent_dir = Path(__file__).parent
+
+iris_data = pd.read_csv(parent_dir / "iris.csv")
 
 iris_data.rename(
         columns={
@@ -49,6 +49,7 @@ iris_data["class"] = iris_data.apply(
 
 # Calculate summaries
 subtables = []
+funcs = [np.mean, np.median]
 for func in funcs:
     subtables.append(iris_data.groupby("class").agg(func))
     subtables.append(pd.DataFrame(iris_data.agg(func).rename("All")).T)
@@ -126,18 +127,19 @@ iris_table = gpt.GPTable(
         )        
 
 ## Use produce workbook to return GPWorkbook
-output_path = parent_dir + "/python_iris_additional_formatting_gptable.xlsx"
-wb = gpt.produce_workbook(
-        filename = output_path,
-        sheets = {"iris flower dimensions": iris_table}
-        )
+if __name__ is "__main__":
+        output_path = parent_dir / "python_iris_additional_formatting_gptable.xlsx"
+        wb = gpt.produce_workbook(
+                filename = output_path,
+                sheets = {"Iris Flower Dimensions": iris_table}
+                )
 
-# Carry out additional modifications on the GPWorkbook or GPWorksheets
-# This supports all `XlsxWriter` package functionality
-ws = wb.worksheets()[0]
-ws.set_row(0, 30)  # Set the height of the first row
+        # Carry out additional modifications on the GPWorkbook or GPWorksheets
+        # This supports all `XlsxWriter` package functionality
+        ws = wb.worksheets()[0]
+        ws.set_row(0, 30)  # Set the height of the first row
 
-# Finally use the close method to save the output
-wb.close()
-print("Output written at: ", output_path)
+        # Finally use the close method to save the output
+        wb.close()
+        print("Output written at: ", output_path)
 

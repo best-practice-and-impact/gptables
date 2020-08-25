@@ -35,7 +35,10 @@ class TestCleanInitTheme(unittest.TestCase):
         got = self.fh.getvalue()
 
         exp = (
-"""title_format : {}
+"""cover_title_format : {}
+cover_subtitle_format : {}
+cover_text_format : {}
+title_format : {}
 subtitle_format : {}
 scope_format : {}
 units_format : {}
@@ -59,14 +62,27 @@ class TestConfigInitTheme(unittest.TestCase):
     """
     Test initialisation of the Theme class using a config dictionary.
     """
-
     def test_dict_init(self):
         config = {
             "global":
                 {
                  "font_size": 9,
                 "font_name": "Arial"
-                }, 
+                },
+
+            "cover_title":
+                {
+                    'font_size': 12,
+                    'bold': True
+                },
+            
+            "cover_subtitle":
+                {
+                    'font_size': 10,
+                    'bold': True
+                },
+
+            "cover_text": None,
 
             "title":
                 {
