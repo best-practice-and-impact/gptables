@@ -30,8 +30,9 @@ class Cover():
     additional_elements: List = None
 
     def __post_init__(self):
-        valid_elements = ["subtitles", "scope", "source", "notes"]
-        if not all(element in valid_elements for element in self.additional_elements):
-            msg = ("Cover `additional_elements` list can only contain"
-                   "'subtitles', 'scope', 'source' and 'notes'")
-            raise ValueError(msg)
+        if self.additional_elements is not None:
+            valid_elements = ["subtitles", "scope", "source", "notes"]
+            if not all(element in valid_elements for element in self.additional_elements):
+                msg = ("Cover `additional_elements` list can only contain"
+                    "'subtitles', 'scope', 'source' and 'notes'")
+                raise ValueError(msg)
