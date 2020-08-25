@@ -16,7 +16,19 @@ and this project tries its very best to adhere to
 Released (master)
 =================
 
-v0.2.1
+v0.3.2
+------
+:Date: 2020-08-24
+
+
+**Fixed**
+
+* bug in Cover post_init where ``additional_elements`` is None (it's default value...)
+* more minor typos in docs
+* incorrect version numbers in changelog
+
+
+v0.3.1
 ------
 :Date: 2020-08-24
 
@@ -27,7 +39,7 @@ v0.2.1
 * minor typos in docs
 
 
-v0.2.0
+v0.3.0
 ------
 :Date: 2020-08-24
 
