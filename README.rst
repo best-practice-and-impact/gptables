@@ -1,5 +1,6 @@
 Good Practice Tables (gptables)
 ===============================
+
 .. image:: https://travis-ci.org/best-practice-and-impact/gptables.svg?branch=master
     :target: https://travis-ci.org/best-practice-and-impact/gptables
     :alt: Travis build status
@@ -26,13 +27,14 @@ division of the Office for National Statistics, UK.
 
 .. _`Best Practice and Impact`: https://gss.civilservice.gov.uk/about-us/support-for-the-gss/
 
+
 4 Simple Steps
 --------------
 
-1. You map your data to the elements of a :class:`~.core.gptable.GPTable`.
+1. You map your data to the elements of a ``GPTable``.
 
-2. You can define the format of each element with a custom :class:`~.core.theme.Theme`, or simply use the default - gptheme.
+2. You can define the format of each element with a custom ``Theme``, or simply use the default - gptheme.
 
-3. Optionally design a :class:`~.core.gptable.Cover` page to provide information that relates to all of the tables in your Workbook.
+3. Optionally design a ``Cover`` page to provide information that relates to all of the tables in your Workbook.
 
-4. You :func:`~.core.api.write_workbook` to win.
+4. You ``write_workbook`` to win.
