@@ -42,7 +42,7 @@ division of the Office for National Statistics, UK.
 
 2. You can define the format of each element with a custom :class:`~.core.theme.Theme`, or simply use the default - gptheme.
 
-3. Optionally design a :class:`~.core.gptable.Cover` to provide information that relates to all of the tables in your Workbook.
+3. Optionally design a :class:`~.core.cover.Cover` to provide information that relates to all of the tables in your Workbook.
 
 4. You :func:`~.core.api.write_workbook` to win.
 
