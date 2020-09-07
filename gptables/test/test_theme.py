@@ -1,38 +1,52 @@
-import unittest
-from io import StringIO
+import pytest
+import os
 from contextlib import redirect_stdout
 from pkg_resources import resource_filename
+from itertools import chain, combinations
 
 from gptables import Theme
 from gptables import gptheme
 
-class TestCleanInitTheme(unittest.TestCase):
+
+
+valid_footer_elements = ["legend", "notes", "annotations", "source"]
+
+
+def powerset(iterable):
+    s = list(iterable)
+    return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
+
+@pytest.fixture()
+def empty_theme():
+    yield Theme()
+
+
+class TestCleanInitTheme:
     """
     Test initialisation of the Theme class without config.
-    """
-
-    def setUp(self):
-        self.fh = StringIO()
-        self.theme = Theme()
-
-    
-    def test_default_types(self):  
+    """ 
+    @pytest.mark.parametrize("attr", Theme()._format_attributes)
+    def test_default_format_attrs(self, attr, empty_theme):  
         """Test Theme attribute default types"""
-        for attr in self.theme._format_attributes:
-            exp = {}
-            got = getattr(self.theme, attr)
-            self.assertEqual(exp, got)
-        
-        self.assertEqual(self.theme.footer_order, [])
-        self.assertEqual(self.theme.missing_value, None)
+        exp = {}
+        got = getattr(empty_theme, attr)
+        assert exp == got
+    
 
-    def test_print_attributes(self):
+    def test_default_other_attrs(self, empty_theme):
+        assert empty_theme.footer_order == []
+        assert empty_theme.missing_value == None
+
+
+    def test_print_attributes(self, empty_theme):
         """Test Theme print_attributes()"""
+        from io import StringIO
+
+        file_handler = StringIO()
+        with redirect_stdout(file_handler):
+            empty_theme.print_attributes()
         
-        with redirect_stdout(self.fh):
-            self.theme.print_attributes()
-        
-        got = self.fh.getvalue()
+        got = file_handler.getvalue()
 
         exp = (
 """cover_title_format : {}
@@ -56,9 +70,9 @@ missing_value : None
 """
                 )
 
-        self.assertEqual(got, exp)
+        assert got == exp
 
-class TestConfigInitTheme(unittest.TestCase):
+class TestConfigInitTheme:
     """
     Test initialisation of the Theme class using a config dictionary.
     """
@@ -139,167 +153,138 @@ class TestConfigInitTheme(unittest.TestCase):
             
             "missing_value": ':'
                 }
-        self.theme = Theme(config)
+        got = Theme(config)
         
         exp = gptheme
-        
-        got = self.theme
-        
-        self.assertEqual(exp, got)
+            
+        assert exp == got
         
     def test_file_init(self):
         """
-        Test initialisation of Theme using yaml config file.
+        Test initialisation of Theme using default theme yaml config file.
         """
         config_file = resource_filename(
-                "gptables",
-                "themes/gptheme.yaml"
-                )
-        self.theme = Theme(config_file)
+            "gptables",
+            "themes/gptheme.yaml"
+            )
+        got = Theme(config_file)
         
         exp = gptheme
-        
-        got = self.theme
-        
-        self.assertEqual(exp, got)
+                
+        assert exp == got
 
 
-class TestFormatValidationTheme(unittest.TestCase):
+class TestFormatValidationTheme:
     """
     Test validation of format dictionaries.
     """
-    
-    def setUp(self):
-        self.theme = Theme()
-
-    def test_invalid_attribute_config(self):
+    def test_invalid_attribute_config(self, empty_theme):
         """
         Test that invalid attribute names in config raises a ValueError.
         """
-        config = {"potatoe": {"font_size": 9}}
-        with self.assertRaises(ValueError):
-            self.theme.apply_config(config)
+        config = {"potato": {"font_size": 9}}
+        with pytest.raises(ValueError):
+            empty_theme.apply_config(config)
 
-    def test_invalid_format_label_config(self):
+
+    def test_invalid_format_label_config(self, empty_theme):
         """
         Test that invalid format labels in config raises a ValueError.
         """
-        config = {"notes": {"font_bigness": 5}}
-        with self.assertRaises(ValueError):
-            self.theme.apply_config(config)
+        config = {"notes": {"not_a_format": 5}}
+        with pytest.raises(ValueError):
+            empty_theme.apply_config(config)
         
-    def test_invalid_format_label_single_attr(self):
+
+    @pytest.mark.parametrize("attr", Theme()._format_attributes)
+    def test_invalid_format_label_single_attr(self, attr, empty_theme):
         """
         Test that `validate_single_format` decorator catches invalid format
         labels in individual format dictionaries.
         """
-        format_dict = {"font_bigness": 5}
-        
-        for format_attr in self.theme._format_attributes:
-            with self.subTest(
-                    attr = format_attr,
-                    test = format_dict
-                    ): 
-                with self.assertRaises(ValueError):
-                    getattr(self.theme, "update_" + format_attr)(format_dict)
+        format_dict = {"not_a_format": 5}
+        with pytest.raises(ValueError):
+            getattr(empty_theme, "update_" + attr)(format_dict)
     
-    def test_valid_format_label(self):
+
+    @pytest.mark.parametrize("attr", Theme()._format_attributes)
+    def test_valid_format_label(self, attr, empty_theme):
         """
         Test that Theme attribute is correctly updated when valid format label
         is used.
         """
-        self.theme.update_annotations_format({"font_size": 9})
+        getattr(empty_theme, "update_" + attr)({"font_size": 9})
         
         exp = {"font_size": 9}
-        got = self.theme.annotations_format
+        got = getattr(empty_theme, attr)
         
-        self.assertEqual(exp, got)
+        assert exp == got
+
     
-    def test_valid_format_label_config(self):
+    def test_valid_format_label_config(self, empty_theme):
         """
         Test that valid format labels in config changes specified format attr
-        but not an unrelated attr.
+        but not an unrelated attr. Previous bug updated all formats whenever
+        one was updated.
         """
         config = {"notes": {"font_size": 5}}
-        self.theme.apply_config(config)
+        empty_theme.apply_config(config)
         
         exp = {"font_size": 5}
-        got = self.theme.notes_format
+        got = empty_theme.notes_format
         
-        self.assertEqual(exp, got)
+        assert exp == got
         
-        got2 = self.theme.title_format
+        got2 = empty_theme.title_format
         
-        self.assertEqual({}, got2)
+        assert {} == got2
 
 
-class TestOtherValidationTheme(unittest.TestCase):
+class TestOtherValidationTheme:
     """
     Test validation of non-format Theme attributes.
     """
-    def setUp(self):
-        self.theme = Theme()
-
-    def test_invalid_footer_order_type(self):
+    @pytest.mark.parametrize(
+        "format_order",[
+            "notes",
+            {"annotations": 2},
+            1,
+            3.14,
+            False,
+            None
+            ]
+        )
+    def test_invalid_footer_order_type(self, format_order, empty_theme):
         """
         Test that non-list footer_order entries raise a TypeError.
         """
-        tests = [
-                "notes",
-                {"annotations": 2},
-                1,
-                3.14,
-                False,
-                None
-                ]
-        attr = "footer_order"
-        for test in tests:
-            with self.subTest(
-                    attr = attr,
-                    test = test
-                    ):
-                with self.assertRaises(TypeError):
-                    self.theme.update_footer_order(test)
-                    
-    def test_invalid_footer_order_values(self):
+        with pytest.raises(TypeError):
+            empty_theme.update_footer_order(format_order)
+
+
+    @pytest.mark.parametrize(
+        "format_order",[
+            ["potato"],
+            [1],
+            [3.14],
+            [dict()],
+            [[]]
+            ]
+        )             
+    def test_invalid_footer_order_values(self, format_order, empty_theme):
         """
         Test that list footer_order entries containing invalid elements raises
         a ValueError.
         """
-        tests = [
-                ["potatoe"],
-                [1],
-                [3.14],
-                [dict()],
-                [[]]
-                ]
-        attr = "footer_order"
-        for test in tests:
-            with self.subTest(
-                    attr = attr,
-                    test = test
-                    ):
-                with self.assertRaises(ValueError):
-                    self.theme.update_footer_order(test)
+        with pytest.raises(ValueError):
+            empty_theme.update_footer_order(format_order)
     
-    def test_valid_footer_order_values(self):
+
+    @pytest.mark.parametrize("footer_order", powerset(valid_footer_elements))
+    def test_valid_footer_order_values(self, footer_order, empty_theme):
         """
         Test that valid list footer_order entries are used to set
         the corresponding attribute.
         """
-        tests = [
-                [],
-                ["notes"],
-                ["legend", "notes", "annotations", "source"]
-                ]
-        attr = "footer_order"
-        for test in tests:
-            with self.subTest(
-                    attr = attr,
-                    test = test
-                    ):
-                self.theme.update_footer_order(test)
-                self.assertEqual(
-                        getattr(self.theme, attr),
-                                test
-                                )
+        empty_theme.update_footer_order(list(footer_order))
+        assert getattr(empty_theme, "footer_order") == list(footer_order)
