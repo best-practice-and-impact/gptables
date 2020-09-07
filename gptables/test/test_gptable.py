@@ -1,4 +1,3 @@
-import unittest
 import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal
@@ -6,6 +5,34 @@ from contextlib import contextmanager
 
 
 from gptables import GPTable
+
+
+# TODO: These should be stored in GPTable
+gptable_text_attrs = ["title", "scope", "units", "source"]
+
+gptable_list_text_attrs = ["subtitles", "legend", "notes"]
+
+
+valid_index_columns = [
+    {},
+    {1: "one"},
+    {1: "one", 2: "two"},
+    {1: "one", 2: "two", 3: "three"}
+    ]
+
+valid_text_elements = [
+    "This is a string",
+    ["This is ", {"bold": True}, "rich", "text"],
+    None
+]
+
+invalid_text_elements = [
+    dict(),
+    set(),
+    42,
+    3.14,
+    True
+]
 
 
 @contextmanager
@@ -30,35 +57,6 @@ def create_gptable_with_kwargs():
         return GPTable(**base_gptable)
 
     return generate_gptable
-
-
-
-valid_text_elements = [
-    "This is a string",
-    ["This is ", {"bold": True}, "rich", "text"],
-    None
-]
-
-invalid_text_elements = [
-    dict(),
-    set(),
-    42,
-    3.14,
-    True
-]
-
-# TODO: These should be stored in GPTable
-gptable_text_attrs = ["title", "scope", "units", "source"]
-
-gptable_list_text_attrs = ["subtitles", "legend", "notes"]
-
-
-valid_index_columns = [
-    {},
-    {1: "one"},
-    {1: "one", 2: "two"},
-    {1: "one", 2: "two", 3: "three"}
-    ]
 
 
 def test_init_defaults(create_gptable_with_kwargs):

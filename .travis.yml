@@ -23,9 +23,7 @@ jobs:
         - python -m unittest discover -p 'test_*.py'
     - stage: "Documentation"
       install:
-        - pip install sphinx
-        - pip install sphinx_rtd_theme
-        - pip install -e .
+        - pip install .[docs]
       script:
         - (cd docs && make html)
       deploy:
