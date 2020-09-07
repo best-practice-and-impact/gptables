@@ -9,7 +9,7 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - python -m unittest discover -p 'test_*.py'
+  - pytest
 
 
 jobs:
@@ -20,7 +20,18 @@ jobs:
         - pip install -r requirements.txt
         - pip install pandas==1.0.0
       script:
-        - python -m unittest discover -p 'test_*.py'
+        - pytest
+      after_success:
+        - codecov
+    - stage: "Coverage"
+      python: 3.7
+      install:
+        - pip install .[testing]
+        - pip install codecov
+      script:
+        - pytest --cov=gptables --cov-report=term-missing
+      after_success:
+        - codecov
     - stage: "Documentation"
       install:
         - pip install .[docs]
