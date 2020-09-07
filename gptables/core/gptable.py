@@ -273,6 +273,9 @@ class GPTable:
         existing legend entries by default. If overwrite is False, new entries 
         are appended to the `legend` list.
         """
+        if new_legend is None:
+            self.legend = []
+            return
         if not isinstance(new_legend, list):
             msg = ("`legend` must be provided as a list of text elements")
             raise TypeError(msg)
@@ -333,9 +336,13 @@ class GPTable:
         `notes` list by default.If overwrite is False, new entries are
         appended to the `notes` list.
         """
+        if new_notes is None:
+            self.notes = []
+            return
         if not isinstance(new_notes, list):
             msg = ("`notes` must be a list of text elements")
             raise TypeError(msg)
+
         for text in new_notes:
             self._validate_text(text, "notes")
             
