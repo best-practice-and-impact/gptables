@@ -1,542 +1,366 @@
-import unittest
 import pandas as pd
+import pytest
 from pandas.testing import assert_frame_equal
+from contextlib import contextmanager
+
 
 from gptables import GPTable
 
-class TestInitGPTable(unittest.TestCase):
-    def setUp(self):
-        self.gptable = GPTable(
-                pd.DataFrame(),
-                "",
-                "",
-                "",
-                "",
-                index_columns={}  # Override default, as no columns in table
-                )
-        
-    def test_default_types(self):
-        """
-        Test that given a minimal input, default attributes are correct types.
-        """
-        # Required args
-        self.assertEqual(self.gptable.title, "")
-        self.assertEqual(self.gptable.scope, "")
-        self.assertEqual(self.gptable.units, "")
-        self.assertEqual(self.gptable.source, "")
-        assert_frame_equal(
-                self.gptable.table, pd.DataFrame().reset_index(drop=True)
-                )
-        
-        # Optional args
-        self.assertEqual(self.gptable.index_columns, {})
-        self.assertEqual(self.gptable.subtitles, [])
-        self.assertEqual(self.gptable.legend, [])
-        self.assertEqual(self.gptable.annotations, {})
-        self.assertEqual(self.gptable.notes, [])
-        self.assertEqual(self.gptable.additional_formatting, [])
-        
-        # Other
-        self.assertEqual(self.gptable.index_levels, 0)
-        self.assertEqual(self.gptable._column_headings, set())
-        self.assertEqual(self.gptable._VALID_INDEX_LEVELS, [1, 2, 3])
-        
 
-class TestAttrValidationGPTable(unittest.TestCase):
-    """
-    Test validation of inputs.
-    """
-    def setUp(self):
-        self.default_kwargs = {
-                "table": pd.DataFrame(),
-                "title": "",
-                "scope": "",
-                "units": "",
-                "source": "",
-                "index_columns": {}
-                }
+# TODO: These should be stored in GPTable
+gptable_text_attrs = ["title", "scope", "units", "source"]
 
-        self.text_attrs = [
-                "title",
-                "scope",
-                "units",
-                "source"
-                ]
-        
-        self.list_text_attrs = [
-                "subtitles",
-                "legend",
-                "notes"
-                ]
+gptable_list_text_attrs = ["subtitles", "legend", "notes"]
+
+
+valid_index_columns = [
+    {},
+    {1: "one"},
+    {1: "one", 2: "two"},
+    {1: "one", 2: "two", 3: "three"}
+    ]
+
+valid_text_elements = [
+    "This is a string",
+    ["This is ", {"bold": True}, "rich", "text"],
+    None
+]
+
+invalid_text_elements = [
+    dict(),
+    set(),
+    42,
+    3.14,
+    True
+]
+
+
+@contextmanager
+def does_not_raise():
+    yield
+
+
+@pytest.fixture(scope="function")
+def create_gptable_with_kwargs():
+
+    def generate_gptable(format_dict=None):
+        base_gptable = {
+            "table": pd.DataFrame(),
+            "title": "",
+            "scope": "",
+            "units": "",
+            "source": "",
+            "index_columns": {}  # Override default, as no columns in table
+            }
+        if format_dict is not None:
+            base_gptable.update(format_dict)
+        return GPTable(**base_gptable)
+
+    return generate_gptable
+
+
+def test_init_defaults(create_gptable_with_kwargs):
+    """
+    Test that given a minimal input, default attributes are correct types.
+    """
+    empty_gptable = create_gptable_with_kwargs()
+
+    # Required args
+    assert empty_gptable.title == ""
+    assert empty_gptable.scope == ""
+    assert empty_gptable.units == ""
+    assert empty_gptable.source == ""
+    assert_frame_equal(
+            empty_gptable.table, pd.DataFrame().reset_index(drop=True)
+            )
     
-    def test_invalid_index_level(self):
+    # Optional args
+    assert empty_gptable.index_columns == {}
+    assert empty_gptable.subtitles == []
+    assert empty_gptable.legend == []
+    assert empty_gptable.annotations == {}
+    assert empty_gptable.notes == []
+    assert empty_gptable.additional_formatting == []
+    
+    # Other
+    assert empty_gptable.index_levels == 0
+    assert empty_gptable._column_headings == set()
+    assert empty_gptable._VALID_INDEX_LEVELS == [1, 2, 3]
+    
+
+class TestAttrValidationGPTable:
+    @pytest.mark.parametrize("level", [4, 0, -1])
+    def test_invalid_index_level(self, level, create_gptable_with_kwargs):
         """
         Test that GPTable index_columns raises error when an index level is
         invalid.
         """
-        kwargs = self.default_kwargs.copy()
-        kwargs.update({
-                "table": pd.DataFrame(columns=["1", "2"]),  # Table with cols,
-                "index_columns": {0: 0}  # Key not a valid level
+        with pytest.raises(ValueError):
+            create_gptable_with_kwargs({
+                "table": pd.DataFrame(columns=["one", "two", "three"]),
+                # Valid column index, but invalid level
+                "index_columns": {level: 0}
                 })
-        with self.assertRaises(ValueError):
-            GPTable(**kwargs)
                 
-    def test_invalid_column_number(self):
+
+    @pytest.mark.parametrize("idx,expectation", [
+        (0, does_not_raise()),
+        (1, does_not_raise()),
+        (3, pytest.raises(ValueError)),
+        (-1, pytest.raises(ValueError))
+    ])
+    def test_invalid_column_index(self, idx, expectation, create_gptable_with_kwargs):
         """
-        Test that GPTable index_columns raises error when a column number
+        Test that GPTable index_columns raises error when a column index number
         is invalid.
         """
-        kwargs = self.default_kwargs.copy()
-        kwargs.update({
-                "table": pd.DataFrame(columns=["1", "2"]),  # Table with cols
+        with expectation:
+            create_gptable_with_kwargs({
+                "table": pd.DataFrame(columns=["one", "two", "three"]),  
                 # Valid index level, but non existent column
-                "index_columns": {1: 3}
+                "index_columns": {1: idx}
                 })
-        with self.assertRaises(ValueError):
-            GPTable(**kwargs)
             
-    def test_valid_column_number(self):
+
+    @pytest.mark.parametrize("index_cols,col_headings", zip(
+        valid_index_columns, [
+            {0, 1, 2, 3},
+            {1, 2, 3},
+            {2, 3},
+            {3}
+            ]
+        ))
+    def test_set_column_index(self, index_cols, col_headings, create_gptable_with_kwargs):
         """
-        Test that setting GPTable index_columns with valid column numbers works
+        Test that setting GPTable index_columns with valid column index works
         as expected.
         """
-        kwargs = self.default_kwargs.copy()
-        kwargs.update({
-                "table": pd.DataFrame(columns=["1", "2"]),  # Table with cols
-                # Valid index level, but non existent column
-                "index_columns": {1: 0}
-                })
-
-        gptable = GPTable(**kwargs)
-        self.assertEqual(
-                gptable.index_columns,
-                {1: 0}
-                )
-        self.assertEqual(
-                gptable.index_levels,
-                1
-                )
-        self.assertEqual(
-                gptable._column_headings,
-                {1}  # First heading (iloc 0) should be an index column
-                )
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(columns=["one", "two", "three", "four"]),
+            "index_columns": index_cols
+            })
+        assert gptable.index_columns == index_cols
+        assert gptable.index_levels == len(index_cols)
+        assert gptable._column_headings == col_headings
         
-    def test_invalid_table_type(self):
+
+    @pytest.mark.parametrize("not_a_table", [1, "?", [1,3,5,6]])
+    def test_invalid_table_type(self, not_a_table, create_gptable_with_kwargs):
         """
         Test that setting GPTable table to object that is not a
         pandas.DataFrame raises an error.
         """
-        kwargs = self.default_kwargs.copy()
-        kwargs.update({
-                "table": "Just a fake table"  # Str table
-                })
-        with self.assertRaises(TypeError):
-            GPTable(**kwargs)
+        with pytest.raises(TypeError):
+            create_gptable_with_kwargs({"table": not_a_table})
     
-    def test_invalid_text_in_str_attrs(self):
+
+    @pytest.mark.parametrize("attr", gptable_text_attrs)
+    @pytest.mark.parametrize("not_text", invalid_text_elements)
+    def test_invalid_text_in_str_attrs(self, attr, not_text, create_gptable_with_kwargs):
         """
         Test that setting an invalid GPTable text types raises a TypeError for
         each attribute that holds a string.
         """
-        test_dict = dict()
-        test_set = set()
-        test_int = 1
-        test_float = 3.14
-        
-        kwargs = self.default_kwargs.copy()
-        for attr in self.text_attrs:
-                kwargs = self.default_kwargs.copy()
-                for test in [test_dict, test_set, test_int, test_float]:
-                    with self.subTest(
-                            attr = attr,
-                            test = test
-                            ):
-                        kwargs.update({
-                                attr: test
-                                })
-                        with self.assertRaises(TypeError):
-                            GPTable(**kwargs)
+        with pytest.raises(TypeError):
+            create_gptable_with_kwargs({attr: not_text})
     
-    def test_valid_text_in_str_attrs(self):
+
+    @pytest.mark.parametrize("attr", gptable_text_attrs)
+    @pytest.mark.parametrize("text", valid_text_elements)
+    def test_valid_text_in_str_attrs(self, attr, text, create_gptable_with_kwargs):
         """
         Test that setting valid GPTable text elements works as expected. Test
         strings and list containing strings and format dicts (rich text).
         Also test that None is allowed.
         """
-        test_string = "This is a string"
-        test_rich_text = ["This is ", {"bold": True}, "rich", "text"]
-        test_none = None
-        
-        for attr in self.text_attrs:
-            kwargs = self.default_kwargs.copy()
-            for test in [test_string, test_rich_text, test_none]:
-                with self.subTest(
-                        attr = attr,
-                        test = test
-                        ):
-                    kwargs.update({
-                            attr: test
-                            })
-                    gptable = GPTable(**kwargs)
-                    self.assertEqual(
-                            getattr(gptable, attr),
-                            test
-                            )
+        gptable = create_gptable_with_kwargs({attr: text})
+        assert getattr(gptable, attr) == text
     
-    def test_invalid_text_in_list_attrs(self):
+
+    @pytest.mark.parametrize("attr", gptable_list_text_attrs)
+    @pytest.mark.parametrize("text", invalid_text_elements)
+    def test_invalid_text_in_list_attrs(self, attr, text, create_gptable_with_kwargs):
         """
         Test that setting list of invalid text elements to GPTable list
         parameters raises a TypeError.
         """
-        test_dict = dict()
-        test_set = set()
-        test_int = 1
-        test_float = 3.14
-        
-        kwargs = self.default_kwargs.copy()
-        for attr in self.list_text_attrs:
-                kwargs = self.default_kwargs.copy()
-                for test in [test_dict, test_set, test_int, test_float]:
-                    test = [test, test]
-                    with self.subTest(
-                            attr = attr,
-                            test = test
-                            ):
-                        kwargs.update({
-                                attr: test
-                                })
-                        with self.assertRaises(TypeError):
-                            GPTable(**kwargs)
+        text = [text, text]
+        with pytest.raises(TypeError):
+            create_gptable_with_kwargs({attr: text})
 
-    def test_valid_text_in_list_attrs(self):
+
+    @pytest.mark.parametrize("attr", gptable_list_text_attrs)
+    @pytest.mark.parametrize("text", valid_text_elements)
+    def test_valid_text_in_list_attrs(self, attr, text, create_gptable_with_kwargs):
         """
         Test that setting list of valid text elements to GPTable list
         parameters works as expected.
         """
-        test_string = "This is a string"
-        test_rich_text = ["This is ", {"bold": True}, "rich", "text"]
-        test_none = None
-        
-        for attr in self.list_text_attrs:
-                kwargs = self.default_kwargs.copy()
-                for test in [test_string, test_rich_text, test_none]:
-                    test = [test, test]
-                    with self.subTest(
-                            attr = attr,
-                            test = test
-                            ):
-                        kwargs.update({
-                            attr: test
-                            })
-                        gptable = GPTable(**kwargs)
-                        self.assertEqual(
-                                getattr(gptable, attr),
-                                test
-                                )
+        if text is not None:
+            text = [text, text]
+        gptable = create_gptable_with_kwargs({attr: text})
+        if text is not None:
+            assert getattr(gptable, attr) == text
+        else:
+            assert getattr(gptable, attr) == []
 
-    def test_invalid_annotations_keys(self):
+
+    @pytest.mark.parametrize("reference", [42, (0, 0), None])
+    def test_invalid_annotations_keys(self, reference, create_gptable_with_kwargs):
         """
         Test that setting annotations keys that are not strings raise a
         TypeError.
-        """
-        test_dict = dict()
-        test_set = set()
-        test_int = 1
-        test_float = 3.14
-        test_rich_text = ["This is ", {"bold": True}, "rich", "text"]
-        test_none = None
-        
-        kwargs = self.default_kwargs.copy()
-        attr = "annotations"
-        for test in [test_dict,
-                     test_set,
-                     test_int,
-                     test_float,
-                     test_rich_text,
-                     test_none
-                     ]:
-            with self.subTest(
-                    test = test
-                    ):
-                with self.assertRaises(TypeError):
-                    kwargs.update({
-                        attr: {test: "valid value"}
-                        })
-                    GPTable(**kwargs)
-    
-    def test_valid_annotations_keys(self):
-        """
-        Test that setting annotations keys that strings works as expected.
-        """
-        test_string = "This is a string"
-        
-        kwargs = self.default_kwargs.copy()
-        attr = "annotations"
-        test = test_string
-        with self.subTest(
-                attr = attr,
-                test = test
-                ):
-            kwargs.update({
-                attr: {"valid_key": test}
+        """    
+        with pytest.raises(TypeError):
+            create_gptable_with_kwargs({
+                "annotations": {reference: "valid value"}
                 })
-            gptable = GPTable(**kwargs)
-            self.assertEqual(
-                    getattr(gptable, attr),
-                    {"valid_key": test}
-                    )
     
-    def test_invalid_annotations_values(self):
+
+    @pytest.mark.parametrize("reference", ["1", "spam"])
+    def test_valid_annotations_keys(self, reference, create_gptable_with_kwargs):
+        """
+        Test that setting str annotation keys works.
+        """
+        gptable = create_gptable_with_kwargs({
+            "annotations": {reference: "valid value"}
+            })
+        assert getattr(gptable, "annotations") == {reference: "valid value"}
+    
+
+    @pytest.mark.parametrize("text", invalid_text_elements)
+    def test_invalid_annotations_values(self, text, create_gptable_with_kwargs):
         """
         Test that setting annotations values that are not valid text elements
         raises a TypeError.
         """
-        test_dict = dict()
-        test_set = set()
-        test_int = 1
-        test_float = 3.14
-        
-        kwargs = self.default_kwargs.copy()
-        attr = "annotations"
-        for test in [test_dict,
-                     test_set,
-                     test_int,
-                     test_float
-                     ]:
-            with self.subTest(
-                    attr = attr,
-                    test = test
-                    ):
-                kwargs.update({
-                        attr: {"valid_key": test}
-                        })
-                with self.assertRaises(TypeError):
-                    GPTable(**kwargs)
+        with pytest.raises(TypeError):
+            create_gptable_with_kwargs({
+            "annotations": {"valid_key": text}
+            })
     
-    def test_valid_annotations_values(self):
+
+    @pytest.mark.parametrize("text", valid_text_elements)
+    def test_valid_annotations_values(self, text, create_gptable_with_kwargs):
         """
         Test that setting annotations values that valid text elements works as
         expected.
-        """
-        test_string = "This is a string"
-        test_rich_text = ["This is ", {"bold": True}, "rich", "text"]
-        test_none = None
-        
-        kwargs = self.default_kwargs.copy()
-        attr = "annotations"
-        for test in [test_string, test_rich_text, test_none]:
-            with self.subTest(
-                    attr = attr,
-                    test = test
-                    ):
-                kwargs.update({
-                    "annotations": {"valid_key": test}
-                    })
-                gptable = GPTable(**kwargs)
-                self.assertEqual(
-                        getattr(gptable, attr),
-                        {"valid_key": test}
-                        )
+        """        
+        gptable = create_gptable_with_kwargs({
+            "annotations": {"valid_key": text}
+            })
+        assert getattr(gptable, "annotations") == {"valid_key": text}
     
-    def test_invalid_addtional_format_keys(self):
+
+    @pytest.mark.parametrize("key", invalid_text_elements[2:] + ["invalid_key"])
+    def test_invalid_additional_format_keys(self, key, create_gptable_with_kwargs):
         """
-        Test that adding addional formatting with an invalid key raises an
+        Test that adding additional formatting with an invalid key raises an
         error.
         """
-        test_string = "potatoe"
-        test_int = 1
-        test_float = 3.5
+        with pytest.raises(ValueError):
+            create_gptable_with_kwargs({
+            "additional_formatting": [{key: {"format": {"bold": True}}}]
+            })
         
-        kwargs = self.default_kwargs.copy()
-        attr = "additional_formatting"
-        for test in [test_string, test_int, test_float]:
-            with self.subTest(
-                    attr = attr,
-                    test = test
-                    ):
-                kwargs.update({
-                    "additional_formatting": [
-                            {test:
-                                {"format": {"bold": True}}
-                                }
-                                ]
-                    })
-                with self.assertRaises(ValueError):
-                    GPTable(**kwargs)
-        
-    
-    def test_valid_addtional_format_keys(self):
+
+    @pytest.mark.parametrize("key", ["cell", "row", "column"])
+    def test_valid_additional_format_keys(self, key, create_gptable_with_kwargs):
         """
         Test that adding additional formatting with a valid key (column, row or
         cell) works as expected.
         """
-        valid_keys = ["cell", "row", "column"]
-        kwargs = self.default_kwargs.copy()
-        attr = "additional_formatting"
-        for test in valid_keys:
-            with self.subTest(
-                    attr = attr,
-                    test = test
-                    ):
-                kwargs.update({
-                    "additional_formatting": [
-                            {test: {"format": {"bold": True}}}]
-                    })
-                gptable = GPTable(**kwargs)
-                self.assertEqual(
-                        getattr(gptable, attr),
-                        [{test: {"format": {"bold": True}}}]
-                        )
+        gptable = create_gptable_with_kwargs({
+            "additional_formatting": [
+                    {key: {"format": {"bold": True}}}]
+            })
+        assert getattr(gptable, "additional_formatting") == [{key: {"format": {"bold": True}}}]
     
-    def test_invalid_addtional_format_labels(self):
+
+    @pytest.mark.parametrize("format_label", invalid_text_elements[2:] + ["not_a_format"])
+    def test_invalid_additional_format_labels(self, format_label, create_gptable_with_kwargs):
         """
-        Test that adding addional formatting with a format parameter that is
+        Test that adding additional formatting with a format parameter that is
         not supported by XlsxWriter raises an error.
         """
-        test_string = "potatoe"
-        test_int = 1
-        test_float = 3.5
-        
-        kwargs = self.default_kwargs.copy()
-        attr = "additional_formatting"
-        for test in [test_string, test_int, test_float]:
-            with self.subTest(
-                    attr = attr,
-                    test = test
-                    ):
-                kwargs.update({
-                        # Valid key, invalid format parameters
-                    "additional_formatting": 
-                        [
-                            {"cell":
-                                {"format": {test: True},
-                                 "cells": (0, 0)
-                                 }
-                            }
-                        ]
-                    })
-                with self.assertRaises(ValueError):
-                    GPTable(**kwargs)
+        with pytest.raises(ValueError):
+            create_gptable_with_kwargs({
+                "additional_formatting": 
+                    [
+                        {"cell":
+                            {"format": {format_label: True},
+                                "cells": (0, 0)
+                                }
+                        }
+                    ]
+                })
     
-    def test_valid_addtional_format_labels(self):
+
+    @pytest.mark.parametrize(
+        "format_dict",[
+            {"bold": True},
+            {"font_size": 17},
+            {"align": "center"},
+            {"font_color": "red"},
+            {"bottom": 1}
+            ])
+    def test_valid_additional_format_labels(self, format_dict, create_gptable_with_kwargs):
         """
-        Test that adding addional formatting with a format parameter that is
+        Test that adding additional formatting with a format parameter that is
          supported by XlsxWriter works as expected.
         """
-        valid_formatting = [
-                {"bold": True},
-                {"font_size": 17},
-                {"align": "center"},
-                {"font_color": "red"}
-                ]
-        kwargs = self.default_kwargs.copy()
-        attr = "additional_formatting"
-        for test in valid_formatting:
-            with self.subTest(
-                    attr = attr,
-                    test = test
-                    ):
-                kwargs.update({
-                    "additional_formatting": [
-                            {"cell":
-                                {"format": test,
-                                 "cells": (0, 0)
-                                 }
+        additional_formatting = [
+                    {"cell":
+                        {"format": format_dict,
+                            "cells": (0, 0)
                             }
-                            ]
-                    })
-                gptable = GPTable(**kwargs)
-                self.assertEqual(
-                        getattr(gptable, attr),
-                        [{"cell":
-                                {"format": test,
-                                 "cells": (0, 0)
-                                 }
-                            }]
-                        )
+                        }
+                    ]
+        gptable = create_gptable_with_kwargs({
+             "additional_formatting": additional_formatting
+            })
+        assert getattr(gptable, "additional_formatting") == additional_formatting
 
-class TestOtherAttrSetting(unittest.TestCase):
+
+@pytest.mark.parametrize("index_cols", valid_index_columns)
+class TestIndirectAttrs:
     """
-    Test that other GPTable attributes are indirectly set correctly.
+    Test that non-formatting create_gptable_with_kwargs attributes are indirectly set correctly.
     """
-    def setUp(self):
-        self.default_kwargs = {
-                "table": pd.DataFrame(),
-                "title": "",
-                "scope": "",
-                "units": "",
-                "source": "",
-                "index_columns": {}
-                }
-    
-    def test_index_levels_set(self):
+    def test_index_levels_set(self, index_cols, create_gptable_with_kwargs):
         """
         Test that number of index levels are set, when one, two or three
         indexes are used.
         """
-        valid_index_columns = [
-                {},
-                {1: "one"},
-                {1: "one", 2: "two"},
-                {1: "one", 2: "two", 3: "three"}
-                ]
-        kwargs = self.default_kwargs.copy()
-        kwargs.update({
-                    "table": pd.DataFrame(
-                            columns = [
-                                    "one",
-                                    "two",
-                                    "three",
-                                    "four"
-                                    ])
-                    })
-        attr = "index_levels"
-        for test in valid_index_columns:
-            with self.subTest(
-                    attr = attr,
-                    index_cols = test
-                    ):
-                kwargs.update({"index_columns": test})
-                gptable = GPTable(**kwargs)
-                self.assertEqual(
-                        getattr(gptable, attr),
-                        len(test)
-                        )
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(
+                columns = [
+                    "one",
+                    "two",
+                    "three",
+                    "four"
+                    ]),
+            "index_columns": index_cols
+            })
+        assert getattr(gptable, "index_levels") == len(index_cols)
         
-    def test_column_headings_set(self):
+
+    def test_column_headings_set(self, index_cols, create_gptable_with_kwargs):
         """
         Test that non-index columns are set as column headings.
         """
-        valid_index_columns = [
-                {},
-                {1: "one"},
-                {1: "one", 2: "two"},
-                {1: "one", 2: "two", 3: "three"}
-                ]
-        kwargs = self.default_kwargs.copy()
-        kwargs.update({
-                    "table": pd.DataFrame(
-                            columns = [
-                                    "one",
-                                    "two",
-                                    "three",
-                                    "four"
-                                    ])
-                    })
-        attr = "_column_headings"
-        for test in valid_index_columns:
-            with self.subTest(
-                    attr = attr,
-                    index_cols = test
-                    ):
-                kwargs.update({"index_columns": test})
-                gptable = GPTable(**kwargs)
-                
-                # Expect all column numbers not set as index numbers
-                exp = set(range(4)) - set(range(len(test)))
-                
-                self.assertEqual(
-                        getattr(gptable, attr),
-                        exp
-                        )
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(
+                columns = [
+                    "one",
+                    "two",
+                    "three",
+                    "four"
+                    ]),
+            "index_columns": index_cols
+            })
+        
+        # Expect all column numbers that have no index level assigned
+        exp = set(range(4)) - set(range(len(index_cols)))
+        
+        assert getattr(gptable, "_column_headings") == exp
