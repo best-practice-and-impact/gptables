@@ -142,17 +142,17 @@ class GPWorksheet(Worksheet):
         """
         Strip annotation references (as $$ $$) from a str or list text element.
         """
+        pattern = r"\$\$.*?\$\$"
         if isinstance(text, str):
-            no_annotations = re.sub("\$\$.*\$\$", "", text)
+            no_annotations = re.sub(pattern, "", text)
         elif isinstance(text, list):
             no_annotations = [
-                re.sub("\$\$.*\$\$", "", part)
+                re.sub(pattern, "", part)
                 if isinstance(part, str) else part
                 for part in text
                 ]
         
         return no_annotations
-
 
     def _reference_annotations(self, gptable):
         """

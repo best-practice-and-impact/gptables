@@ -320,6 +320,19 @@ class TestGPWorksheetFormatUpdate:
         assert_frame_equal(test, exp)
 
 
+class TestGPWorkbookStatic:
+
+    @pytest.mark.parametrize("input, expected", [
+        ("no references", "no references"),
+        ("ref at end$$1$$", "ref at end"),
+        ("$$1$$ref at start", "ref at start"),
+        ("two$$1$$ refs$$2$$", "two refs"),
+        ("three$$1$$ refs$$2$$, wow$$3$$", "three refs, wow")
+    ])
+    def test__strip_annotation_references(self, input, expected):
+        assert GPWorksheet._strip_annotation_references(input) == expected
+        
+        
 class TestGPWorkbook:
     """
     Test that GPWorkbook initialisation and methods work as expected.
