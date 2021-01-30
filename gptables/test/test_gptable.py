@@ -81,6 +81,7 @@ def test_init_defaults(create_gptable_with_kwargs):
     assert empty_gptable.annotations == {}
     assert empty_gptable.notes == []
     assert empty_gptable.additional_formatting == []
+    assert empty_gptable.include_index_column_headings == False
     
     # Other
     assert empty_gptable.index_levels == 0

@@ -29,6 +29,8 @@ class GPTable:
         Default is a level two index in the first column ({2: 0}).
     additional_formatting : dict
         table-specific formatting for columns, rows or individual cells
+    include_index_column_headings : bool
+        indicate whether index column headings should be retained in output
     """
 
     def __init__(self,
@@ -42,7 +44,8 @@ class GPTable:
                  annotations={},
                  notes=[],
                  index_columns={2:0},
-                 additional_formatting=[]
+                 additional_formatting=[],
+                 include_index_column_headings=False
                  ):
         
         # Attributes
@@ -64,6 +67,8 @@ class GPTable:
         self.notes = []
         
         self.additional_formatting = []
+
+        self.include_index_column_headings=include_index_column_headings
         
         # Valid format labels from XlsxWriter
         self._valid_format_labels = [
