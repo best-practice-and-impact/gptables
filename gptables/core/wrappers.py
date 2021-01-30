@@ -516,7 +516,7 @@ class GPWorksheet(Worksheet):
                 pos[1] += 1
         
         # Reset position to left col on next row
-        if (units is not None) and (scope is not None):
+        if (units is not None) or (scope is not None):
             pos[0] += 1
         pos[1] = 0
         
