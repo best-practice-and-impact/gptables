@@ -12,9 +12,28 @@ and this project tries its very best to adhere to
 
 ------------------------------------------------------------------------
 
+Unreleased (master)
+===================
 
-Released (master)
-=================
+Nothing to see here.
+
+
+Released (PyPI)
+===============
+
+v0.3.2
+------
+:Date: 2021-01-30
+
+**Fixed**
+
+* bug where setting a GPTable's scope to ``None`` resulted in the units also not being displayed
+* depreciation warning when running tests
+
+**Added**
+
+* ``include_index_column_headings`` option to ``GPTable``, so that users can display index column headers if they wish. Defaults to ``False`` for backwards compatibility.
+
 
 v0.3.2
 ------

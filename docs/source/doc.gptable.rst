@@ -13,6 +13,9 @@ The supported table elements are represented like this in the output `.xlsx` fil
 Where you do not want to include an element, but no default is defined for that parameter,
 pass ``None`` to the relevant parameter when creating a ``GPTable`` instance.
 
+By default, index column headings are not displayed in the output.
+Set ``include_index_column_headings`` to ``True`` to show these headings.
+
 
 Notes and Annotations
 ---------------------
