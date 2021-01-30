@@ -529,7 +529,8 @@ class GPWorksheet(Worksheet):
         data.loc[-1] = data.columns
         data.index = data.index + 1
         data.sort_index(inplace=True)
-        data.iloc[0, index_columns] = ""  # Delete index col headings
+        if not gptable.include_index_column_headings:
+            data.iloc[0, index_columns] = ""  # Delete index col headings
         
         ## Create formats array
         # pandas.DataFrame did NOT want to hold dictionaries, so be wary
@@ -565,8 +566,9 @@ class GPWorksheet(Worksheet):
         
         
         ## Add Theme formatting to formats dataframe
+        format_headings_from = 0 if gptable.include_index_column_headings else index_levels
         self._apply_format(
-                formats.iloc[0, index_levels:],
+                formats.iloc[0, format_headings_from:],
                 theme.column_heading_format
                 )
         
