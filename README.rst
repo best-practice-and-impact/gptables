@@ -4,6 +4,10 @@ Good Practice Tables (gptables)
 .. image:: https://github.com/best-practice-and-impact/gptables/workflows/continuous-integration/badge.svg
     :target: https://github.com/best-practice-and-impact/gptables/actions
     :alt: Actions build status
+    
+.. image:: https://readthedocs.org/projects/gptables/badge/?version=latest
+    :target: https://gptables.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 .. image:: https://badge.fury.io/py/gptables.svg
     :target: https://badge.fury.io/py/gptables
