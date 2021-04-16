@@ -28,7 +28,7 @@ setup(
     version = version,
     author = 'David Foster',
     author_email = 'david.foster@ons.gov.uk',
-    url = 'https://best-practice-and-impact.github.io/gptables/',
+    url = 'https://gptables.readthedocs.io/en/latest/',
     keywords="reproducible tables excel xlsxwriter reproducible-analytical-pipelines",
     description = 'Simplifying good practice in statistical tables.',
     long_description_content_type = "text/x-rst",
