@@ -126,6 +126,8 @@ class GPWorksheet(Worksheet):
                 auto_width
                 )
 
+        self.mark_data_as_worksheet_table(gptable)
+
         if not disable_footer_parentheses:
             self._enclose_footer_elements(gptable)
 
@@ -702,6 +704,14 @@ class GPWorksheet(Worksheet):
         
         return pos
         
+    def mark_data_as_worksheet_table(self, gptable):
+        """
+        Marks the data to be recognised as a Worksheet Table in Excel.
+        """
+        data_range = gptable.data_range
+
+        self.add_table(*data_range,
+                       {'header_row': True})
 
     def _smart_write(self, row, col, data, format_dict, *args):
         """
