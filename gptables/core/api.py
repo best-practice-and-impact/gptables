@@ -53,7 +53,6 @@ def produce_workbook(
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
         ws.write_gptable(gptable, auto_width, disable_footer_parentheses)
-        ws.add_table(*gptable.data_range, {'header_row': True})
     
     return wb
 
