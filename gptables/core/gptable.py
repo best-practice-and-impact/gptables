@@ -406,7 +406,7 @@ class GPTable:
             row_offset += 1
         
         self.data_range = [row_offset, 0,
-                            self.table.shape[0] + row_offset, self.table.shape[1]] 
+                            self.table.shape[0] + row_offset, self.table.shape[1] - 1] 
 
     @staticmethod
     def _validate_text(obj, attr):

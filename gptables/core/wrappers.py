@@ -711,7 +711,7 @@ class GPWorksheet(Worksheet):
         data_range = gptable.data_range
 
         self.add_table(*data_range,
-                       {'header_row': True})
+                       {'header_row': False})
 
     def _smart_write(self, row, col, data, format_dict, *args):
         """
