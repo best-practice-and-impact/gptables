@@ -710,8 +710,13 @@ class GPWorksheet(Worksheet):
         """
         data_range = gptable.data_range
 
+        column_list = gptable.table.columns.tolist()
+        column_headers = [{'header': column} for column in column_list]
+
         self.add_table(*data_range,
-                       {'header_row': False})
+                       {'header_row': True,
+                        'columns': column_headers
+                        })
 
     def _smart_write(self, row, col, data, format_dict, *args):
         """
