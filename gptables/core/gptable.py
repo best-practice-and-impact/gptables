@@ -110,6 +110,9 @@ class GPTable:
 
         self.table = new_table.reset_index(drop=True)
 
+        self._validate_all_column_names_have_text()
+        self._validate_no_duplicate_column_names()
+
         if new_index_columns is None:
             new_index_columns = self.index_columns
         self.set_index_columns(new_index_columns)
@@ -117,6 +120,7 @@ class GPTable:
             new_units = self.units
         self.set_units(new_units)
         
+
 
     def set_index_columns(self, new_index_columns):
         """
@@ -391,8 +395,29 @@ class GPTable:
             if label not in self._valid_format_labels:
                 msg = (f"`{label}` is not a valid XlsxWriter Format property")
                 raise ValueError(msg)
-    
-    
+                
+
+    def _validate_all_column_names_have_text(self):
+        """
+        Validate that all column names in header row have text.
+        """
+        for column_name in self.table.columns:
+            if len(column_name) > 0:
+                continue
+            else:
+                msg = ("Empty column name found in table data - column names must all have text")
+                raise ValueError(msg)
+
+
+    def _validate_no_duplicate_column_names(self):
+        """
+        Validate that there are no duplicate column names in table data.
+        """
+        if len(self.table.columns) != len(set(self.table.columns)):
+            msg = ("Duplicate column names found in table data - column names must be unique")
+            raise ValueError(msg)
+
+
     def _set_data_range(self):
         """
         Get the top-left and bottom-right cell reference of the table data.
