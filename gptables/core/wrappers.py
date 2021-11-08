@@ -715,7 +715,9 @@ class GPWorksheet(Worksheet):
 
         self.add_table(*data_range,
                        {'header_row': True,
-                        'columns': column_headers
+                        'autofilter': False,
+                        'columns': column_headers,
+                        'style': None
                         })
 
     def _smart_write(self, row, col, data, format_dict, *args):

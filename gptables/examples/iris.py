@@ -28,7 +28,7 @@ iris_summary.index = [_[5:].capitalize() for _ in iris_summary.index]
 iris_summary.rename(
     columns={
         "class": "class",
-        "sepal_length": "",
+        "sepal_length": "Mean Sepal Length",
         "sepal_width": "Mean Sepal Width",
     },
     inplace=True,
