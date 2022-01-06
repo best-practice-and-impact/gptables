@@ -1,0 +1,60 @@
+global:
+    font_size: 12
+    font_name: Arial
+
+cover_title:
+    bold: False
+    font_size: 17
+
+cover_subtitle:
+    bold: False
+    font_size: 15
+
+cover_text:
+
+title:
+    bold: False
+    font_size: 16
+    
+subtitle:
+    font_size: 15
+
+scope:
+
+units:
+    align: right
+    italic: False
+
+column_heading:
+    bold: False
+    bottom: 1
+
+index_1:
+    bold: False
+
+index_2:
+
+index_3:
+    italic: False
+
+data:
+
+source:
+    font_size: 12
+
+legend:
+    font_size: 12
+
+annotations:
+    font_size: 12
+
+notes:
+    font_size: 12
+
+footer_order:
+    - source
+    - legend
+    - annotations
+    - notes
+
+missing_value: ':'
