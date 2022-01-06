@@ -1,23 +1,23 @@
 global:
-    font_size: 9
+    font_size: 12
     font_name: Arial
-
+    
 cover_title:
     bold: True
-    font_size: 12
+    font_size: 17
 
 cover_subtitle:
     bold: True
-    font_size: 10
+    font_size: 15
 
 cover_text:
 
 title:
     bold: True
-    font_size: 11
+    font_size: 16
     
 subtitle:
-    font_size: 10
+    font_size: 15
 
 scope:
 
@@ -40,16 +40,16 @@ index_3:
 data:
 
 source:
-    font_size: 7
+    font_size: 12
 
 legend:
-    font_size: 7
+    font_size: 12
 
 annotations:
-    font_size: 7
+    font_size: 12
 
 notes:
-    font_size: 7
+    font_size: 12
 
 footer_order:
     - source
