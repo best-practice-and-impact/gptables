@@ -1,19 +1,19 @@
 global:
     font_size: 12
     font_name: Arial
-    
+
 cover_title:
-    bold: True
+    bold: False
     font_size: 17
 
 cover_subtitle:
-    bold: True
+    bold: False
     font_size: 15
 
 cover_text:
 
 title:
-    bold: True
+    bold: False
     font_size: 16
     
 subtitle:
@@ -23,19 +23,19 @@ scope:
 
 units:
     align: right
-    italic: True
+    italic: False
 
 column_heading:
-    bold: True
+    bold: False
     bottom: 1
 
 index_1:
-    bold: True
+    bold: False
 
 index_2:
 
 index_3:
-    italic: True
+    italic: False
 
 data:
 
