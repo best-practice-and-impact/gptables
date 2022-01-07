@@ -467,7 +467,8 @@ class GPWorksheet(Worksheet):
         """
         Writes the table, scope and units elements of a GPTable. Uses the
         Workbook Theme, plus any additional formatting associated with the
-        GPTable. Also replaces `np.nan` with the missing value marker.
+        GPTable. Also replaces `None`, `NaN` and `NaT` and empty or white 
+        space only strings with the missing value marker.
         
         Parameters
         ----------
@@ -542,6 +543,8 @@ class GPWorksheet(Worksheet):
             dict_row = [{} for n in range(formats.shape[1])]
             formats.iloc[row] = dict_row
         
+        ## Replace empty or white space only strings with np.NaN
+        data.replace(regex=r'^\s*$', value=np.NaN, inplace=True)
         
         ## Handle missing values
         missing_marker = theme.missing_value
