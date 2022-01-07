@@ -40,6 +40,9 @@ iris_summary.reset_index(inplace=True)
 # Insert NA to demonstrate missing value representation
 iris_summary.iloc[1, 1] = np.nan
 
+# Add string column to demonstate empty string behaviour
+iris_summary["string"] = ["example string", "", "   "]
+
 ## Define table elements
 title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
 subtitles = [
