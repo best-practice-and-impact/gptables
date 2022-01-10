@@ -710,8 +710,10 @@ class GPWorksheet(Worksheet):
         """
         data_range = gptable.data_range
 
+        column_heading_format = self._workbook.add_format({'font_name': 'Arial', 'font_size': 12, 'font_color': 'automatic'})
+        
         column_list = gptable.table.columns.tolist()
-        column_headers = [{'header': column} for column in column_list]
+        column_headers = [{'header': column, 'header_format': column_heading_format} for column in column_list]
 
         self.add_table(*data_range,
                        {'header_row': True,
