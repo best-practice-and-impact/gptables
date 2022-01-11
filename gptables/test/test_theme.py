@@ -80,8 +80,9 @@ class TestConfigInitTheme:
         config = {
             "global":
                 {
-                 "font_size": 12,
-                "font_name": "Arial"
+                    "font_size": 12,
+                    "font_name": "Arial",
+                    "font_color": "automatic"                                 
                 },
 
             "cover_title":
