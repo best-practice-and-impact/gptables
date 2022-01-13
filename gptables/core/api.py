@@ -9,7 +9,7 @@ def produce_workbook(
         sheets,
         theme = None,
         cover = None,
-        auto_width = False,
+        auto_width = True,
         disable_footer_parentheses = False,
         ):
     """
@@ -28,7 +28,7 @@ def produce_workbook(
     cover : gptables.Cover, optional
         cover page text. Including this argument will generat a cover page
     auto_width : bool, optional
-        indicate if column widths should be automatically determined. False
+        indicate if column widths should be automatically determined. True
         by default.
     disable_footer_parentheses : bool, optional
         indicate if addition of parentheses to footer elements should be
@@ -62,7 +62,7 @@ def write_workbook(
         sheets,
         theme = None,
         cover = None,
-        auto_width = False,
+        auto_width = True,
         disable_footer_parentheses = False,
         ):
 
@@ -85,7 +85,7 @@ def write_workbook(
     cover : gptables.Cover, optional
         cover page text. Including this argument will generat a cover page
     auto_width : bool, optional
-        indicate if column widths should be automatically determined. False by default.
+        indicate if column widths should be automatically determined. True by default.
     disable_footer_parentheses : bool, optional
         indicate if addition of parentheses to footer elements should be
         disabled. Note that disabling this decreases machine-readability.

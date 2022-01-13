@@ -64,7 +64,7 @@ kwargs = {
     "source": source,
     "index_columns": index,
     "annotations": annotations,
-    "notes": notes,
+    "notes": notes
     }
 
 ## Define our GPTable
@@ -91,7 +91,6 @@ if __name__ == "__main__":
             "Iris Flower Dimensions": iris_table,
             "Copy of Iris Flower Dimensions": iris_table_copy,
         },
-        cover=cover,
-        auto_width=True,
+        cover=cover
     )
     print("Output written at: ", output_path)
