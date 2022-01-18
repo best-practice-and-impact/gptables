@@ -28,17 +28,15 @@ iris_data = iris_data.loc[:, ["class", "sepal_length", "sepal_width"]]
 
 iris_summary = iris_data.groupby("class").agg(np.mean)
 iris_summary.index = [_[5:].capitalize() for _ in iris_summary.index]
+iris_summary.reset_index(inplace=True)
 iris_summary.rename(
     columns={
-        "class": "class",
+        "index": "Class",
         "sepal_length": "Mean Sepal Length",
         "sepal_width": "Mean Sepal Width",
     },
     inplace=True,
     )
-
-# Drop index into table
-iris_summary.reset_index(inplace=True)
 
 # Insert NA to demonstrate missing value representation
 iris_summary.iloc[1, 1] = np.nan
