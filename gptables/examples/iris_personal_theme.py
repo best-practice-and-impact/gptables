@@ -2,7 +2,7 @@
 Iris - Minimal Example
 ----------------------
 
-This example demonstrates use of the ``gptables.write_workbook`` function.
+This example demonstrates use of the ``gptables.write_workbook`` function and how to add a personalised theme.
 This API function is designed for production of consistently structured and formatted tables.
 
 Summary statistics from the classic iris dataset are used to build a ``gptables.GPTable``
@@ -11,6 +11,9 @@ Where you wish to provide no metadata in required parameters, use ``None``.
 
 Table formatting can be defined as a ``gptable.Theme``, which is passed to the API functions
  using the ``theme`` parameter. Or you can reply on our default - gptheme.
+ 
+ The theme parameter must take either a directory or a yaml file in the ``gptables.write_workbook`` function. The yaml file used in this example can be found in the themes folder as ''iris_test_theme.yaml''.
+ The personalised theme removes any bold or italics from the table. 
 """
 import gptables as gpt
 import pandas as pd
@@ -39,9 +42,6 @@ iris_summary.reset_index(inplace=True)
 
 # Insert NA to demonstrate missing value representation
 iris_summary.iloc[1, 1] = np.nan
-
-# Add string column to demonstate empty string behaviour
-iris_summary["string"] = ["example string", "", "   "]
 
 ## Define table elements
 title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
@@ -76,8 +76,10 @@ iris_table = gpt.GPTable(table=iris_summary, **kwargs)
 
 ## Use write_workbook to win!
 if __name__ == "__main__":
-    output_path = parent_dir / "python_iris_gptable.xlsx"
+    output_path = parent_dir / "python_iris_theme_gptable.xlsx"
+    theme_path = str(Path(__file__).parent.parent / "themes/iris_test_theme.yaml")
     gpt.write_workbook(
-        filename=output_path, sheets={"Iris Flower Dimensions": iris_table}
+        filename=output_path, sheets={"Iris Flower Dimensions": iris_table},
+        theme = gpt.Theme(theme_path)
         )
     print("Output written at: ", output_path)

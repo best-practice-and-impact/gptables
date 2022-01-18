@@ -80,19 +80,20 @@ class TestConfigInitTheme:
         config = {
             "global":
                 {
-                 "font_size": 9,
-                "font_name": "Arial"
+                    "font_size": 12,
+                    "font_name": "Arial",
+                    "font_color": "automatic"                                 
                 },
 
             "cover_title":
                 {
-                    'font_size': 12,
+                    'font_size': 17,
                     'bold': True
                 },
             
             "cover_subtitle":
                 {
-                    'font_size': 10,
+                    'font_size': 15,
                     'bold': True
                 },
 
@@ -101,11 +102,11 @@ class TestConfigInitTheme:
             "title":
                 {
                  "bold": True,
-                "font_size": 11
+                "font_size": 16
                 },
      
             "subtitle":
-                {"font_size": 10},
+                {"font_size": 15},
             
             "scope": None,
             
@@ -132,16 +133,16 @@ class TestConfigInitTheme:
             "data": None,
             
             "source":
-                {"font_size": 7},
+                {"font_size": 12},
             
             "legend":
-                {"font_size": 7},
+                {"font_size": 12},
             
             "annotations":
-                {"font_size": 7},
+                {"font_size": 12},
             
             "notes":
-                {"font_size": 7},
+                {"font_size": 12},
             
             "footer_order":
                 [

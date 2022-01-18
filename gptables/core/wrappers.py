@@ -126,6 +126,8 @@ class GPWorksheet(Worksheet):
                 auto_width
                 )
 
+        self.mark_data_as_worksheet_table(gptable, theme.column_heading_format)
+
         if not disable_footer_parentheses:
             self._enclose_footer_elements(gptable)
 
@@ -465,7 +467,8 @@ class GPWorksheet(Worksheet):
         """
         Writes the table, scope and units elements of a GPTable. Uses the
         Workbook Theme, plus any additional formatting associated with the
-        GPTable. Also replaces `np.nan` with the missing value marker.
+        GPTable. Also replaces `None`, `NaN` and `NaT` and empty or white 
+        space only strings with the missing value marker.
         
         Parameters
         ----------
@@ -540,6 +543,8 @@ class GPWorksheet(Worksheet):
             dict_row = [{} for n in range(formats.shape[1])]
             formats.iloc[row] = dict_row
         
+        ## Replace empty or white space only strings with np.NaN
+        data.replace(regex=r'^\s*$', value=np.NaN, inplace=True)
         
         ## Handle missing values
         missing_marker = theme.missing_value
@@ -702,6 +707,23 @@ class GPWorksheet(Worksheet):
         
         return pos
         
+    def mark_data_as_worksheet_table(self, gptable, column_header_format_dict):
+        """
+        Marks the data to be recognised as a Worksheet Table in Excel.
+        """
+        data_range = gptable.data_range
+
+        column_header_format = self._workbook.add_format(column_header_format_dict)
+        
+        column_list = gptable.table.columns.tolist()
+        column_headers = [{'header': column, 'header_format': column_header_format} for column in column_list]
+
+        self.add_table(*data_range,
+                       {'header_row': True,
+                        'autofilter': False,
+                        'columns': column_headers,
+                        'style': None
+                        })
 
     def _smart_write(self, row, col, data, format_dict, *args):
         """

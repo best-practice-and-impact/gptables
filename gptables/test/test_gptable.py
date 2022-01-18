@@ -323,6 +323,35 @@ class TestAttrValidationGPTable:
         assert getattr(gptable, "additional_formatting") == additional_formatting
 
 
+    @pytest.mark.parametrize("column_names,expectation", [
+        (["columnA", "columnB", "columnC"], does_not_raise()),
+        (["columnA", "columnB", ""], pytest.raises(ValueError))
+    ])
+    def test_validate_all_column_names_have_text(self, column_names, expectation, create_gptable_with_kwargs):
+        """
+        Test that GPTable raises error when there are empty strings for column names.
+        """
+        with expectation:
+            create_gptable_with_kwargs({
+                "table": pd.DataFrame(columns=column_names)
+                })
+
+
+    @pytest.mark.parametrize("column_names,expectation", [
+        (["columnA", "columnB", "columnC"], does_not_raise()),
+        (["columnA", "columnB", "columnB"], pytest.raises(ValueError))
+    ])
+    def test_validate_no_duplicate_column_names(self, column_names, expectation, create_gptable_with_kwargs):
+        """
+        Test that GPTable raises error when there are duplicate column names in table data.
+        """
+        with expectation:
+            create_gptable_with_kwargs({
+                "table": pd.DataFrame(columns=column_names)
+                })
+
+
+
 @pytest.mark.parametrize("index_cols", valid_index_columns)
 class TestIndirectAttrs:
     """
