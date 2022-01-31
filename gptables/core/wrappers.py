@@ -921,7 +921,10 @@ class GPWorksheet(Worksheet):
             width of equivalent string in Excel
         """    
         char_widths_in_pixels = GPWorksheet.BOLD_CHAR_WIDTHS if bold else GPWorksheet.CHAR_WIDTHS
-        PIXELS_PER_COLUMN_UNIT = 7.5
+
+        # APPROX_PIXELS_PER_COLUMN_UNIT was found by trial and error.
+        # There might be a better way!
+        APPROX_PIXELS_PER_COLUMN_UNIT = 8.1
 
         def _get_char_width(c):
             if c in char_widths_in_pixels:
@@ -932,8 +935,8 @@ class GPWorksheet(Worksheet):
         return (
             sum(_get_char_width(c) for c in string)
                 * (font_size / 12)
-                / PIXELS_PER_COLUMN_UNIT
-                + 1    # Add a little extra width; there's nothing special about `1`.
+                / APPROX_PIXELS_PER_COLUMN_UNIT
+                + 1    # Add a little extra width; there's nothing special about the number 1.
         )
 
 
