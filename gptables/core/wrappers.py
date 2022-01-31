@@ -18,6 +18,45 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
+
+    CHAR_WIDTHS = {
+        "0": 8.9, "1": 8.9, "2": 8.9, "3": 8.9, "4": 8.9, "5": 8.9,
+        "6": 8.9, "7": 8.9, "8": 8.9, "9": 8.9, "a": 8.9, "b": 8.9,
+        "c": 8, "d": 8.9, "e": 8.9, "f": 4.43, "g": 8.9, "h": 8.9,
+        "i": 3.57, "j": 3.57, "k": 8, "l": 3.57, "m": 13.33, "n": 8.9,
+        "o": 8.9, "p": 8.9, "q": 8.9, "r": 5.33, "s": 8, "t": 4.43,
+        "u": 8.9, "v": 8, "w": 11.57, "x": 8, "y": 8, "z": 8,
+        "A": 10.67, "B": 10.67, "C": 11.57, "D": 11.57, "E": 10.67, "F": 9.77,
+        "G": 12.43, "H": 11.57, "I": 4.43, "J": 8, "K": 10.67, "L": 8.9,
+        "M": 13.33, "N": 11.57, "O": 12.43, "P": 10.67, "Q": 12.43, "R": 11.57,
+        "S": 10.67, "T": 9.77, "U": 11.57, "V": 10.67, "W": 15.1, "X": 10.67,
+        "Y": 10.67, "Z": 9.77, " ": 4.43, "!": 4.43, "\"": 5.67, "#": 8.9,
+        "$": 8.9, "%": 14.23, "&": 10.67, "'": 3.07, "(": 5.33, ")": 5.33,
+        "*": 6.23, "+": 9.33, ",": 4.43, "-": 5.33, ".": 4.43, "/": 4.43,
+        ":": 4.43, ";": 4.43, "<": 9.33, "=": 9.33, ">": 9.33, "?": 8.9,
+        "@": 16.23, "[": 4.43, "]": 4.43, "^": 7.5, "_": 8.9, "\`": 5.33,
+        "{": 5.33, "|": 4.17, "}": 5.33, "~": 9.33, "AVERAGE": 8.472340340309955
+    }
+
+    BOLD_CHAR_WIDTHS = {
+        "0": 8.9, "1": 8.9, "2": 8.9, "3": 8.9, "4": 8.9, "5": 8.9,
+        "6": 8.9, "7": 8.9, "8": 8.9, "9": 8.9, "a": 8.9, "b": 9.77,
+        "c": 8.9, "d": 9.77, "e": 8.9, "f": 5.33, "g": 9.77, "h": 9.77,
+        "i": 4.43, "j": 4.43, "k": 8.9, "l": 4.43, "m": 14.23, "n": 9.77,
+        "o": 9.77, "p": 9.77, "q": 9.77, "r": 6.23, "s": 8.9, "t": 5.33,
+        "u": 9.77, "v": 8.9, "w": 12.43, "x": 8.9, "y": 8.9, "z": 8,
+        "A": 11.57, "B": 11.57, "C": 11.57, "D": 11.57, "E": 10.67, "F": 9.77,
+        "G": 12.43, "H": 11.57, "I": 4.43, "J": 8.9, "K": 11.57, "L": 9.77,
+        "M": 13.33, "N": 11.57, "O": 12.43, "P": 10.67, "Q": 12.43, "R": 11.57,
+        "S": 10.67, "T": 9.77, "U": 11.57, "V": 10.67, "W": 15.1, "X": 10.67,
+        "Y": 10.67, "Z": 9.77, " ": 4.43, "!": 5.33, "\"": 7.6, "#": 8.9,
+        "$": 8.9, "%": 14.23, "&": 11.57, "'": 3.8, "(": 5.33, ")": 5.33,
+        "*": 6.23, "+": 9.33, ",": 4.43, "-": 5.33, ".": 4.43, "/": 4.43,
+        ":": 5.33, ";": 5.33, "<": 9.33, "=": 9.33, ">": 9.33, "?": 9.77,
+        "@": 15.6, "[": 5.33, "]": 5.33, "^": 9.33, "_": 8.9, "\`": 5.33,
+        "{": 6.23, "|": 4.47, "}": 6.23, "~": 9.33, "AVERAGE": 8.865602729168344
+    }
+
     def write_cover(self, cover, sheets, auto_width):
         """
         Write a cover page to the Worksheet. Uses text from a Cover object and
@@ -73,11 +112,13 @@ class GPWorksheet(Worksheet):
 
 
         if sheets and auto_width:
-            max_link_len = max([len(key) for key in sheets.keys()])
-            first_col_width = self._excel_string_width(
-                max_link_len,
-                theme.cover_text_format.get("font_size") or 10
-                )        
+            first_col_width = max(
+                self._excel_string_width(
+                    key,
+                    theme.cover_text_format.get("font_size") or 10,
+                    True
+                ) for key in sheets.keys()
+            )
             self._set_column_widths([first_col_width])
         
 
@@ -830,27 +871,36 @@ class GPWorksheet(Worksheet):
             width to apply to Excel columns
         """
         cols = table.shape[1]
-        max_lengths = [
-            table.iloc[:, col].apply(lambda x: len(x)
-            if isinstance(x, str) else 0).max()
-            for col in range(cols)
-            ]
 
-        max_font_sizes = [
-            formats_table.iloc[:, col]
-            .apply(lambda x: x.get("font_size") or 10).max()
-            for col in range(cols)
-            ]
+        def _contents_for_width(x):
+            t = type(x).__name__
+            if t == "str":
+                return x
+            elif t == "float":
+                return "{:.3f}".format(x).rstrip("0").rstrip(".")
+            else:
+                return "."
 
-        col_widths = [
-            self._excel_string_width(l, f)
-            for l, f in zip(max_lengths, max_font_sizes)
+        col_widths = []
+
+        for col in range(cols):
+            cell_contents = list(table.iloc[:, col].apply(_contents_for_width))
+            cell_fonts = list(
+                formats_table.iloc[:, col].apply(
+                    lambda x: (x.get("font_size") or 10, bool(x.get("bold")))
+                )
+            )
+            widths = [
+                self._excel_string_width(string, size, bold)
+                for string, (size, bold) in zip(cell_contents, cell_fonts)
             ]
+            col_widths.append(max(widths))
+
         return col_widths
 
         
     @staticmethod
-    def _excel_string_width(string_len, font_size):
+    def _excel_string_width(string, font_size, bold):
         """
         Calculate the rough length of a string in Excel character units.
         This crude estimate does not account for font name or other font format
@@ -858,23 +908,26 @@ class GPWorksheet(Worksheet):
         
         Parameters
         ----------
-        string_len : int
-            length of string to calculate width in Excel for
+        string : str
+            string to calculate width in Excel for
         font_size : int
             size of font
+        bold : bool
+            is the font bold?
         
         Returns 
         -------
         excel_width : float
             width of equivalent string in Excel
         """    
-        if string_len == 0:
-            excel_width = 0
-        else:
-            excel_width = string_len * ((font_size * 0.12) - 0.09)
-        
-        return excel_width
-
+        char_widths_in_pixels = GPWorksheet.BOLD_CHAR_WIDTHS if bold else GPWorksheet.CHAR_WIDTHS
+        PIXELS_PER_COLUMN_UNIT = 7.5
+        return (
+            sum(char_widths_in_pixels[c] for c in string)
+                * (font_size / 12)
+                / PIXELS_PER_COLUMN_UNIT
+                + 1    # Add a little extra width; there's nothing special about `1`.
+        )
 
 
 class GPWorkbook(Workbook):
