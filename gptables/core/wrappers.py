@@ -116,7 +116,7 @@ class GPWorksheet(Worksheet):
                 self._excel_string_width(
                     key,
                     theme.cover_text_format.get("font_size") or 10,
-                    True
+                    bool(theme.cover_text_format.get("bold"))
                 ) for key in sheets.keys()
             )
             self._set_column_widths([first_col_width])
