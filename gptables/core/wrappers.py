@@ -922,8 +922,15 @@ class GPWorksheet(Worksheet):
         """    
         char_widths_in_pixels = GPWorksheet.BOLD_CHAR_WIDTHS if bold else GPWorksheet.CHAR_WIDTHS
         PIXELS_PER_COLUMN_UNIT = 7.5
+
+        def _get_char_width(c):
+            if c in char_widths_in_pixels:
+                return char_widths_in_pixels[c]
+            else:
+                return char_widths_in_pixels["AVERAGE"]
+
         return (
-            sum(char_widths_in_pixels[c] for c in string)
+            sum(_get_char_width(c) for c in string)
                 * (font_size / 12)
                 / PIXELS_PER_COLUMN_UNIT
                 + 1    # Add a little extra width; there's nothing special about `1`.
