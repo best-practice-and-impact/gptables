@@ -29,16 +29,21 @@ units:
 column_heading:
     bold: True
     bottom: 1
+    text_wrap: 1
 
 index_1:
     bold: True
+    text_wrap: 1
 
 index_2:
+    text_wrap: 1
 
 index_3:
     italic: True
+    text_wrap: 1
 
 data:
+    text_wrap: 1
 
 source:
     font_size: 12
