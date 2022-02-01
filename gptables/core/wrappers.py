@@ -831,8 +831,7 @@ class GPWorksheet(Worksheet):
         """
         cols = table.shape[1]
         max_lengths = [
-            table.iloc[:, col].apply(lambda x: len(x)
-            if isinstance(x, str) else 0).max()
+            table.iloc[:, col].apply(self._longest_line_length).max()
             for col in range(cols)
             ]
 
@@ -875,6 +874,28 @@ class GPWorksheet(Worksheet):
         
         return excel_width
 
+    @staticmethod
+    def _longest_line_length(cell_val):
+        """
+        Calculate the length of the longest line within a string. If the string contains line breaks,
+        this will return the length of the longest line. Expects new lines to be marked with '\r\n'
+
+        Parameters
+        ----------
+        cell_val: 
+            cell value
+
+        Returns
+        -------
+        max_length: int
+            the length of the longest line within the string
+        """
+        
+        if isinstance(cell_val, str):
+            return(max([len(line) for line in cell_val.split("\r\n")]))
+        else:
+            return(0)
+        
 
 
 class GPWorkbook(Workbook):
