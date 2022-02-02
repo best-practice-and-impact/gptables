@@ -87,13 +87,13 @@ class TestConfigInitTheme:
 
             "cover_title":
                 {
-                    'font_size': 17,
+                    'font_size': 16,
                     'bold': True
                 },
             
             "cover_subtitle":
                 {
-                    'font_size': 15,
+                    'font_size': 14,
                     'bold': True
                 },
 
@@ -106,14 +106,13 @@ class TestConfigInitTheme:
                 },
      
             "subtitle":
-                {"font_size": 15},
+                {"font_size": 14},
             
             "scope": None,
             
             "units":
                 {
-                "align": "right",
-                "italic": True
+                "align": "right"
                 },
             
             "column_heading":
@@ -127,9 +126,8 @@ class TestConfigInitTheme:
             
             "index_2": None,
             
-            "index_3":
-                {"italic": True},
-            
+            "index_3": None,
+             
             "data": None,
             
             "source":
