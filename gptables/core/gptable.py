@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import pandas as pd
 from xlsxwriter.format import Format
 
@@ -16,8 +17,8 @@ class GPTable:
         subtitles as a list of strings
     scope : str
         description of scope/basis of data in table
-    units : str or dict
-        units used in all (str) or each (dict) column of `table`
+    units : dict
+        units used in each (dict) column of `table`
     legend : list
         descriptions of special notation used in `table`
     annotations : dict
@@ -37,8 +38,8 @@ class GPTable:
                  table,
                  title,
                  scope,
-                 units,
                  source,
+                 units=None,
                  subtitles=[],
                  legend=[],
                  annotations={},
@@ -240,11 +241,12 @@ class GPTable:
 
             self.table = self.table.rename(columns = new_headers)
 
-        else:
-            msg = ("`units` attribute must be a dictionary or list"
+        elif not new_units is None:
+            msg = ("`units` attribute must be a dictionary or None"
                    " ({column: units_text})")
-            raise TypeError(msg)
             
+            raise TypeError(msg)
+
         self.units = new_units
 
     def set_source(self, new_source):
