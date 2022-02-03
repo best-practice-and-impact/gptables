@@ -68,7 +68,7 @@ subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems",
     "Just another subtitile",
     ]
-units = "cm"
+units = {0:"cm"}
 scope = "Iris"
 index = {1: 0, 2: 1}
 

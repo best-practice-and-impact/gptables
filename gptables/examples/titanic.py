@@ -30,7 +30,7 @@ titanic_analysis = pd.DataFrame(
 
 title = "Titanic$$note2$$ analysis by sex"
 subtitles = ["Derived from a Kaggle competition dataset$$note1$$"]
-units = {"Survived": "sum$$note3$$", "Pclass": "mode", "Child": "sum", "Sex": "mean"}
+units = {"Survived": "sum$$note3$$", 2: "mode", 3: "sum", "Fare": "mean"}
 scope = "Titanic$$note2$$"
 source = "Source: Kaggle"
 index = {2: 0}
@@ -55,9 +55,9 @@ kwargs = {
 # define our GPTable
 titanic_table = gpt.GPTable(table=titanic_analysis, **kwargs)
 
-if __name__ is "__main__":
+if __name__ == "__main__":
     output_path = parent_dir / "python_titanic_gptable.xlsx"
     gpt.write_workbook(
-        filename=output_path, sheets={"titanic analysis by sex": titanic_table}
+        filename=output_path, auto_width=True, sheets={"titanic analysis by sex": titanic_table}
         )
     print("Output written at: ", output_path)

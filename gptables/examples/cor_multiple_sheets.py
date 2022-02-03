@@ -43,7 +43,7 @@ dct["summary"] = summ
 example = {
     "title": "Cost of Reoffending",
     "subtitles": ["12-month follow-up period for the 2016 offender cohort"],
-    "units": "£",
+    "units": {1:"£"},
     "scope": "England and Wales",
     "source": "Office for National Statistics",
     }

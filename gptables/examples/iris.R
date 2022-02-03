@@ -20,7 +20,7 @@ iris_df <- reticulate::r_to_py(
 title = list("Mean", reticulate::py_dict("italic", TRUE), " Iris", "$$note2$$ sepal dimensions")
 subtitles = c("1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
               "Just another subtitile")
-units = "cm"
+units = list(1:"cm", 2:"cm")
 scope = "Iris"
 souce = "Source: Office for Iris Statistics"
 index_columns  = reticulate::py_dict(reticulate::py_eval('2'), "Species")

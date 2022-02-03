@@ -47,7 +47,7 @@ subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
     "Just another subtitile",
     ]
-units = "cm"
+units = {1:"cm", 2:"cm"}
 scope = "Iris"
 source = "Source: Office for Iris Statistics"
 index = {2: 0}  # Column 0 is a level 2 index
