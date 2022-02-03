@@ -495,31 +495,9 @@ class GPWorksheet(Worksheet):
                 scope,
                 theme.scope_format
                 )
-        
-        # Write units above each col heading
-        pos[1] += gptable.index_levels
-        n_cols = len(gptable._column_headings)
-        units = gptable.units
-        if isinstance(units, str):
-            pos[1] += n_cols - 1
-            self._smart_write(
-                *pos,
-                units,
-                theme.units_format
-                )
-            pos[1] += 1
-
-        elif isinstance(units, list):
-            for n in range(n_cols):
-                self._smart_write(
-                    *pos,
-                    units[n],
-                    theme.units_format
-                    )
-                pos[1] += 1
-        
+                
         # Reset position to left col on next row
-        if (units is not None) or (scope is not None):
+        if (gptable.units is not None) or (scope is not None):
             pos[0] += 1
         pos[1] = 0
         
@@ -890,9 +868,11 @@ class GPWorksheet(Worksheet):
         max_length: int
             the length of the longest line within the string
         """
-        
+        split_strings = """
+|\r\n|\n"""
+
         if isinstance(cell_val, str):
-            return(max([len(line) for line in cell_val.split("\r\n")]))
+            return(max([len(line) for line in re.split(split_strings, cell_val)]))
         else:
             return(0)
         

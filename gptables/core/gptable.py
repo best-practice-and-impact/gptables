@@ -120,8 +120,6 @@ class GPTable:
             new_units = self.units
         self.set_units(new_units)
         
-
-
     def set_index_columns(self, new_index_columns):
         """
         Set the `index_columns` attribute. Overwrites any existing values.
@@ -227,39 +225,27 @@ class GPTable:
 
     def set_units(self, new_units):
         """
-        Set the `units` attribute using the supplied str, list or dictionary.
-        Units supplied as a list must match the length of column headings,
-        excluding index columns. Units as a dict should be in the format
-        {column: units_text}. Column can be column name or 0-indexed column
-        number in `table`. Index columns cannot have units.
-        """            
-        if isinstance(new_units, str) or new_units is None:
-            self._validate_text(new_units, "units")
-        elif isinstance(new_units, list):
-            self._validate_text(new_units, "units")
-            rich_text =  any(type(_) == dict for _ in new_units)
-            if len(new_units) != len(self._column_headings) and not rich_text:
-                msg = ("length of `units` list must match the number of"
-                       " non-index columns in the `table`")
-                raise ValueError(msg)
-        elif isinstance(new_units, dict) and len(new_units) > 0:
-            units_list = [None for _ in range(len(self._column_headings))]
-            for key, value in new_units.items():
+        Adds units to column headers.
+        Units should be in the format {column: units_text}. Column can be column name or 0-indexed column
+        number in `table`. 
+        """    
+        if isinstance(new_units, dict) and len(new_units) > 0:
+            for value in new_units.values():
                 self._validate_text(value, "units")
-                if not isinstance(key, int):
-                    iloc = self.table.columns.get_loc(key)
-                else:
-                    iloc = key
-                units_list[iloc - self.index_levels] = value
-            new_units = units_list
+
+            # Convert numeric keys to column names
+            new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_units.keys()] 
+            new_headers_values = [f"{key} \n({value})" for key, value in zip(new_headers_keys, new_units.values())]
+            new_headers = dict(zip(new_headers_keys, new_headers_values))
+
+            self.table = self.table.rename(columns = new_headers)
 
         else:
-            msg = ("`units` attribute must be a string, list or dictionary"
+            msg = ("`units` attribute must be a dictionary or list"
                    " ({column: units_text})")
             raise TypeError(msg)
             
         self.units = new_units
-
 
     def set_source(self, new_source):
         """
