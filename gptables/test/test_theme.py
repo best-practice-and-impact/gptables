@@ -35,7 +35,6 @@ class TestCleanInitTheme:
 
     def test_default_other_attrs(self, empty_theme):
         assert empty_theme.footer_order == []
-        assert empty_theme.missing_value == None
 
 
     def test_print_attributes(self, empty_theme):
@@ -66,7 +65,6 @@ legend_format : {}
 annotations_format : {}
 notes_format : {}
 footer_order : []
-missing_value : None
 """
                 )
 
@@ -149,8 +147,6 @@ class TestConfigInitTheme:
                 "annotations",
                 "notes",
                 ],
-            
-            "missing_value": ':'
                 }
         got = Theme(config)
         

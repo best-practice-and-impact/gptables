@@ -35,12 +35,6 @@ iris_summary.rename(
     inplace=True,
     )
 
-# Insert NA to demonstrate missing value representation
-iris_summary.iloc[1, 1] = np.nan
-
-# Add string column to demonstate empty string behaviour
-iris_summary["String Column"] = ["example string", "", "   "]
-
 ## Define table elements
 title = "Mean Iris $$note2$$ sepal dimensions"
 subtitles = [

@@ -65,8 +65,6 @@ class Theme:
     notes_format : dict
     
     footer_order : list
-    
-    missing_value : None or str
     """
 
     def __init__(
@@ -106,7 +104,6 @@ class Theme:
         
         ## Other attributes
         self.footer_order = []
-        self.missing_value = None
         
         # Valid Them format attributes
         self._valid_attrs = [
@@ -181,7 +178,7 @@ class Theme:
         
         # Update with individual methods
         for key, value in cfg.items():
-            if key in ["footer_order", "missing_value"]:
+            if key == "footer_order":
                 getattr(self, "update_" + key)(value)
             elif key in self._valid_attrs:
                 if value is not None:
@@ -364,15 +361,6 @@ class Theme:
             msg = (f"`footer_order` elements must be in {valid_elements}")
             raise ValueError(msg)
         self.footer_order = order_list
-
-
-    def update_missing_value(self, missing_val_text):
-        """
-        Update the `missing_value` attribute. Overrides existing string.
-        """
-        GPTable._validate_text(missing_val_text, "missing_value")
-
-        self.missing_value = missing_val_text
 
 
     def print_attributes(self):
