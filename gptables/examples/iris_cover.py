@@ -66,10 +66,11 @@ kwargs = {
     }
 
 ## Define our GPTable
-iris_table = gpt.GPTable(table=iris_summary, **kwargs)
+iris_table = gpt.GPTable(table=iris_summary, table_name="iris_statistics", **kwargs)
 
 iris_table_copy = deepcopy(iris_table)
 iris_table_copy.set_title("A copy of the first sheet$$note2$$")
+iris_table_copy.set_table_name("iris_statistics_copy")
 
 cover = gpt.Cover(
     cover_label="Notes",
