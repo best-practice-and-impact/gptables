@@ -55,7 +55,6 @@ cover_text_format : {}
 title_format : {}
 subtitle_format : {}
 scope_format : {}
-units_format : {}
 column_heading_format : {}
 index_1_format : {}
 index_2_format : {}
@@ -109,28 +108,29 @@ class TestConfigInitTheme:
                 {"font_size": 15},
             
             "scope": None,
-            
-            "units":
-                {
-                "align": "right",
-                "italic": True
-                },
-            
+                        
             "column_heading":
                 {
                 "bold": True,
-                "bottom": 1
+                "bottom": 1,
+                "text_wrap": 1
                 },
             
             "index_1":
-                {"bold": True},
+                {
+                "bold": True,
+                "text_wrap": 1
+                },
             
-            "index_2": None,
+            "index_2": {"text_wrap": 1},
             
             "index_3":
-                {"italic": True},
+                {
+                "italic": True,
+                "text_wrap": 1
+                },
             
-            "data": None,
+            "data": {"text_wrap": 1},
             
             "source":
                 {"font_size": 12},

@@ -8,7 +8,7 @@ from gptables import GPTable
 
 
 # TODO: These should be stored in GPTable
-gptable_text_attrs = ["title", "scope", "units", "source"]
+gptable_text_attrs = ["title", "scope", "source"]
 
 gptable_list_text_attrs = ["subtitles", "legend", "notes"]
 
@@ -48,7 +48,6 @@ def create_gptable_with_kwargs():
             "table": pd.DataFrame(),
             "title": "",
             "scope": "",
-            "units": "",
             "source": "",
             "index_columns": {}  # Override default, as no columns in table
             }
@@ -68,7 +67,7 @@ def test_init_defaults(create_gptable_with_kwargs):
     # Required args
     assert empty_gptable.title == ""
     assert empty_gptable.scope == ""
-    assert empty_gptable.units == ""
+    assert empty_gptable.units == None
     assert empty_gptable.source == ""
     assert_frame_equal(
             empty_gptable.table, pd.DataFrame().reset_index(drop=True)

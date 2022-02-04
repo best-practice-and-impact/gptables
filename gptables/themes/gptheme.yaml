@@ -22,10 +22,6 @@ subtitle:
 
 scope:
 
-units:
-    align: right
-    italic: True
-
 column_heading:
     bold: True
     bottom: 1

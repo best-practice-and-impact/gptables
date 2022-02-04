@@ -44,8 +44,6 @@ class Theme:
     
     scope_format : dict
     
-    units_format : dict
-
     column_heading_format : dict
     
     index_1_format : dict
@@ -89,7 +87,6 @@ class Theme:
             "title_format",
             "subtitle_format",
             "scope_format",
-            "units_format",
             "column_heading_format",
             "index_1_format",
             "index_2_format",
@@ -306,13 +303,13 @@ class Theme:
         self.location_format.update(format_dict)
 
 
-    @validate_single_format
-    def update_units_format(self, format_dict):
-        """
-        Update the `units_format` attribute. Where keys already exist, existing
-        items are replaced.
-        """
-        self.units_format.update(format_dict)
+    # @validate_single_format
+    # def update_units_format(self, format_dict):
+    #     """
+    #     Update the `units_format` attribute. Where keys already exist, existing
+    #     items are replaced.
+    #     """
+    #     self.units_format.update(format_dict)
 
 
     @validate_single_format
