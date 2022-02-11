@@ -495,6 +495,17 @@ class GPWorksheet(Worksheet):
             """)
             raise ValueError(msg)
 
+        # Raise error if any table element is only special characters
+        gptable.table.replace(regex=r'^\W*$', value=np.NaN, inplace=True)
+        if gptable.table.isna().values.any():
+            msg = ("""
+            Cell found containing only special characters, replace with
+            alphanumeric characters before inputting to gptables.
+            Guidance on symbols in tables can be found at:
+            https://gss.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
+            """)
+            raise ValueError(msg)
+
         # Get theme
         theme = self.theme
         
