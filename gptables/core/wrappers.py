@@ -467,8 +467,7 @@ class GPWorksheet(Worksheet):
         """
         Writes the table, scope and units elements of a GPTable. Uses the
         Workbook Theme, plus any additional formatting associated with the
-        GPTable. Also replaces `None`, `NaN` and `NaT` and empty or white 
-        space only strings with the missing value marker.
+        GPTable.
         
         Parameters
         ----------
@@ -485,6 +484,28 @@ class GPWorksheet(Worksheet):
         pos : list
             new position to write next element from
         """
+        # Raise error if any table element is null or whitespace
+        gptable.table.replace(regex=r'^\s*$', value=np.NaN, inplace=True)
+        if gptable.table.isna().values.any():
+            msg = ("""
+            Empty or null cell found in table, replace with
+            appropriate shorthand before inputting to gptables.
+            Guidance on shorthand can be found at:
+            https://gss.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
+            """)
+            raise ValueError(msg)
+
+        # Raise error if any table element is only special characters
+        gptable.table.replace(regex=r'^\W*$', value=np.NaN, inplace=True)
+        if gptable.table.isna().values.any():
+            msg = ("""
+            Cell found containing only special characters, replace with
+            alphanumeric characters before inputting to gptables.
+            Guidance on symbols in tables can be found at:
+            https://gss.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
+            """)
+            raise ValueError(msg)
+
         # Get theme
         theme = self.theme
         
@@ -520,33 +541,6 @@ class GPWorksheet(Worksheet):
         for row in range(formats.shape[0]):
             dict_row = [{} for n in range(formats.shape[1])]
             formats.iloc[row] = dict_row
-        
-        ## Replace empty or white space only strings with np.NaN
-        data.replace(regex=r'^\s*$', value=np.NaN, inplace=True)
-        
-        ## Handle missing values
-        missing_marker = theme.missing_value
-
-        if data.isna().values.any():
-            if missing_marker is not None:
-                # Super inefficient format update loop
-                # Only run if align not set for data
-                if not "align" in theme.data_format.keys():
-                    rows, cols = data.shape
-                    for row in range(rows):
-                        for col in range(cols):
-                            if pd.isna(data.iloc[row, col]):
-                                (formats.iloc[row, col]
-                                .update({"align":"center"})
-                                )
-
-                data.fillna(missing_marker, inplace=True)
-                gptable.legend.append(f"{missing_marker} not available")
-            else:
-                msg = ("`Theme.missing_marker` must be assigned if values are"
-                       " missing within GPTable.")
-                raise ValueError(msg)
-        
         
         ## Add Theme formatting to formats dataframe
         format_headings_from = 0 if gptable.include_index_column_headings else index_levels

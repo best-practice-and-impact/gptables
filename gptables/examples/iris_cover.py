@@ -34,9 +34,6 @@ iris_summary.rename(
     inplace=True,
 )
 
-# Insert NA to demonstrate missing value representation
-iris_summary.iloc[1, 1] = np.nan
-
 ## Define table elements
 title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
 subtitles = [
