@@ -46,6 +46,7 @@ def create_gptable_with_kwargs():
     def generate_gptable(format_dict=None):
         base_gptable = {
             "table": pd.DataFrame(),
+            "table_name": "",
             "title": "",
             "scope": "",
             "source": "",

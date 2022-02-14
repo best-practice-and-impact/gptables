@@ -5,11 +5,11 @@ global:
 
 cover_title:
     bold: True
-    font_size: 17
+    font_size: 16
 
 cover_subtitle:
     bold: True
-    font_size: 15
+    font_size: 14
 
 cover_text:
 
@@ -18,7 +18,7 @@ title:
     font_size: 16
     
 subtitle:
-    font_size: 15
+    font_size: 14
 
 scope:
 

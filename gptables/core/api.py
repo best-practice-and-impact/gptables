@@ -154,6 +154,7 @@ def quick_and_dirty_workbook(
             
         sheets["Table " + str(table_n + 1)] = GPTable(
             current_table,
+            f"Table{table_n + 1}",
             None,
             None,
             None,

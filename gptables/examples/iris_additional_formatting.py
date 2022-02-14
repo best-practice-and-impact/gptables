@@ -63,6 +63,7 @@ iris_summary = iris_summary.pivot_table(
     ).reset_index()
 
 ## Define table elements
+table_name = "iris_statistics"
 title = "Iris flower dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems",
@@ -102,6 +103,7 @@ additional_formatting = [
 
 # or just use kwargs
 kwargs = {
+    "table_name": table_name,
     "title": title,
     "subtitles": subtitles,
     "units": units,

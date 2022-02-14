@@ -86,13 +86,13 @@ class TestConfigInitTheme:
 
             "cover_title":
                 {
-                    'font_size': 17,
+                    'font_size': 16,
                     'bold': True
                 },
             
             "cover_subtitle":
                 {
-                    'font_size': 15,
+                    'font_size': 14,
                     'bold': True
                 },
 
@@ -105,10 +105,10 @@ class TestConfigInitTheme:
                 },
      
             "subtitle":
-                {"font_size": 15},
+                {"font_size": 14},
             
             "scope": None,
-                        
+
             "column_heading":
                 {
                 "bold": True,

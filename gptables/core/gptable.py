@@ -11,6 +11,9 @@ class GPTable:
     ----------
     table : pandas.DataFrame
         table to be written to an Excel workbook
+    table_name : str
+        name for table
+        should be unique with no spaces and start with a character or underscore
     title : str
         description of the table
     subtitles : list
@@ -36,6 +39,7 @@ class GPTable:
 
     def __init__(self,
                  table,
+                 table_name,
                  title,
                  scope,
                  source,
@@ -61,6 +65,7 @@ class GPTable:
         self.index_columns = {}  # {index level (int): column index (int)}
         self._column_headings = set() # Non-index column headings
         self.table = pd.DataFrame()
+        self.table_name = None
         self.data_range = [0] * 4
         
         self.source = None
@@ -85,6 +90,7 @@ class GPTable:
         self.set_subtitles(subtitles)
         self.set_scope(scope)
         self.set_table(table, index_columns, units)
+        self.set_table_name(table_name)
         self.set_source(source)
         self.set_legend(legend)
         self.set_annotations(annotations)
@@ -175,6 +181,22 @@ class GPTable:
         index_cols = set(self.index_columns.values())
         self._column_headings = {x for x in range(self.table.shape[1])} - index_cols
     
+    
+    def set_table_name(self, new_table_name):
+        """
+        Set the `table_name` attribute.
+        """
+        if not isinstance(new_table_name, str):
+            msg = ("table_name should be provided as a string")
+            raise TypeError(msg)
+
+        elif len(new_table_name) != len("".join(new_table_name.split())):
+            msg = ("Whitespace found in table_name, remove or replace with underscores")
+            raise ValueError(msg)
+
+        else:
+            self.table_name = new_table_name
+
 
     def set_title(self, new_title):
         """

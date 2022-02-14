@@ -700,7 +700,8 @@ class GPWorksheet(Worksheet):
                        {'header_row': True,
                         'autofilter': False,
                         'columns': column_headers,
-                        'style': None
+                        'style': None,
+                        'name': gptable.table_name
                         })
 
     def _smart_write(self, row, col, data, format_dict, *args):

@@ -42,7 +42,8 @@ iris_summary.iloc[1, 1] = np.nan
 iris_summary["String Column"] = ["example string", "", "   "]
 
 ## Define table elements
-title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
+table_name = "iris_statistics"
+title = "Mean Iris $$note2$$ sepal dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
     "Just another subtitile",
@@ -59,6 +60,7 @@ notes = ["This note hath no reference."]
 
 # or use kwargs to pass these to the appropriate parameters
 kwargs = {
+    "table_name": table_name,
     "title": title,
     "subtitles": subtitles,
     "units": units,

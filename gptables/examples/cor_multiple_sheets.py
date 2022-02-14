@@ -13,6 +13,7 @@ to the corresponding sheet.
 ``gptables.GPTable`` objects can be constructed one by one, but this demonstrates
 one way to make this definition concise.
 """
+from copy import deepcopy
 import gptables as gpt
 import pandas as pd
 import os
@@ -46,9 +47,19 @@ example = {
     "units": {1:"£"},
     "scope": "England and Wales",
     "source": "Office for National Statistics",
-    }
+}
 
-elements = {"summary": example, "Adults": example, "Children and young people": example}
+table_parameters_dict = {}
+for table in ["summary", "adults", "children"]:
+    table_parameters = deepcopy(example)
+    table_parameters["table_name"] = f"{table}_table"
+    table_parameters_dict[table] = table_parameters
+
+elements = {
+    "summary": table_parameters_dict["summary"], 
+    "Adults": table_parameters_dict["adults"], 
+    "Children and young people": table_parameters_dict["children"]
+}
 
 ## Generate a dictionary of sheet names to GPTable objects
 ## using the elements defined above
