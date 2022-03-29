@@ -20,7 +20,7 @@ class Cover():
         cover page tab label, defaults to Cover
     additional_elements : List[str], optional
         additional GPTable elements to display in the contents table. Allowed
-        elements are "subtitles", "scope", "source" and "notes".
+        elements are "subtitles", "scope", "source" and "instructions".
     """
     title: str
     intro: List = None
@@ -31,8 +31,8 @@ class Cover():
 
     def __post_init__(self):
         if self.additional_elements is not None:
-            valid_elements = ["subtitles", "scope", "source", "notes"]
+            valid_elements = ["subtitles", "scope", "source", "instructions"]
             if not all(element in valid_elements for element in self.additional_elements):
                 msg = ("Cover `additional_elements` list can only contain"
-                    "'subtitles', 'scope', 'source' and 'notes'")
+                    "'subtitles', 'scope', 'source' and 'instructions'")
                 raise ValueError(msg)

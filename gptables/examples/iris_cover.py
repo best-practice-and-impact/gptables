@@ -75,7 +75,7 @@ cover = gpt.Cover(
     intro=["This is some introductory information", "And some more"],
     about=["Even more info about my data", "And a little more"],
     contact=["John Doe", "Tel: 345345345"],
-    additional_elements=["subtitles", "scope", "source", "notes"]
+    additional_elements=["subtitles", "scope", "source"]
     )
 
 ## Use write_workbook to win!
