@@ -17,12 +17,16 @@ class GPTable:
         description of the table
     subtitles : list
         subtitles as a list of strings
+    instructions : str
+        instructions on the data location
     scope : str
         description of scope/basis of data in table
+    source : str
+        description of the source of the data in `table`
     units : dict
         units used in each (dict) column of `table`
-    legend : list
-        descriptions of special notation used in `table`
+    # legend : list
+    #     descriptions of special notation used in `table`
     annotations : dict
         notes that are referenced in header or table elements (excluding data)
     notes : list
@@ -44,7 +48,8 @@ class GPTable:
                  source,
                  units=None,
                  subtitles=[],
-                 legend=[],
+                 instructions="",
+                #  legend=[],
                  annotations={},
                  notes=[],
                  index_columns={2:0},
@@ -68,7 +73,7 @@ class GPTable:
         self.data_range = [0] * 4
         
         self.source = None
-        self.legend = []
+        # self.legend = []
         self.annotations = {}
         self.notes = []
         
@@ -87,11 +92,12 @@ class GPTable:
         # Call methods to set attributes        
         self.set_title(title)
         self.set_subtitles(subtitles)
+        self.set_instructions(instructions)
         self.set_scope(scope)
         self.set_table(table, index_columns, units)
         self.set_table_name(table_name)
         self.set_source(source)
-        self.set_legend(legend)
+        # self.set_legend(legend)
         self.set_annotations(annotations)
         self.set_notes(notes)
         self.set_additional_formatting(additional_formatting)
@@ -236,6 +242,17 @@ class GPTable:
         else:
             self.subtitles += new_subtitles
             
+    def set_instructions(self, new_instructions):
+        """
+        Set `instructions` attribute.
+        """
+        self._validate_text(new_instructions, "instructions")
+
+        if len(new_instructions) == 0:
+            self.instructions = "This worksheet contains one table. Some cells may refer to notes, which can be found on the notes worksheet."
+        else:
+            self.instructions = new_instructions
+
 
     def set_scope(self, new_scope):
         """
@@ -279,33 +296,33 @@ class GPTable:
         self.source = new_source
     
 
-    def add_legend(self, new_legend):
-        """
-        Add a single legend entry to the existing `legend` list.
-        """
-        self._validate_text(new_legend, "legend")
-        self.subtitles.append(new_legend)
+    # def add_legend(self, new_legend):
+    #     """
+    #     Add a single legend entry to the existing `legend` list.
+    #     """
+    #     self._validate_text(new_legend, "legend")
+    #     self.subtitles.append(new_legend)
     
 
-    def set_legend(self, new_legend, overwrite=True):
-        """
-        Set a list of legend entries to the `legend` attribute. Overwrites
-        existing legend entries by default. If overwrite is False, new entries 
-        are appended to the `legend` list.
-        """
-        if new_legend is None:
-            self.legend = []
-            return
-        if not isinstance(new_legend, list):
-            msg = ("`legend` must be provided as a list of text elements")
-            raise TypeError(msg)
-        for text in new_legend:
-            self._validate_text(text, "legend")
+    # def set_legend(self, new_legend, overwrite=True):
+    #     """
+    #     Set a list of legend entries to the `legend` attribute. Overwrites
+    #     existing legend entries by default. If overwrite is False, new entries 
+    #     are appended to the `legend` list.
+    #     """
+    #     if new_legend is None:
+    #         self.legend = []
+    #         return
+    #     if not isinstance(new_legend, list):
+    #         msg = ("`legend` must be provided as a list of text elements")
+    #         raise TypeError(msg)
+    #     for text in new_legend:
+    #         self._validate_text(text, "legend")
         
-        if overwrite:
-            self.legend = new_legend
-        else:
-            self.legend += new_legend
+    #     if overwrite:
+    #         self.legend = new_legend
+    #     else:
+    #         self.legend += new_legend
             
 
     def add_annotation(self, new_annotation):
@@ -431,16 +448,24 @@ class GPTable:
         """
         Get the top-left and bottom-right cell reference of the table data.
         """
-        row_offset = 0
-        if self.title is not None:
-            row_offset += 1
+        #TODO: ugly code
+        row_offset = sum([
+            int(self.title is not None),
+            int(self.scope is not None),
+            int(self.source is not None),
+        ]) + 1 #corresponds to instructions which are included by default
+
         if self.subtitles is not None:
             row_offset += len(self.subtitles)
-        if (self.scope is not None) | (self.units is not None):
-            row_offset += 1
+        # if self.legend is not None:
+        #     row_offset += len(self.legend)
         
-        self.data_range = [row_offset, 0,
-                            self.table.shape[0] + row_offset, self.table.shape[1] - 1] 
+        self.data_range = [
+            row_offset,
+            0,
+            self.table.shape[0] + row_offset,
+            self.table.shape[1] - 1
+        ]
 
     @staticmethod
     def _validate_text(obj, attr):

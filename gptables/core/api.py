@@ -10,7 +10,6 @@ def produce_workbook(
         theme = None,
         cover = None,
         auto_width = True,
-        disable_footer_parentheses = False,
         ):
     """
     Produces a GPWorkbook, ready to be written to the specified `.xlsx` file
@@ -30,9 +29,6 @@ def produce_workbook(
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True
         by default.
-    disable_footer_parentheses : bool, optional
-        indicate if addition of parentheses to footer elements should be
-        disabled. Note that disabling this decreases machine-readability.
         
     Returns
     -------
@@ -52,7 +48,7 @@ def produce_workbook(
     
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
-        ws.write_gptable(gptable, auto_width, disable_footer_parentheses)
+        ws.write_gptable(gptable, auto_width)
     
     return wb
 
@@ -63,7 +59,6 @@ def write_workbook(
         theme = None,
         cover = None,
         auto_width = True,
-        disable_footer_parentheses = False,
         ):
 
     """
@@ -86,9 +81,6 @@ def write_workbook(
         cover page text. Including this argument will generat a cover page
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True by default.
-    disable_footer_parentheses : bool, optional
-        indicate if addition of parentheses to footer elements should be
-        disabled. Note that disabling this decreases machine-readability.
 
     Returns
     -------
@@ -99,8 +91,7 @@ def write_workbook(
         sheets,
         theme,
         cover,
-        auto_width,
-        disable_footer_parentheses
+        auto_width
         )
     wb.close()
 
@@ -166,6 +157,5 @@ def quick_and_dirty_workbook(
         filename = filename,
         sheets = sheets,
         theme = theme,
-        auto_width = auto_width,
-        disable_footer_parentheses = True
+        auto_width = auto_width
         )

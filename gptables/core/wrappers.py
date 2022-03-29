@@ -81,7 +81,7 @@ class GPWorksheet(Worksheet):
             self._set_column_widths([first_col_width])
         
 
-    def write_gptable(self, gptable, auto_width, disable_footer_parentheses):
+    def write_gptable(self, gptable, auto_width):
         """
         Write data from a GPTable object to the worksheet using the workbook
         Theme object for formatting.
@@ -120,6 +120,14 @@ class GPWorksheet(Worksheet):
                 theme.subtitle_format
                 )
 
+        description = theme.description_order
+        for element in description:
+            pos = getattr(self, "_write_" + element)(
+                    pos,
+                    getattr(gptable, element),
+                    getattr(theme, element + "_format")
+                    )
+
         pos = self._write_table_elements(
                 pos,
                 gptable,
@@ -128,16 +136,6 @@ class GPWorksheet(Worksheet):
 
         self.mark_data_as_worksheet_table(gptable, theme.column_heading_format)
 
-        if not disable_footer_parentheses:
-            self._enclose_footer_elements(gptable)
-
-        footer = theme.footer_order
-        for element in footer:
-            pos = getattr(self, "_write_" + element)(
-                    pos,
-                    getattr(gptable, element),
-                    getattr(theme, element + "_format")
-                    )
 
     @staticmethod
     def _strip_annotation_references(text):
@@ -176,7 +174,7 @@ class GPWorksheet(Worksheet):
                 "subtitles",
                 "scope",
                 "units",
-                "legend"
+                # "legend"
                 ]
         # Store annotation references in order detected
         ordered_refs = []
@@ -309,20 +307,6 @@ class GPWorksheet(Worksheet):
         return string
 
 
-    def _enclose_footer_elements(self, gptable):
-        """
-        Flank text footer elements with parentheses.
-        """
-        gptable.source = self._enclose_text(gptable.source)
-        gptable.notes = [self._enclose_text(note) for note in gptable.notes]
-        gptable.legend = [
-            self._enclose_text(symbol) for symbol in gptable.legend
-            ]
-        gptable.annotations = dict(
-            [("(" + str(k), v + ")") for k, v in gptable.annotations.items()]
-            )
-
-
     @staticmethod
     def _enclose_text(element):
         """
@@ -417,23 +401,37 @@ class GPWorksheet(Worksheet):
 
         return [pos[0] , pos[1] + 1]
 
-    def _write_source(self, pos, element, format_dict):
+    def _write_instructions(self, pos, element, format_dict):
         """
-        Alias for writting footer elements by name.
+        Alias for writting description elements by name.
         """
         return self._write_element(pos, element, format_dict)
 
 
-    def _write_legend(self, pos, element_list, format_dict):
+    def _write_source(self, pos, element, format_dict):
         """
-        Alias for writting footer elements by name.
+        Alias for writting description elements by name.
         """
-        return self._write_element_list(pos, element_list, format_dict)
+        return self._write_element(pos, element, format_dict)
+
+    
+    def _write_scope(self, pos, element, format_dict):
+        """
+        Alias for writting description elements by name.
+        """
+        return self._write_element(pos, element, format_dict)
+
+
+    # def _write_legend(self, pos, element_list, format_dict):
+    #     """
+    #     Alias for writting description elements by name.
+    #     """
+    #     return self._write_element_list(pos, element_list, format_dict)
 
 
     def _write_notes(self, pos, element_list, format_dict):
         """
-        Alias for writting footer elements by name.
+        Alias for writting description elements by name.
         """
         return self._write_element_list(pos, element_list, format_dict)
 
@@ -465,7 +463,7 @@ class GPWorksheet(Worksheet):
 
     def _write_table_elements(self, pos, gptable, auto_width):
         """
-        Writes the table, scope and units elements of a GPTable. Uses the
+        Writes the table and units elements of a GPTable. Uses the
         Workbook Theme, plus any additional formatting associated with the
         GPTable.
         
@@ -508,18 +506,8 @@ class GPWorksheet(Worksheet):
 
         # Get theme
         theme = self.theme
-        
-        # Write scope
-        scope = gptable.scope
-        self._smart_write(
-                *pos,
-                scope,
-                theme.scope_format
-                )
                 
         # Reset position to left col on next row
-        if (gptable.units is not None) or (scope is not None):
-            pos[0] += 1
         pos[1] = 0
         
         ## Create data array
