@@ -44,8 +44,8 @@ class GPTable:
                  table,
                  table_name,
                  title,
-                 scope,
-                 source,
+                 scope, #TODO: should be optional
+                 source, #TODO: should be optional
                  units=None,
                  subtitles=[],
                  instructions="",

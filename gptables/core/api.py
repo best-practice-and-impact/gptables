@@ -9,6 +9,7 @@ def produce_workbook(
         sheets,
         theme = None,
         cover = None,
+        notesheet = None,
         auto_width = True,
         ):
     """
@@ -25,7 +26,9 @@ def produce_workbook(
         formatting to be applied tot GPTable elements. gptheme is used by
         default
     cover : gptables.Cover, optional
-        cover page text. Including this argument will generat a cover page
+        cover page text. Including this argument will generate a cover page
+    notesheet : gptables.Notesheet, optional
+        notes page content. Including this argument will generate a notes page
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True
         by default.
@@ -45,6 +48,10 @@ def produce_workbook(
     if cover is not None:
         ws = wb.add_worksheet(cover.cover_label)
         ws.write_cover(cover, sheets, auto_width)
+
+    if notesheet is not None:
+        ws = wb.add_worksheet(notesheet.notesheet_label)
+        ws.write_notesheet(notesheet)
     
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
@@ -58,6 +65,7 @@ def write_workbook(
         sheets,
         theme = None,
         cover = None,
+        notesheet = None,
         auto_width = True,
         ):
 
@@ -78,7 +86,9 @@ def write_workbook(
         formatting to be applied tot GPTable elements. ``gptheme`` is used by
         default
     cover : gptables.Cover, optional
-        cover page text. Including this argument will generat a cover page
+        cover page text. Including this argument will generate a cover page
+    notesheet : gptables.Notesheet, optional
+        notes page content. Including this argument will generate a notes page
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True by default.
 
@@ -91,6 +101,7 @@ def write_workbook(
         sheets,
         theme,
         cover,
+        notesheet,
         auto_width
         )
     wb.close()

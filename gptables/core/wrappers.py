@@ -29,6 +29,7 @@ class GPWorksheet(Worksheet):
             object containing cover sheet text
         sheets : dict
             mapping worksheet labels to gptables.GPTable objects
+        auto_width : bool
         """
         theme = self.theme
         pos = [0, 0]
@@ -79,6 +80,37 @@ class GPWorksheet(Worksheet):
                 theme.cover_text_format.get("font_size") or 10
                 )        
             self._set_column_widths([first_col_width])
+
+
+    def write_notesheet(self, notesheet):
+        """
+        Write a notes page to the Worksheet. Uses content from a Notesheet object.
+
+        Parameters
+        ----------
+        notesheet : gptables.Notesheet
+            object containing notes sheet content
+        """
+        theme = self.theme
+        pos = [0, 0]
+
+        pos = self._write_element(pos, notesheet.title, theme.notesheet_title_format)
+        pos[0] += 1
+
+        pos = self._write_element(pos, notesheet.instructions, theme.notesheet_text_format)
+        pos[0] += 1
+
+        if notesheet.subtitle is not None:
+            pos = self._write_element(pos, notesheet.subtitle, theme.notesheet_subtitle_format)
+
+        pos = self._write_elements(
+            pos,
+            notesheet.notes_table,
+            auto_width = True
+        )
+
+        self.mark_data_as_worksheet_table(notesheet.notes_table, theme.column_heading_format)
+
         
 
     def write_gptable(self, gptable, auto_width):

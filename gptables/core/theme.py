@@ -38,6 +38,12 @@ class Theme:
 
     cover_text_format : dict
     
+    notesheet_title_format : dict
+
+    notesheet_subtitle_format : dict
+
+    notesheet_text_format : dict
+
     title_format : dict
 
     subtitle_format : dict
@@ -84,6 +90,9 @@ class Theme:
             "cover_title_format",
             "cover_subtitle_format",
             "cover_text_format",
+            "notesheet_title_format",
+            "notesheet_subtitle_format",
+            "notesheet_text_format",
             "title_format",
             "subtitle_format",
             "instructions_format",
@@ -266,6 +275,33 @@ class Theme:
         items are replaced.
         """
         self.cover_text_format.update(format_dict)
+
+
+    @validate_single_format
+    def update_notesheet_title_format(self, format_dict):
+        """
+        Update the `notesheet_title_format` attribute. Where keys already exist, existing
+        items are replaced.
+        """
+        self.notesheet_title_format.update(format_dict)
+    
+    
+    @validate_single_format
+    def update_notesheet_subtitle_format(self, format_dict):
+        """
+        Update the `notesheet_subtitle_format` attribute. Where keys already exist, existing
+        items are replaced.
+        """
+        self.notesheet_subtitle_format.update(format_dict)
+
+
+    @validate_single_format
+    def update_notesheet_text_format(self, format_dict):
+        """
+        Update the `notesheet_text_format` attribute. Where keys already exist, existing
+        items are replaced.
+        """
+        self.notesheet_text_format.update(format_dict)
 
     @validate_single_format
     def update_title_format(self, format_dict):
