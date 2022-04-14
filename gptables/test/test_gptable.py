@@ -10,8 +10,8 @@ from gptables import GPTable
 # TODO: These should be stored in GPTable
 gptable_text_attrs = ["title", "scope", "source"]
 
-# gptable_list_text_attrs = ["subtitles", "legend", "notes"]
-gptable_list_text_attrs = ["subtitles", "notes"]
+gptable_list_text_attrs = ["subtitles", "legend", "notes"]
+
 
 valid_index_columns = [
     {},
@@ -77,7 +77,7 @@ def test_init_defaults(create_gptable_with_kwargs):
     # Optional args
     assert empty_gptable.index_columns == {}
     assert empty_gptable.subtitles == []
-    # assert empty_gptable.legend == []
+    assert empty_gptable.legend == []
     assert empty_gptable.annotations == {}
     assert empty_gptable.notes == []
     assert empty_gptable.additional_formatting == []

@@ -67,5 +67,6 @@ notes:
 
 description_order:
     - instructions
+    - legend
     - source
     - scope

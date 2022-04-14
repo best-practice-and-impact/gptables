@@ -82,35 +82,16 @@ class GPWorksheet(Worksheet):
             self._set_column_widths([first_col_width])
 
 
-    def write_notesheet(self, notesheet):
+    def write_notesheet(self, notesheet, auto_width):
         """
-        Write a notes page to the Worksheet. Uses content from a Notesheet object.
+        Alias for writing note sheet to worksheet.
 
         Parameters
         ----------
         notesheet : gptables.Notesheet
-            object containing notes sheet content
+            object containing notes sheet content to be written to Worksheet
         """
-        theme = self.theme
-        pos = [0, 0]
-
-        pos = self._write_element(pos, notesheet.title, theme.notesheet_title_format)
-        pos[0] += 1
-
-        pos = self._write_element(pos, notesheet.instructions, theme.notesheet_text_format)
-        pos[0] += 1
-
-        if notesheet.subtitle is not None:
-            pos = self._write_element(pos, notesheet.subtitle, theme.notesheet_subtitle_format)
-
-        pos = self._write_elements(
-            pos,
-            notesheet.notes_table,
-            auto_width = True
-        )
-
-        self.mark_data_as_worksheet_table(notesheet.notes_table, theme.column_heading_format)
-
+        return self.write_gptable(notesheet, auto_width)
         
 
     def write_gptable(self, gptable, auto_width):
@@ -206,7 +187,7 @@ class GPWorksheet(Worksheet):
                 "subtitles",
                 "scope",
                 "units",
-                # "legend"
+                "legend"
                 ]
         # Store annotation references in order detected
         ordered_refs = []
@@ -454,11 +435,11 @@ class GPWorksheet(Worksheet):
         return self._write_element(pos, element, format_dict)
 
 
-    # def _write_legend(self, pos, element_list, format_dict):
-    #     """
-    #     Alias for writting description elements by name.
-    #     """
-    #     return self._write_element_list(pos, element_list, format_dict)
+    def _write_legend(self, pos, element_list, format_dict):
+        """
+        Alias for writting description elements by name.
+        """
+        return self._write_element_list(pos, element_list, format_dict)
 
 
     def _write_notes(self, pos, element_list, format_dict):

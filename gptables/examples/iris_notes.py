@@ -37,9 +37,9 @@ iris_summary.rename(
 
 ## Define table elements
 table_name = "iris_statistics"
-title = "Mean Iris $$note2$$ sepal dimensions"
+title = "Mean Iris sepal dimensions"
 subtitles = [
-    "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
+    "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems",
     "Just another subtitile",
     ]
 units = {1:"cm", 2:"cm"}
@@ -66,15 +66,14 @@ notes = {
     "Note reference": ["note1", "note2"],
     "Note text": ["I've got 99 problems and taxonomy is one.", "Goo Goo Dolls, 1998."]
     }
-notes_table = pd.DataFrame.from_dict(notes, orient="index", columns=["Note number", "Note text"])
+notes_table = pd.DataFrame.from_dict(notes)
 notesheet = gpt.Notesheet(
-    title="Notes",
-    notes_table=notes_table,
+    table=notes_table,
 )
 
 ## Use write_workbook to win!
 if __name__ == "__main__":
-    output_path = parent_dir / "python_iris_gptable.xlsx"
+    output_path = parent_dir / "python_iris_gptable_notes.xlsx"
     gpt.write_workbook(
         filename=output_path, 
         sheets={"Iris Flower Dimensions": iris_table},

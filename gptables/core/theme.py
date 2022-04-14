@@ -284,8 +284,8 @@ class Theme:
         items are replaced.
         """
         self.notesheet_title_format.update(format_dict)
-    
-    
+   
+
     @validate_single_format
     def update_notesheet_subtitle_format(self, format_dict):
         """
@@ -346,15 +346,6 @@ class Theme:
         existing items are replaced.
         """
         self.location_format.update(format_dict)
-
-
-    # @validate_single_format
-    # def update_units_format(self, format_dict):
-    #     """
-    #     Update the `units_format` attribute. Where keys already exist, existing
-    #     items are replaced.
-    #     """
-    #     self.units_format.update(format_dict)
 
 
     @validate_single_format

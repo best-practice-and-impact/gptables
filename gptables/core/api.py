@@ -50,8 +50,8 @@ def produce_workbook(
         ws.write_cover(cover, sheets, auto_width)
 
     if notesheet is not None:
-        ws = wb.add_worksheet(notesheet.notesheet_label)
-        ws.write_notesheet(notesheet)
+        ws = wb.add_worksheet(notesheet.label)
+        ws.write_notesheet(notesheet, auto_width)
     
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)

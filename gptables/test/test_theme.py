@@ -9,7 +9,7 @@ from gptables import gptheme
 
 
 
-valid_description_elements = ["instructions", "scope", "source"]
+valid_description_elements = ["legend", "instructions", "scope", "source"]
 
 
 def powerset(iterable):
@@ -146,6 +146,7 @@ class TestConfigInitTheme:
             "description_order":
                 [
                     "instructions",
+                    "legend",
                     "source",
                     "scope"
                 ],

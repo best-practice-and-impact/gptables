@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, field
 import pandas as pd
 
 from gptables.core.gptable import GPTable
@@ -22,6 +21,9 @@ class Notesheet(GPTable):
     instructions: str, optional
         description of the page layout
         defaults to "This worksheet contains one table."
+    label: str, optional
+        name of worksheet
+        defaults to "Notes"
     order: list, optional
         order in which to display notes table contents
         if provided, notes table will be sorted by `order`
@@ -29,18 +31,13 @@ class Notesheet(GPTable):
     table: pd.DataFrame()
     table_name: str = ""
     title: str = ""
-    subtitles: List = []
+    subtitles: list = field(default_factory=list)
     instructions: str = ""
-    order: List = []
-        
+    label: str = ""
+    order: list = field(default_factory=list)
+
     def __post_init__(
-        self, 
-        table,
-        table_name,
-        title,
-        subtitles,
-        instructions,
-        order
+        self
         ):
         if len(self.table_name) == 0:
             self.table_name = "notes_table"
@@ -48,7 +45,17 @@ class Notesheet(GPTable):
             self.title = "Notes"
         if len(self.instructions) == 0:
             self.instructions = "This worksheet contains one table."
-        
-        # TODO: order table by referencing order
+        if len(self.label) == 0:
+            self.label = "Notes"
 
-        GPTable.__init__(self, table, table_name, title, subtitles, instructions, order)
+        GPTable.__init__(
+            self,
+            table=self.table, 
+            table_name=self.table_name, 
+            title=self.title, 
+            subtitles=self.subtitles, 
+            instructions=self.instructions
+        )
+
+    def order_notes_table(self):
+        pass # TODO: order table by referencing order
