@@ -18,7 +18,7 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
-    def write_cover(self, cover, sheets, auto_width):
+    def write_cover(self, cover, auto_width):
         """
         Write a cover page to the Worksheet. Uses text from a Cover object and
         details of the Workbook contents.
@@ -27,8 +27,6 @@ class GPWorksheet(Worksheet):
         ----------
         cover : gptables.Cover
             object containing cover sheet text
-        sheets : dict
-            mapping worksheet labels to gptables.GPTable objects
         auto_width : bool
         """
         theme = self.theme
@@ -42,26 +40,6 @@ class GPWorksheet(Worksheet):
             pos = self._write_element_list(pos, cover.intro, theme.cover_text_format)
             pos[0] += 1
 
-        if sheets:
-            pos = self._write_element(pos, "Contents", theme.cover_subtitle_format)
-            for sheet, gptable in sheets.items():
-                pos = self._write_hyperlinked_toc_entry(pos, sheet)
-                        
-                title = self._strip_annotation_references(gptable.title)
-                pos = self._write_element(pos, title, theme.cover_text_format)
-
-                if cover.additional_elements is not None:
-                    for element in cover.additional_elements:
-                        content = getattr(gptable, element)        
-                        if element in ["subtitles", "notes"]:
-                            content = [self._strip_annotation_references(element) for element in content]
-                            pos = self._write_element_list(pos, content, theme.cover_text_format)
-                        else:
-                            content = self._strip_annotation_references(content)
-                            pos = self._write_element(pos, content, theme.cover_text_format)
-                pos[1] = 0
-            pos[0] += 1
-
         if cover.about is not None:
             pos = self._write_element(pos, "About these data", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.about, theme.cover_text_format)
@@ -72,19 +50,21 @@ class GPWorksheet(Worksheet):
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
             pos[0] += 1
 
-
-        if sheets and auto_width:
-            max_link_len = max([len(key) for key in sheets.keys()])
-            first_col_width = self._excel_string_width(
-                max_link_len,
-                theme.cover_text_format.get("font_size") or 10
-                )        
-            self._set_column_widths([first_col_width])
+    def write_contentsheet(self, notesheet, auto_width):
+        """
+        Alias for writing contents sheet to worksheet
+        
+        Parameters
+        ----------
+        notesheet : gptables.Contentsheet
+            object containing table of contents to be written to Worksheet
+        """
+        return self.write_gptable(notesheet, auto_width)
 
 
     def write_notesheet(self, notesheet, auto_width):
         """
-        Alias for writing note sheet to worksheet.
+        Alias for writing notes sheet to worksheet.
 
         Parameters
         ----------
