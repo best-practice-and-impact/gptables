@@ -1,4 +1,5 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from typing import List
 import pandas as pd
 
 from gptables.core.gptable import GPTable
@@ -29,23 +30,23 @@ class Notesheet(GPTable):
         if provided, notes table will be sorted by `order`
     """
     table: pd.DataFrame()
-    table_name: str = ""
-    title: str = ""
-    subtitles: list = field(default_factory=list)
-    instructions: str = ""
-    label: str = ""
-    order: list = field(default_factory=list)
+    table_name: str = None
+    title: str = None
+    subtitles: List = None
+    instructions: str = None
+    label: str = None
+    order: List = None
 
     def __post_init__(
         self
         ):
-        if len(self.table_name) == 0:
+        if self.table_name is None:
             self.table_name = "notes_table"
-        if len(self.title) == 0:
+        if self.title is None:
             self.title = "Notes"
-        if len(self.instructions) == 0:
+        if self.instructions is None:
             self.instructions = "This worksheet contains one table."
-        if len(self.label) == 0:
+        if self.label is None:
             self.label = "Notes"
 
         GPTable.__init__(
