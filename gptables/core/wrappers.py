@@ -8,7 +8,6 @@ from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
 
 from .theme import Theme
-from .cover import Cover
 from .gptable import GPTable
 from gptables.utils.unpickle_themes import gptheme
 
@@ -18,7 +17,7 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
-    def write_cover(self, cover, auto_width):
+    def write_cover(self, cover):
         """
         Write a cover page to the Worksheet. Uses text from a Cover object and
         details of the Workbook contents.
@@ -27,30 +26,25 @@ class GPWorksheet(Worksheet):
         ----------
         cover : gptables.Cover
             object containing cover sheet text
-        auto_width : bool
         """
         theme = self.theme
         pos = [0, 0]
 
         pos = self._write_element(pos, cover.title, theme.cover_title_format)
-        pos[0] += 1
 
         if cover.intro is not None:
             pos = self._write_element(pos, "Introductory information", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.intro, theme.cover_text_format)
-            pos[0] += 1
 
         if cover.about is not None:
             pos = self._write_element(pos, "About these data", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.about, theme.cover_text_format)
-            pos[0] += 1
 
         if cover.contact is not None:
             pos = self._write_element(pos, "Contact", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
-            pos[0] += 1
 
-    def write_contentsheet(self, notesheet, auto_width):
+    def write_contentsheet(self, contentsheet, auto_width):
         """
         Alias for writing contents sheet to worksheet
         
@@ -59,7 +53,8 @@ class GPWorksheet(Worksheet):
         notesheet : gptables.Contentsheet
             object containing table of contents to be written to Worksheet
         """
-        return self.write_gptable(notesheet, auto_width)
+        # TODO: hyperlink sheet name column entries
+        return self.write_gptable(contentsheet, auto_width)
 
 
     def write_notesheet(self, notesheet, auto_width):
@@ -129,23 +124,6 @@ class GPWorksheet(Worksheet):
 
         self.mark_data_as_worksheet_table(gptable, theme.column_heading_format)
 
-
-    @staticmethod
-    def _strip_annotation_references(text):
-        """
-        Strip annotation references (as $$ $$) from a str or list text element.
-        """
-        pattern = r"\$\$.*?\$\$"
-        if isinstance(text, str):
-            no_annotations = re.sub(pattern, "", text)
-        elif isinstance(text, list):
-            no_annotations = [
-                re.sub(pattern, "", part)
-                if isinstance(part, str) else part
-                for part in text
-                ]
-        
-        return no_annotations
 
     def _reference_annotations(self, gptable):
         """

@@ -9,6 +9,7 @@ def produce_workbook(
         sheets,
         theme = None,
         cover = None,
+        contentsheet = None,
         notesheet = None,
         auto_width = True,
         ):
@@ -27,6 +28,8 @@ def produce_workbook(
         default
     cover : gptables.Cover, optional
         cover page text. Including this argument will generate a cover page
+    contentsheet : gptables.Coversheet, optional
+        table of contents. Including this arguement will generate a contents page
     notesheet : gptables.Notesheet, optional
         notes page content. Including this argument will generate a notes page
     auto_width : bool, optional
@@ -47,7 +50,11 @@ def produce_workbook(
 
     if cover is not None:
         ws = wb.add_worksheet(cover.cover_label)
-        ws.write_cover(cover, sheets, auto_width)
+        ws.write_cover(cover)
+
+    if contentsheet is not None:
+        ws = wb.add_worksheet(contentsheet.label)
+        ws.write_contentsheet(contentsheet, auto_width)
 
     if notesheet is not None:
         ws = wb.add_worksheet(notesheet.label)
@@ -65,6 +72,7 @@ def write_workbook(
         sheets,
         theme = None,
         cover = None,
+        contentsheet = None,
         notesheet = None,
         auto_width = True,
         ):
@@ -87,6 +95,8 @@ def write_workbook(
         default
     cover : gptables.Cover, optional
         cover page text. Including this argument will generate a cover page
+    contentsheet : gptables.Contentsheet, optional
+        table of contents. Including this arguement will generate a contents page
     notesheet : gptables.Notesheet, optional
         notes page content. Including this argument will generate a notes page
     auto_width : bool, optional
@@ -101,6 +111,7 @@ def write_workbook(
         sheets,
         theme,
         cover,
+        contentsheet,
         notesheet,
         auto_width
         )

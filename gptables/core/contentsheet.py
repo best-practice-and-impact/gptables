@@ -1,7 +1,7 @@
-from turtle import title
 from dataclasses import dataclass
 from typing import Dict, List
 import pandas as pd
+import re
 
 from gptables.core.gptable import GPTable
 
@@ -14,6 +14,9 @@ class Contentsheet(GPTable):
     ----------
     sheets : dict
         mapping worksheet labels to gptables.GPTable objects
+    column_names : List[str], optional
+        table of contents column names, defaults to 
+        "Sheet name", "Table description"
     additional_elements : List[str], optional
         additional GPTable elements to display in the contents table. Allowed
         elements are "subtitles", "scope", "source" and "instructions".
@@ -33,6 +36,7 @@ class Contentsheet(GPTable):
         defaults to "Contents"
     """
     sheets: Dict
+    column_names: List = None
     additional_elements: List = None
     table_name: str = None
     title: str = None
@@ -40,9 +44,9 @@ class Contentsheet(GPTable):
     instructions: str = None
     label: str = None
 
-    def __post_init__(
-        self
-        ):
+    def __post_init__(self):
+        if self.column_names is None:
+            self.column_names = ["Sheet name", "Table description"]
         if self.table_name is None:
             self.table_name = "contents_table"
         if self.title is None:
@@ -59,22 +63,25 @@ class Contentsheet(GPTable):
                     "'subtitles', 'scope', 'source' and 'instructions'")
                 raise ValueError(msg)
 
-        # TODO: debug this - some of the `self` are copy-pasted from `wrappers` and probably won't work
         contents = {}
-        for gptable in self.sheets.values(): 
-            contents_entry = {}                   
-            contents_entry["title"] = contents_entry.append(self._strip_annotation_references(gptable.title))
+        for label, gptable in self.sheets.items(): 
+            contents_entry = []                   
+            contents_entry.append(self._strip_annotation_references(gptable.title))
 
             if self.additional_elements is not None:
                 for element in self.additional_elements:
                     content = getattr(gptable, element)        
                     if element == "subtitles":
-                        contents_entry["subtitles"] = contents_entry.append([self._strip_annotation_references(element) for element in content])
+                        [contents_entry.append(self._strip_annotation_references(element)) for element in content]
                     else:
-                        contents_entry[element] = self._strip_annotation_references(content)
-            contents = contents.append(contents_entry)
-        
-        contents_table = pd.DataFrame(contents) # TODO: this is pseudocode - need to construct df properly
+                        contents_entry.append(self._strip_annotation_references(content))
+            contents[label] = [contents_entry]
+
+        contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index()
+
+        contents_table.iloc[:, 1] = contents_table.iloc[:, 1].str.join("\n")
+
+        contents_table.columns = self.column_names
 
         GPTable.__init__(
             self,
@@ -85,4 +92,19 @@ class Contentsheet(GPTable):
             instructions=self.instructions
         )
 
-
+    @staticmethod
+    def _strip_annotation_references(text):
+        """
+        Strip annotation references (as $$ $$) from a str or list text element.
+        """
+        pattern = r"\$\$.*?\$\$"
+        if isinstance(text, str):
+            no_annotations = re.sub(pattern, "", text)
+        elif isinstance(text, list):
+            no_annotations = [
+                re.sub(pattern, "", part)
+                if isinstance(part, str) else part
+                for part in text
+                ]
+        
+        return no_annotations

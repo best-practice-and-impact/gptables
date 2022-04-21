@@ -35,10 +35,10 @@ iris_summary.rename(
 )
 
 ## Define table elements
-title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
+title = "Mean Iris$$note2$$ sepal dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
-    "Just another subtitile",
+    "Just another subtitle",
     ]
 units = {"Mean Sepal Length": "cm", "Mean Sepal Width": "cm"}
 scope = "Iris"
@@ -69,24 +69,32 @@ iris_table_copy = deepcopy(iris_table)
 iris_table_copy.set_title("A copy of the first sheet$$note2$$")
 iris_table_copy.set_table_name("iris_statistics_copy")
 
+sheets = {
+    "Iris Flower Dimensions": iris_table,
+    "Copy of Iris Flower Dimensions": iris_table_copy
+}
+
 cover = gpt.Cover(
-    cover_label="Notes",
-    title="A Worbook containing good practice tables",
+    cover_label="Cover",
+    title="A Workbook containing good practice tables",
     intro=["This is some introductory information", "And some more"],
     about=["Even more info about my data", "And a little more"],
     contact=["John Doe", "Tel: 345345345"],
-    additional_elements=["subtitles", "scope", "source"]
     )
+
+
+contentsheet = gpt.Contentsheet(
+    sheets=sheets,
+    additional_elements=["subtitles", "scope", "source"]
+)
 
 ## Use write_workbook to win!
 if __name__ == "__main__":
     output_path = parent_dir / "python_iris_cover_gptable.xlsx"
     gpt.write_workbook(
         filename=output_path,
-        sheets={
-            "Iris Flower Dimensions": iris_table,
-            "Copy of Iris Flower Dimensions": iris_table_copy,
-        },
-        cover=cover
+        sheets=sheets,
+        cover=cover,
+        contentsheet=contentsheet
     )
     print("Output written at: ", output_path)
