@@ -13,16 +13,6 @@ cover_subtitle:
 
 cover_text:
 
-notesheet_title:
-    bold: True
-    font_size: 16
-
-notesheet_subtitle:
-    bold: True
-    font_size: 14
-
-notesheet_text:
-
 title:
     bold: True
     font_size: 16
