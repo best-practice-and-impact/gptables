@@ -62,9 +62,7 @@ class Theme:
 
     description_order : list
     
-    annotations_format : dict
-    
-    notes_format : dict
+    annotations_format : list
     """
 
     def __init__(

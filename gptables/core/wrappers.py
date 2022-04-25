@@ -1,5 +1,6 @@
 import os
 import re
+import warnings
 import pandas as pd
 import numpy as np
 from copy import deepcopy
@@ -50,14 +51,14 @@ class GPWorksheet(Worksheet):
         
         Parameters
         ----------
-        notesheet : gptables.Contentsheet
+        contentsheet : gptables.Contentsheet
             object containing table of contents to be written to Worksheet
         """
         # TODO: hyperlink sheet name column entries
         return self.write_gptable(contentsheet, auto_width)
 
 
-    def write_notesheet(self, notesheet, auto_width):
+    def write_notesheet(self, notesheet, sheets, auto_width):
         """
         Alias for writing notes sheet to worksheet.
 
@@ -66,7 +67,32 @@ class GPWorksheet(Worksheet):
         notesheet : gptables.Notesheet
             object containing notes sheet content to be written to Worksheet
         """
-        return self.write_gptable(notesheet, auto_width)
+        order = []
+        for gptable in sheets.values():
+            order.extend(gptable.annotations)
+        
+        order_df = pd.DataFrame({"order": order})
+        
+        notes = notesheet.table.copy()
+        notes = notes.rename(columns={notes.columns[0]: "order"})
+
+        ordered_notes = order_df.merge(notes, on="order", how="left")
+        
+        unreferenced_notes = notes[~notes["order"].isin(ordered_notes["order"])]
+
+        if not unreferenced_notes.empty:
+            warnings.warn(f"The following notes are not referenced: {list(unreferenced_notes['order'])}")
+
+            ordered_notes = ordered_notes.append(unreferenced_notes)
+    
+
+        notesheet.table = pd.DataFrame()
+
+        notesheet.table["Note number"] = range(1, len(order)+1) # TODO: note number input variable?
+
+        notesheet.table = notesheet.table.join(ordered_notes).drop(columns=["order"])
+
+        self.write_gptable(notesheet, auto_width)
         
 
     def write_gptable(self, gptable, auto_width):
@@ -87,14 +113,14 @@ class GPWorksheet(Worksheet):
         if not isinstance(gptable, GPTable):
             raise TypeError("`gptable` must be a gptables.GPTable object")
         
-        gptable = deepcopy(gptable)
-
         theme = self.theme
 
         # Write each GPTable element using appropriate Theme attr
         pos = [0, 0]
 
         self._reference_annotations(gptable)
+
+        gptable = deepcopy(gptable)
 
         pos = self._write_element(
                 pos,
@@ -122,7 +148,7 @@ class GPWorksheet(Worksheet):
                 auto_width
                 )
 
-        self.mark_data_as_worksheet_table(gptable, theme.column_heading_format)
+        self._mark_data_as_worksheet_table(gptable, theme.column_heading_format)
 
 
     def _reference_annotations(self, gptable):
@@ -163,27 +189,7 @@ class GPWorksheet(Worksheet):
                     )
         self._reference_table_annotations(gptable, ordered_refs)
 
-        new_annotations = {}
-        # Add to dict in order
-        for n in range(len(ordered_refs)):
-            try:
-                new_annotations.update(
-                        {n + 1: gptable.annotations[ordered_refs[n]]}
-                        )
-            except KeyError:
-                msg = (f"`{ordered_refs[n]}` has been referenced, but is not"
-                       " defined in GPTable.annotations")
-                raise KeyError(msg)
-        # Warn if all annotations not referenced
-        annotations_diff = len(gptable.annotations) - len(new_annotations)
-        if annotations_diff:
-            output_file = os.path.basename(self._workbook.filename)
-            msg =(f"Warning: {annotations_diff} annotations have not been"
-                  f" referenced in {output_file}. These annotations are not"
-                  " displayed. Use `notes` for notes without references.") 
-            print(msg)
-        # Replace old notes refs
-        gptable.annotations = new_annotations
+        gptable.annotations = ordered_refs
         
 
     def _reference_table_annotations(self, gptable, ordered_refs):
@@ -407,31 +413,6 @@ class GPWorksheet(Worksheet):
         return self._write_element_list(pos, element_list, format_dict)
 
 
-    def _write_annotations(self, pos, annotations_dict, format_dict):
-        """
-        Writes a list of ordered annotations row-wise.
-        
-        Parameters
-        ----------
-        notes_dict : dict
-            note associate with each references, as {reference: note}
-        format_dict : dict
-            format to be applied to string
-        pos : list
-            the position of the worksheet cell to write the elements to
-
-        Returns
-        -------
-        pos: list
-            new position to write next element from
-        """
-        for ref, annotation in annotations_dict.items():
-            element = f"{ref}: {annotation}"
-            pos = self._write_element(pos, element, format_dict)
-
-        return pos
-
-
     def _write_table_elements(self, pos, gptable, auto_width):
         """
         Writes the table and units elements of a GPTable. Uses the
@@ -490,8 +471,6 @@ class GPWorksheet(Worksheet):
         data.loc[-1] = data.columns
         data.index = data.index + 1
         data.sort_index(inplace=True)
-        if not gptable.include_index_column_headings:
-            data.iloc[0, index_columns] = ""  # Delete index col headings
         
         ## Create formats array
         # pandas.DataFrame did NOT want to hold dictionaries, so be wary
@@ -502,7 +481,7 @@ class GPWorksheet(Worksheet):
             formats.iloc[row] = dict_row
         
         ## Add Theme formatting to formats dataframe
-        format_headings_from = 0 if gptable.include_index_column_headings else index_levels
+        format_headings_from = 0
         self._apply_format(
                 formats.iloc[0, format_headings_from:],
                 theme.column_heading_format
@@ -638,7 +617,7 @@ class GPWorksheet(Worksheet):
         
         return pos
         
-    def mark_data_as_worksheet_table(self, gptable, column_header_format_dict):
+    def _mark_data_as_worksheet_table(self, gptable, column_header_format_dict):
         """
         Marks the data to be recognised as a Worksheet Table in Excel.
         """

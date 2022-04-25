@@ -40,17 +40,12 @@ table_name = "iris_statistics"
 title = "Mean Iris $$note2$$ sepal dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
-    "Just another subtitile",
+    "Just another subtitle",
     ]
 units = {1:"cm", 2:"cm"}
 scope = "Iris"
 source = "Source: Office for Iris Statistics"
 index = {2: 0}  # Column 0 is a level 2 index
-annotations = {
-    "note1": "I've got 99 problems and taxonomy is one.",
-    "note2": "Goo Goo Dolls, 1998.",
-    }
-notes = ["This note hath no reference."]
 
 # or use kwargs to pass these to the appropriate parameters
 kwargs = {
@@ -61,17 +56,27 @@ kwargs = {
     "scope": scope,
     "source": source,
     "index_columns": index,
-    "annotations": annotations,
-    "notes": notes,
     }
 
 ## Define our GPTable
 iris_table = gpt.GPTable(table=iris_summary, **kwargs)
 
+sheets = {"Iris Flower Dimensions": iris_table}
+
+## Notesheet
+notes = {
+    "Note reference": ["note1", "note2"],
+    "Note text": ["I've got 99 problems and taxonomy is one.", "Goo Goo Dolls, 1998."]
+    }
+notes_table = pd.DataFrame.from_dict(notes)
+notesheet = gpt.Notesheet(notes_table)
+
 ## Use write_workbook to win!
 if __name__ == "__main__":
     output_path = parent_dir / "python_iris_gptable.xlsx"
     gpt.write_workbook(
-        filename=output_path, sheets={"Iris Flower Dimensions": iris_table}
+        filename=output_path, 
+        sheets=sheets,
+        notesheet=notesheet
         )
     print("Output written at: ", output_path)

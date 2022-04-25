@@ -27,17 +27,13 @@ class GPTable:
         units used in each (dict) column of `table`
     legend : list
         descriptions of special notation used in `table`
-    annotations : dict
+    annotations : list
         notes that are referenced in header or table elements (excluding data)
-    notes : list
-        notes that are not referenced
     index_columns : dict
         mapping an index level to a 0-indexed column as {level: column}.
         Default is a level two index in the first column ({2: 0}).
     additional_formatting : dict
         table-specific formatting for columns, rows or individual cells
-    include_index_column_headings : bool
-        indicate whether index column headings should be retained in output
     """
 
     def __init__(self,
@@ -50,11 +46,9 @@ class GPTable:
                  subtitles=[],
                  instructions="",
                  legend=[],
-                 annotations={},
-                 notes=[],
+                 annotations=[],
                  index_columns={2:0},
                  additional_formatting=[],
-                 include_index_column_headings=False
                  ):
         
         # Attributes
@@ -74,12 +68,9 @@ class GPTable:
         self.scope = None
         self.source = None
         self.legend = []
-        self.annotations = {}
-        self.notes = []
+        self.annotations = []
         
         self.additional_formatting = []
-
-        self.include_index_column_headings=include_index_column_headings
         
         # Valid format labels from XlsxWriter
         self._valid_format_labels = [
@@ -99,7 +90,6 @@ class GPTable:
         self.set_source(source)
         self.set_legend(legend)
         self.set_annotations(annotations)
-        self.set_notes(notes)
         self.set_additional_formatting(additional_formatting)
         self._set_data_range()
         
@@ -331,70 +321,20 @@ class GPTable:
             self.legend = new_legend
         else:
             self.legend += new_legend
-            
 
-    def add_annotation(self, new_annotation):
-        """
-        Add one or more annotations to the existing `annotations` dictionary.
-        """
-        if not isinstance(new_annotation, dict):
-            raise TypeError("`annotations` entries must be dictionaries")
-        for text in new_annotation.values():
-            self._validate_text(text, "annotations")
-        self.annotations.update(new_annotation)
-    
 
-    def set_annotations(self, new_annotations, overwrite=True):
+    def set_annotations(self, new_annotations):
         """
-        Set a list of notes to the `annotations` attribute. Overwrites existing
-        `annotations` dict by default. If overwrite is False, new entries are
-        used to update the `annotations` dict.
+        Set a list of note references to the `annotations` attribute.
         """
-        if not isinstance(new_annotations, dict):
-            msg = ("annotations must be provided as a dictionary of"
-                   " {reference: note}")
+        if not isinstance(new_annotations, list):
+            msg = ("annotations must be provided as a list")
             raise TypeError(msg)
         
-        if not all(isinstance(key, str) for key in new_annotations.keys()):
-            raise TypeError("`annotations` keys must be strings")
-        
-        for text in new_annotations.values():
-            self._validate_text(text, "annotations")
-            
-        if overwrite:
-            self.annotations = new_annotations
-        else:
-            self.annotations.update(new_annotations)
-            
-
-    def add_note(self, new_note):
-        """
-        Add a single note to the existing `notes` list.
-        """
-        self._validate_text(new_note, "notes")
-        self.notes.append(new_note)
+        if not all(isinstance(item, str) for item in new_annotations):
+            raise TypeError("`annotations` items must be strings")
     
-
-    def set_notes(self, new_notes, overwrite=True):
-        """
-        Set a list of notes to the `notes` attribute. Overwrites existing
-        `notes` list by default.If overwrite is False, new entries are
-        appended to the `notes` list.
-        """
-        if new_notes is None:
-            self.notes = []
-            return
-        if not isinstance(new_notes, list):
-            msg = ("`notes` must be a list of text elements")
-            raise TypeError(msg)
-
-        for text in new_notes:
-            self._validate_text(text, "notes")
-            
-        if overwrite:
-            self.notes = new_notes
-        else:
-            self.notes += new_notes
+        self.annotations = new_annotations
 
 
     def set_additional_formatting(self, new_formatting):

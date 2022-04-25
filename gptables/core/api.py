@@ -55,14 +55,16 @@ def produce_workbook(
     if contentsheet is not None:
         ws = wb.add_worksheet(contentsheet.label)
         ws.write_contentsheet(contentsheet, auto_width)
-
-    if notesheet is not None:
-        ws = wb.add_worksheet(notesheet.label)
-        ws.write_notesheet(notesheet, auto_width)
     
+    # TODO: Create empty notesheet
+
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
         ws.write_gptable(gptable, auto_width)
+
+    if notesheet is not None:
+        ws = wb.add_worksheet(notesheet.label)
+        ws.write_notesheet(notesheet, sheets, auto_width)
     
     return wb
 

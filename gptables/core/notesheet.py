@@ -25,9 +25,6 @@ class Notesheet(GPTable):
     label: str, optional
         name of worksheet
         defaults to "Notes"
-    order: list, optional
-        order in which to display notes table contents
-        if provided, notes table will be sorted by `order`
     """
     table: pd.DataFrame()
     table_name: str = None
@@ -35,7 +32,6 @@ class Notesheet(GPTable):
     subtitles: List = None
     instructions: str = None
     label: str = None
-    order: List = None
 
     def __post_init__(
         self
@@ -57,6 +53,3 @@ class Notesheet(GPTable):
             subtitles=self.subtitles, 
             instructions=self.instructions
         )
-
-    def order_notes_table(self):
-        pass # TODO: order table by referencing order
