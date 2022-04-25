@@ -21,6 +21,7 @@ A ``gptable.GPWorkbook`` object is returned when using the
 The ``GPWorkbook.worksheets()`` function returns a list of ``GPWorksheet`` objects,
 which can also be modified.
 """
+from pickle import FALSE
 import gptables as gpt
 import pandas as pd
 import numpy as np
@@ -50,8 +51,7 @@ subtables = []
 funcs = [np.mean, np.median]
 for func in funcs:
     subtables.append(iris_data.groupby("class").agg(func))
-    subtables.append(pd.DataFrame(iris_data.agg(func).rename("All")).T)
-
+    subtables.append(pd.DataFrame(iris_data.iloc[:,0:4].agg(func).rename("All")).T)
 iris_summary = pd.concat(subtables)
 iris_summary["func"] = ["Mean"] * 4 + ["Median"] * 4
 
@@ -93,12 +93,6 @@ additional_formatting = [
             "include_names": True,  # Whether to include row indexes
         }
     },
-    {
-        "cell": {
-            "cells": (3, 3),  # tuple or list of tuples
-            "format": {"font_color": "red"},
-        }
-    },
     ]
 
 # or just use kwargs
@@ -131,4 +125,5 @@ if __name__ == "__main__":
     # Finally use the close method to save the output
     wb.close()
     print("Output written at: ", output_path)
+
 
