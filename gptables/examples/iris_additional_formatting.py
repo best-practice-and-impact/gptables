@@ -21,7 +21,7 @@ A ``gptable.GPWorkbook`` object is returned when using the
 The ``GPWorkbook.worksheets()`` function returns a list of ``GPWorksheet`` objects,
 which can also be modified.
 """
-from pickle import FALSE
+
 import gptables as gpt
 import pandas as pd
 import numpy as np
