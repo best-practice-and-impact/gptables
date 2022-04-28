@@ -13,14 +13,15 @@ iris_df <- reticulate::r_to_py(
     group_by(Species) %>%
     dplyr::summarize("Mean Sepal Length" = mean(Sepal.Length, na.rm=TRUE),
                      "Mean Sepal Width" = mean(Sepal.Width, na.rm=TRUE)
-                     )
-  )
+    )
+)
 
 ### Define table elements
+table_name = "iris_statistics"
 title = list("Mean", reticulate::py_dict("italic", TRUE), " Iris", "$$note2$$ sepal dimensions")
 subtitles = c("1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
               "Just another subtitile")
-units = list(1:"cm", 2:"cm")
+units = reticulate::dict(list("1" = "cm", "2" = "cm"), convert = FALSE)
 scope = "Iris"
 souce = "Source: Office for Iris Statistics"
 index_columns  = reticulate::py_dict(reticulate::py_eval('2'), "Species")
@@ -30,7 +31,8 @@ annotations = list(note1 = "I've got 99 problems and taxonomy is one.",
 notes = list("This note hath no reference.")
 
 ### Pass to GPTable
-table = gpt$GPTable(table = iris_df,
+table = gpt$GPTable(table_name = table_name,
+                    table = iris_df,
                     title = title,
                     subtitles = subtitles,
                     units = units,
