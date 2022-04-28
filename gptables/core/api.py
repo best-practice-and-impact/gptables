@@ -60,7 +60,6 @@ def produce_workbook(
     if notesheet is not None:
         ws = wb.add_worksheet(notesheet.label)
 
-
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
         ws.write_gptable(gptable, auto_width)

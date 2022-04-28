@@ -278,22 +278,10 @@ class GPWorksheet(Worksheet):
         for n in range(len(dict_refs)):
             if dict_refs[n] not in ordered_refs:
                 ordered_refs.append(dict_refs[n])
-            num_ref = "(" + str(ordered_refs.index(dict_refs[n]) + 1) + ")"
+            num_ref = "[note " + str(ordered_refs.index(dict_refs[n]) + 1) + "]"
             string = string.replace(text_refs[n], num_ref)
 
         return string
-
-
-    @staticmethod
-    def _enclose_text(element):
-        """
-        Enclose text within parentheses. Handles strings and lists
-        (rich strings).
-        """
-        if isinstance(element, str):
-            return  "(" + element + ")"
-        elif isinstance(element, list):
-            return ["("] + element + [")"]
 
 
     def _write_element(self, pos, element, format_dict):
