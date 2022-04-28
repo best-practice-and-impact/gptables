@@ -92,18 +92,19 @@ class GPWorksheet(Worksheet):
 
         notesheet.table = notesheet.table.join(ordered_notes).drop(columns=["order"])
 
-        if notesheet.link_column_name is not None:
+        # TODO: move formatting into _write_array
+        if notesheet.link_text_column_name is not None:
             notesheet.additional_formatting.append({
                 "column": {
-                    "columns": [notesheet.link_column_name],
+                    "columns": [notesheet.link_text_column_name],
                     "format": {"underline": True, "font_color": "blue"}
                 }
             })
 
-        self.write_gptable(notesheet, auto_width)
+        self.write_gptable(notesheet, auto_width, notesheet.link_text_column_name, notesheet.link_url_column_name)
         
 
-    def write_gptable(self, gptable, auto_width):
+    def write_gptable(self, gptable, auto_width, link_text_column_name=None, link_url_column_name=None):
         """
         Write data from a GPTable object to the worksheet using the workbook
         Theme object for formatting.
@@ -153,10 +154,12 @@ class GPWorksheet(Worksheet):
         pos = self._write_table_elements(
                 pos,
                 gptable,
-                auto_width
+                auto_width,
+                link_text_column_name,
+                link_url_column_name
                 )
 
-        self._mark_data_as_worksheet_table(gptable, theme.column_heading_format)
+        self._mark_data_as_worksheet_table(gptable, theme.column_heading_format, link_url_column_name)
 
 
     def _reference_annotations(self, gptable):
@@ -409,7 +412,7 @@ class GPWorksheet(Worksheet):
         return self._write_element_list(pos, element_list, format_dict)
 
 
-    def _write_table_elements(self, pos, gptable, auto_width):
+    def _write_table_elements(self, pos, gptable, auto_width, link_text_column_name=None, link_url_column_name=None):
         """
         Writes the table and units elements of a GPTable. Uses the
         Workbook Theme, plus any additional formatting associated with the
@@ -424,6 +427,12 @@ class GPWorksheet(Worksheet):
         auto_width : bool
             select if column widths should be determined automatically using
             length of text in index and columns
+        link_text_column_name: str, optional
+            name of (optional) column containing link text to display
+        link_url_column_name: str, optional
+            name of (optional) column contain link urls
+            column entries should start with either
+            `http://`, `https://`, `ftp://` or `mailto::`
 
         Returns
         -------
@@ -507,7 +516,7 @@ class GPWorksheet(Worksheet):
                 )
         
         ## Write table
-        pos = self._write_array(pos, data, formats)
+        pos = self._write_array(pos, data, formats, link_text_column_name, link_url_column_name)
 
         ## Set columns widths
         if auto_width:
@@ -573,7 +582,7 @@ class GPWorksheet(Worksheet):
                 )
 
 
-    def _write_array(self, pos, data, formats):
+    def _write_array(self, pos, data, formats, link_text_column_name=None, link_url_column_name=None):
         """
         Write a two-dimensional array to the current Worksheet, starting from
         the specified position.
@@ -587,6 +596,12 @@ class GPWorksheet(Worksheet):
             to each cell of data
         pos : list
             the position of the top left cell to start writing the array from
+        link_text_column_name: str, optional
+            name of (optional) column containing link text to display
+        link_url_column_name: str, optional
+            name of (optional) column contain link urls
+            column entries should start with either
+            `http://`, `https://`, `ftp://` or `mailto::`
             
         Returns
         -------
@@ -601,8 +616,21 @@ class GPWorksheet(Worksheet):
             for col in range(cols):
                 cell_data = data.iloc[row, col]
                 cell_format_dict = formats.iloc[row, col]
+
+                if data.columns[col] == link_text_column_name:
+                    self.write_url(
+                        row=pos[0] + row,
+                        col=pos[1] + col,
+                        url=data.loc[row, link_url_column_name],
+                        string=cell_data,
+                        cell_format=cell_format_dict,
+                    )
+
+                if data.columns[col] == link_url_column_name:
+                    pass
                 
-                self._smart_write(
+                else:
+                    self._smart_write(
                         pos[0] + row,
                         pos[1] + col,
                         cell_data,
@@ -613,7 +641,7 @@ class GPWorksheet(Worksheet):
         
         return pos
         
-    def _mark_data_as_worksheet_table(self, gptable, column_header_format_dict):
+    def _mark_data_as_worksheet_table(self, gptable, column_header_format_dict, link_url_column_name=None):
         """
         Marks the data to be recognised as a Worksheet Table in Excel.
         """
@@ -622,6 +650,11 @@ class GPWorksheet(Worksheet):
         column_header_format = self._workbook.add_format(column_header_format_dict)
         
         column_list = gptable.table.columns.tolist()
+        
+        if link_url_column_name is not None:
+            column_list.remove(link_url_column_name)
+            data_range[-1] = data_range[-1] - 1
+        
         column_headers = [{'header': column, 'header_format': column_header_format} for column in column_list]
 
         self.add_table(*data_range,
