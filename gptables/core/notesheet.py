@@ -13,6 +13,8 @@ class Notesheet(GPTable):
     ----------
     table: pd.DataFrame
         notes table with reference, text and (optional) link columns
+    link_column_name: str, optional
+        name of (optional) link column
     table_name: str, optional
         notes table name, defaults to "notes_table"
     title : str, optional
@@ -27,6 +29,7 @@ class Notesheet(GPTable):
         defaults to "Notes"
     """
     table: pd.DataFrame()
+    link_column_name: str=None
     table_name: str = None
     title: str = None
     subtitles: List = None

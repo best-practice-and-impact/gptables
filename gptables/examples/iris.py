@@ -66,10 +66,11 @@ sheets = {"Iris Flower Dimensions": iris_table}
 ## Notesheet
 notes = {
     "Note reference": ["note1", "note2"],
-    "Note text": ["I've got 99 problems and taxonomy is one.", "Goo Goo Dolls, 1998."]
+    "Note text": ["I've got 99 problems and taxonomy is one.", "Goo Goo Dolls, 1998."],
+    "Useful link": ["https://www.google.com", "https://duckduckgo.com/"]
     }
 notes_table = pd.DataFrame.from_dict(notes)
-notesheet = gpt.Notesheet(notes_table)
+notesheet = gpt.Notesheet(notes_table, link_column_name="Useful link")
 
 ## Use write_workbook to win!
 if __name__ == "__main__":

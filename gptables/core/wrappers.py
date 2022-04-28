@@ -92,6 +92,14 @@ class GPWorksheet(Worksheet):
 
         notesheet.table = notesheet.table.join(ordered_notes).drop(columns=["order"])
 
+        if notesheet.link_column_name is not None:
+            notesheet.additional_formatting.append({
+                "column": {
+                    "columns": [notesheet.link_column_name],
+                    "format": {"underline": True, "font_color": "blue"}
+                }
+            })
+
         self.write_gptable(notesheet, auto_width)
         
 
