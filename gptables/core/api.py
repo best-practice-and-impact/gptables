@@ -56,14 +56,18 @@ def produce_workbook(
         ws = wb.add_worksheet(contentsheet.label)
         ws.write_contentsheet(contentsheet, auto_width)
     
-    # TODO: Create empty notesheet
+    # Add notesheet in correct position
+    if notesheet is not None:
+        ws = wb.add_worksheet(notesheet.label)
+
 
     for sheet, gptable in sheets.items():
         ws = wb.add_worksheet(sheet)
         ws.write_gptable(gptable, auto_width)
 
+    # Write notesheet using sheets written order
     if notesheet is not None:
-        ws = wb.add_worksheet(notesheet.label)
+        ws = wb.get_worksheet_by_name(notesheet.label)
         ws.write_notesheet(notesheet, sheets, auto_width)
     
     return wb
