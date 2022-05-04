@@ -9,7 +9,7 @@ def produce_workbook(
         sheets,
         theme = None,
         cover = None,
-        contentsheet = None,
+        contentsheet = True,
         notesheet = None,
         auto_width = True,
         ):
@@ -28,8 +28,8 @@ def produce_workbook(
         default
     cover : gptables.Cover, optional
         cover page text. Including this argument will generate a cover page
-    contentsheet : gptables.Coversheet, optional
-        table of contents. Including this arguement will generate a contents page
+    contentsheet : boolean
+        if true, generate table of contents sheet
     notesheet : gptables.Notesheet, optional
         notes page content. Including this argument will generate a notes page
     auto_width : bool, optional
@@ -52,9 +52,9 @@ def produce_workbook(
         ws = wb.add_worksheet(cover.cover_label)
         ws.write_cover(cover)
 
-    if contentsheet is not None:
-        ws = wb.add_worksheet(contentsheet.label)
-        ws.write_contentsheet(contentsheet, auto_width)
+    if contentsheet is True:
+        contentsheet = wb.make_table_of_contents(sheets) #TODO: provide customisation parameters?
+        sheets = {"Contents": contentsheet, **sheets} #TODO: make sheet label customisabe?
     
     # Add notesheet in correct position
     if notesheet is not None:

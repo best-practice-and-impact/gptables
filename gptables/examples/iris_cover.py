@@ -58,8 +58,7 @@ kwargs = {
     "scope": scope,
     "source": source,
     "index_columns": index,
-    "annotations": annotations,
-    "notes": notes
+    # "annotations": annotations,
     }
 
 ## Define our GPTable
@@ -82,12 +81,6 @@ cover = gpt.Cover(
     contact=["John Doe", "Tel: 345345345"],
     )
 
-
-contentsheet = gpt.Contentsheet(
-    sheets=sheets,
-    additional_elements=["subtitles", "scope", "source"]
-)
-
 ## Use write_workbook to win!
 if __name__ == "__main__":
     output_path = parent_dir / "python_iris_cover_gptable.xlsx"
@@ -95,6 +88,6 @@ if __name__ == "__main__":
         filename=output_path,
         sheets=sheets,
         cover=cover,
-        contentsheet=contentsheet
+        contentsheet=True
     )
     print("Output written at: ", output_path)

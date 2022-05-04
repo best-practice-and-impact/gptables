@@ -45,18 +45,6 @@ class GPWorksheet(Worksheet):
             pos = self._write_element(pos, "Contact", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
 
-    def write_contentsheet(self, contentsheet, auto_width):
-        """
-        Alias for writing contents sheet to worksheet
-        
-        Parameters
-        ----------
-        contentsheet : gptables.Contentsheet
-            object containing table of contents to be written to Worksheet
-        """
-        # TODO: hyperlink sheet name column entries
-        return self.write_gptable(contentsheet, auto_width)
-
 
     def write_notesheet(self, notesheet, sheets, auto_width):
         """
@@ -891,3 +879,109 @@ class GPWorkbook(Workbook):
         if not isinstance(theme, Theme):
             raise TypeError(f"`theme` must be a gptables.Theme object, not: {type(theme)}")
         self.theme = theme
+
+    def make_table_of_contents(
+        self,
+        sheets, 
+        column_names = None, 
+        additional_elements = None,
+        table_name = None,
+        title = None,
+        subtitles = None,
+        instructions = None,
+        label = None
+        ):
+        """
+        Generate table of contents from sheet and optional customisation parameters.
+
+        Parameters
+        ----------
+        sheets : dict
+            mapping worksheet labels to gptables.GPTable objects
+        column_names : List[str], optional
+            table of contents column names, defaults to 
+            "Sheet name", "Table description"
+        additional_elements : List[str], optional
+            additional GPTable elements to display in the contents table. Allowed
+            elements are "subtitles", "scope", "source" and "instructions".
+        table: pd.DataFrame
+            notes table with reference, text and (optional) link columns
+        table_name: str, optional
+            notes table name, defaults to "contents_table"
+        title : str, optional
+            notes page title, defaults to "Table of contents"
+        subtitles: List[str], optional
+            list of subtitles as strings
+        instructions: str, optional
+            description of the page layout
+            defaults to "This worksheet contains one table."
+        label: str, optional
+            name of worksheet
+            defaults to "Contents"
+        
+        Return
+        ------
+        gpt.GPTable
+        """
+        if column_names is None:
+            column_names = ["Sheet name", "Table description"]
+        if table_name is None:
+            table_name = "contents_table"
+        if title is None:
+            title = "Table of content"
+        if instructions is None:
+            instructions = "This worksheet contains one table."
+        if label is None:
+            label = "Content"
+
+        if additional_elements is not None:
+            valid_elements = ["subtitles", "scope", "source", "instructions"]
+            if not all(element in valid_elements for element in additional_elements):
+                msg = ("Cover `additional_elements` list can only contain"
+                    "'subtitles', 'scope', 'source' and 'instructions'")
+                raise ValueError(msg)
+
+        contents = {}
+        for label, gptable in sheets.items(): 
+            contents_entry = []                   
+            contents_entry.append(self._strip_annotation_references(gptable.title))
+
+            if additional_elements is not None:
+                for element in additional_elements:
+                    content = getattr(gptable, element)        
+                    if element == "subtitles":
+                        [contents_entry.append(self._strip_annotation_references(element)) for element in content]
+                    else:
+                        contents_entry.append(self._strip_annotation_references(content))
+            contents[label] = [contents_entry]
+
+            contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index()
+
+            contents_table.iloc[:, 1] = contents_table.iloc[:, 1].str.join("\n")
+
+            contents_table.columns = column_names
+
+        return GPTable(
+            table=contents_table, 
+            table_name=table_name, 
+            title=title, 
+            subtitles=subtitles, 
+            instructions=instructions
+        )
+
+    @staticmethod
+    def _strip_annotation_references(text):
+        """
+        Strip annotation references (as $$ $$) from a str or list text element.
+        """
+        pattern = r"\$\$.*?\$\$"
+        if isinstance(text, str):
+            no_annotations = re.sub(pattern, "", text)
+        elif isinstance(text, list):
+            no_annotations = [
+                re.sub(pattern, "", part)
+                if isinstance(part, str) else part
+                for part in text
+                ]
+        
+        return no_annotations
