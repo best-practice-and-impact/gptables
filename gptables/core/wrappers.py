@@ -882,14 +882,13 @@ class GPWorkbook(Workbook):
 
     def make_table_of_contents(
         self,
-        sheets, 
-        column_names = None, 
+        sheets,
         additional_elements = None,
+        column_names = None,
         table_name = None,
         title = None,
         subtitles = None,
         instructions = None,
-        label = None
         ):
         """
         Generate table of contents from sheet and optional customisation parameters.
@@ -898,14 +897,12 @@ class GPWorkbook(Workbook):
         ----------
         sheets : dict
             mapping worksheet labels to gptables.GPTable objects
-        column_names : List[str], optional
-            table of contents column names, defaults to 
-            "Sheet name", "Table description"
         additional_elements : List[str], optional
             additional GPTable elements to display in the contents table. Allowed
             elements are "subtitles", "scope", "source" and "instructions".
-        table: pd.DataFrame
-            notes table with reference, text and (optional) link columns
+        column_names : List[str], optional
+            table of contents column names, defaults to
+            "Sheet name", "Table description"
         table_name: str, optional
             notes table name, defaults to "contents_table"
         title : str, optional
@@ -915,10 +912,7 @@ class GPWorkbook(Workbook):
         instructions: str, optional
             description of the page layout
             defaults to "This worksheet contains one table."
-        label: str, optional
-            name of worksheet
-            defaults to "Contents"
-        
+
         Return
         ------
         gpt.GPTable
@@ -928,11 +922,9 @@ class GPWorkbook(Workbook):
         if table_name is None:
             table_name = "contents_table"
         if title is None:
-            title = "Table of content"
+            title = "Table of contents"
         if instructions is None:
             instructions = "This worksheet contains one table."
-        if label is None:
-            label = "Content"
 
         if additional_elements is not None:
             valid_elements = ["subtitles", "scope", "source", "instructions"]

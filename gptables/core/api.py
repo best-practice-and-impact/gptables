@@ -9,7 +9,8 @@ def produce_workbook(
         sheets,
         theme = None,
         cover = None,
-        contentsheet = True,
+        contentsheet = "Contents",
+        contentsheet_options = {},
         notesheet = None,
         auto_width = True,
         ):
@@ -23,13 +24,18 @@ def produce_workbook(
         path to write final workbook to (an `.xlsx` file)
     sheets : dict
         mapping worksheet labels to gptables.GPTable objects
-    theme : gptables.Theme, optional)
+    theme : gptables.Theme, optional
         formatting to be applied tot GPTable elements. gptheme is used by
         default
     cover : gptables.Cover, optional
         cover page text. Including this argument will generate a cover page
-    contentsheet : boolean
-        if true, generate table of contents sheet
+    contentsheet : str, False
+        table of contents sheet label, defaults to "Contents"
+        if False, table of contents will not be generated
+    contentsheet_options : dict, optional
+        dictionary of contentsheet customisation parameters
+        valid keys are `additional_elements`, `column_names`,
+        `table_name`, `title`, `subtitles`, `instructions`
     notesheet : gptables.Notesheet, optional
         notes page content. Including this argument will generate a notes page
     auto_width : bool, optional
@@ -52,9 +58,16 @@ def produce_workbook(
         ws = wb.add_worksheet(cover.cover_label)
         ws.write_cover(cover)
 
-    if contentsheet is True:
-        contentsheet = wb.make_table_of_contents(sheets) #TODO: provide customisation parameters?
-        sheets = {"Contents": contentsheet, **sheets} #TODO: make sheet label customisabe?
+    if contentsheet is not False:
+        if contentsheet_options:
+            valid_keys = ["additional_elements", "column_names",
+                "table_name", "title", "subtitles", "instructions"]
+            if not all(key in valid_keys for key in contentsheet_options.keys()):
+                msg = ("Valid `contentsheet_options` keys are 'additional_elements',"
+                    "'column_names', 'table_name', 'title', 'subtitles', 'instructions'")
+                raise ValueError(msg)
+        contents_gptable = wb.make_table_of_contents(sheets, **contentsheet_options)
+        sheets = {contentsheet: contents_gptable, **sheets}
     
     # Add notesheet in correct position
     if notesheet is not None:
@@ -77,7 +90,8 @@ def write_workbook(
         sheets,
         theme = None,
         cover = None,
-        contentsheet = None,
+        contentsheet = "Contents",
+        contentsheet_options = {},
         notesheet = None,
         auto_width = True,
         ):
@@ -100,8 +114,13 @@ def write_workbook(
         default
     cover : gptables.Cover, optional
         cover page text. Including this argument will generate a cover page
-    contentsheet : gptables.Contentsheet, optional
-        table of contents. Including this arguement will generate a contents page
+    contentsheet : str, False
+        table of contents sheet label, defaults to "Contents"
+        if False, table of contents will not be generated
+    contentsheet_options : dict, optional
+        dictionary of contentsheet customisation parameters
+        valid keys are `additional_elements`, `column_names`,
+        `table_name`, `title`, `subtitles`, `instructions`
     notesheet : gptables.Notesheet, optional
         notes page content. Including this argument will generate a notes page
     auto_width : bool, optional
@@ -117,6 +136,7 @@ def write_workbook(
         theme,
         cover,
         contentsheet,
+        contentsheet_options,
         notesheet,
         auto_width
         )

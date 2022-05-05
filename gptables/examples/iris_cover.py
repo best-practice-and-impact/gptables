@@ -88,6 +88,5 @@ if __name__ == "__main__":
         filename=output_path,
         sheets=sheets,
         cover=cover,
-        contentsheet=True
     )
     print("Output written at: ", output_path)
