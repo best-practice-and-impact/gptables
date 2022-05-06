@@ -44,11 +44,6 @@ units = {"Mean Sepal Length": "cm", "Mean Sepal Width": "cm"}
 scope = "Iris"
 source = "Source: Office for Iris Statistics"
 index = {2: 0}  # Column 0 is a level 2 index
-annotations = {
-    "note1": "I've got 99 problems and taxonomy is one.",
-    "note2": "Goo Goo Dolls, 1998.",
-    }
-notes = ["This note hath no reference."]
 
 # or use kwargs to pass these to the appropriate parameters
 kwargs = {
@@ -58,14 +53,13 @@ kwargs = {
     "scope": scope,
     "source": source,
     "index_columns": index,
-    # "annotations": annotations,
     }
 
 ## Define our GPTable
 iris_table = gpt.GPTable(table=iris_summary, table_name="iris_statistics", **kwargs)
 
 iris_table_copy = deepcopy(iris_table)
-iris_table_copy.set_title("A copy of the first sheet$$note2$$")
+iris_table_copy.set_title("A copy of the first sheet$$note3$$")
 iris_table_copy.set_table_name("iris_statistics_copy")
 
 sheets = {
@@ -81,6 +75,14 @@ cover = gpt.Cover(
     contact=["John Doe", "Tel: 345345345"],
     )
 
+## Notesheet
+notes = {
+    "Note reference": ["note1", "note2", "note3"],
+    "Note text": ["I've got 99 problems and taxonomy is one.", "Goo Goo Dolls, 1998.", "This is an extra note"],
+    }
+notes_table = pd.DataFrame.from_dict(notes)
+notesheet = gpt.Notesheet(notes_table)
+
 ## Use write_workbook to win!
 if __name__ == "__main__":
     output_path = parent_dir / "python_iris_cover_gptable.xlsx"
@@ -88,5 +90,6 @@ if __name__ == "__main__":
         filename=output_path,
         sheets=sheets,
         cover=cover,
+        notesheet=notesheet
     )
     print("Output written at: ", output_path)

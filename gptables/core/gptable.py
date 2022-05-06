@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 from xlsxwriter.format import Format
 
 class GPTable:
@@ -46,7 +47,6 @@ class GPTable:
                  subtitles=[],
                  instructions="",
                  legend=[],
-                 annotations=[],
                  index_columns={2:0},
                  additional_formatting=[],
                  ):
@@ -89,7 +89,7 @@ class GPTable:
         self.set_scope(scope)
         self.set_source(source)
         self.set_legend(legend)
-        self.set_annotations(annotations)
+        self.set_annotations()
         self.set_additional_formatting(additional_formatting)
         self._set_data_range()
         
@@ -322,19 +322,101 @@ class GPTable:
         else:
             self.legend += new_legend
 
-
-    def set_annotations(self, new_annotations):
+    def set_annotations(self):
         """
         Set a list of note references to the `annotations` attribute.
         """
-        if not isinstance(new_annotations, list):
-            msg = ("annotations must be provided as a list")
-            raise TypeError(msg)
+        elements = [
+                "title",
+                "subtitles",
+                "scope",
+                "units",
+                "legend"
+                ]
         
-        if not all(isinstance(item, str) for item in new_annotations):
-            raise TypeError("`annotations` items must be strings")
-    
-        self.annotations = new_annotations
+        ordered_refs = []
+        
+        for attr in elements:
+            attr_current = getattr(self, attr)
+            references = self._get_references_from_attr(attr_current)
+            ordered_refs.extend(references)
+
+        table_refs = self._get_references_from_table()
+        ordered_refs.extend(table_refs)
+
+        # remove duplicates from ordered_refs and assign to self.annotations
+        self.annotations = list(dict.fromkeys(ordered_refs))
+
+
+    def _get_references_from_attr(self, data):
+        """
+        Finds references in a string or list/dict of strings. Works
+        recursively on list elements and dict values. Other types are ignored.
+        Returns ordered list of references from attribute.
+        
+        Parameters
+        ----------
+        data : string or list/dict of strings
+            object containing strings to replace references in
+
+        Returns
+        -------
+        list of str
+        """
+        ordered_refs = []
+        if isinstance(data, str):
+            ordered_refs.extend(self._get_references(data))
+        if isinstance(data, list):
+            for n in range(len(data)):
+                ordered_refs.extend(self._get_references(data[n])) #TODO: no longer works for lists of anything other than strings - validation?
+        if isinstance(data, dict):
+            for key in data.keys():
+                ordered_refs.extend(self._get_references(data[key])) #TODO: as above
+
+        return ordered_refs
+        
+
+    def _get_references_from_table(self):
+        """
+        Get note references in the table column headings and index columns.
+        """
+        table = self.table
+        
+        ordered_refs = []
+        column_references = self._get_references_from_attr(table.columns.to_list())
+        ordered_refs.extend(column_references)
+
+        index_columns = self.index_columns.values()
+        for col in index_columns:
+            index_column = table.iloc[:, col]
+            index_column_references = self._get_references_from_attr(index_column.to_list())
+            ordered_refs.extend(index_column_references)
+
+        return ordered_refs
+
+
+    @staticmethod
+    def _get_references(string):
+        """
+        Given a single string, return occurrences of note references (denoted by
+        flanking dollar signs [$$reference$$]).
+        
+        Parameters
+        ----------
+        string : str
+            the string to find references within
+
+        Returns
+        -------
+        list of str
+            list of note references
+        """
+        ordered_refs = []
+        refs_raw = re.findall(r"[$]{2}.*?[$]{2}", string)
+        refs_clean = [w.replace("$", "") for w in refs_raw]
+        ordered_refs.extend(refs_clean)
+
+        return ordered_refs
 
 
     def set_additional_formatting(self, new_formatting):
