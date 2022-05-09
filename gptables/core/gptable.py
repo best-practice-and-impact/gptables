@@ -368,7 +368,7 @@ class GPTable:
             ordered_refs.extend(self._get_references(data))
         if isinstance(data, list):
             for n in range(len(data)):
-                ordered_refs.extend(self._get_references(data[n])) #TODO: no longer works for lists of anything other than strings - validation?
+                ordered_refs.extend(self._get_references(data[n])) #TODO: no longer works for lists of anything other than strings, eg for integer values
         if isinstance(data, dict):
             for key in data.keys():
                 ordered_refs.extend(self._get_references(data[key])) #TODO: as above

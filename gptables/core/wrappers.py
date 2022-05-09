@@ -44,53 +44,7 @@ class GPWorksheet(Worksheet):
         if cover.contact is not None:
             pos = self._write_element(pos, "Contact", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
-
-
-    def write_notesheet(self, notesheet, sheets, auto_width):
-        """
-        Alias for writing notes sheet to worksheet.
-
-        Parameters
-        ----------
-        notesheet : gptables.Notesheet
-            object containing notes sheet content to be written to Worksheet
-        """
-        order = []
-        for gptable in sheets.values():
-            order.extend(gptable.annotations)
-        
-        order_df = pd.DataFrame({"order": order})
-        
-        notes = notesheet.table.copy()
-        notes = notes.rename(columns={notes.columns[0]: "order"})
-
-        ordered_notes = order_df.merge(notes, on="order", how="left")
-        
-        unreferenced_notes = notes[~notes["order"].isin(ordered_notes["order"])]
-
-        if not unreferenced_notes.empty:
-            warnings.warn(f"The following notes are not referenced: {list(unreferenced_notes['order'])}")
-
-            ordered_notes = ordered_notes.append(unreferenced_notes)
     
-
-        notesheet.table = pd.DataFrame()
-
-        notesheet.table["Note number"] = range(1, len(order)+1) # TODO: note number input variable?
-
-        notesheet.table = notesheet.table.join(ordered_notes).drop(columns=["order"])
-
-        # TODO: move formatting into _write_array
-        if notesheet.link_text_column_name is not None:
-            notesheet.additional_formatting.append({
-                "column": {
-                    "columns": [notesheet.link_text_column_name],
-                    "format": {"underline": True, "font_color": "blue"}
-                }
-            })
-
-        self.write_gptable(notesheet, auto_width, notesheet.link_text_column_name, notesheet.link_url_column_name)
-        
 
     def write_gptable(self, gptable, auto_width, link_text_column_name=None, link_url_column_name=None):
         """
@@ -837,9 +791,9 @@ class GPWorkbook(Workbook):
     def __init__(self, filename=None, options={}):
         super(GPWorkbook, self).__init__(filename=filename, options=options)
         self.theme = None
+        self.annotations = None
         # Set default theme
         self.set_theme(gptheme)
-        
 
     def add_worksheet(self, name=None):
         """
@@ -880,6 +834,14 @@ class GPWorkbook(Workbook):
             raise TypeError(f"`theme` must be a gptables.Theme object, not: {type(theme)}")
         self.theme = theme
 
+    def update_annotations(self, sheets):
+        ordered_refs = []
+        for gptable in sheets.values():
+            ordered_refs.extend(gptable.annotations)
+
+            # remove duplicates from ordered_refs and assign to self.annotations
+            self.annotations = list(dict.fromkeys(ordered_refs))
+
     def make_table_of_contents(
         self,
         sheets,
@@ -904,9 +866,9 @@ class GPWorkbook(Workbook):
             table of contents column names, defaults to
             "Sheet name", "Table description"
         table_name: str, optional
-            notes table name, defaults to "contents_table"
+            contents table name, defaults to "contents_table"
         title : str, optional
-            notes page title, defaults to "Table of contents"
+            table of contents title, defaults to "Table of contents"
         subtitles: List[str], optional
             list of subtitles as strings
         instructions: str, optional
@@ -977,3 +939,75 @@ class GPWorkbook(Workbook):
                 ]
         
         return no_annotations
+
+
+    def make_notesheet(
+        self,
+        notes_table,
+        table_name = None,
+        title = None,
+        instructions = None,
+        ):
+        """
+        Generate notes table sheets from notes table and optional customisation parameters.
+
+        Parameters
+        ----------
+        notes_table : pd.DataFrame
+            table with notes reference, text and (optional) link columns
+        table_name: str, optional
+            notes table name, defaults to "notes_table"
+        title : str, optional
+            notes page title, defaults to "Notes"
+        instructions: str, optional
+            description of the page layout
+            defaults to "This worksheet contains one table."
+
+        Return
+        ------
+        gpt.GPTable
+        """
+        # set defaults
+        if table_name is None:
+            table_name = "notes_table"
+
+        if title is None:
+            title = "Notes"
+
+        if instructions is None:
+            instructions = "This worksheet contains one table."
+
+        # order notes table by worksheet reference order
+        ordered_refs = self.annotations
+
+        order_df = pd.DataFrame({"order": ordered_refs})
+        
+        notes = notes_table.copy()
+        notes = notes.rename(columns={notes.columns[0]: "order"})
+
+        ordered_notes = order_df.merge(notes, on="order", how="left")
+        
+        unreferenced_notes = notes[~notes["order"].isin(ordered_notes["order"])]
+
+        if not unreferenced_notes.empty:
+            warnings.warn(f"The following notes are not referenced: {list(unreferenced_notes['order'])}")
+
+            ordered_notes = ordered_notes.append(unreferenced_notes)
+
+        # replace note references with note number
+        ordered_notes = (ordered_notes
+            .reset_index()
+            .rename(columns={"index": "Note number"})
+            .drop(columns=["order"])
+        )
+
+        # convert from python 0-indexing
+        ordered_notes["Note number"] = ordered_notes["Note number"] + 1
+
+        return GPTable(
+            table=ordered_notes, 
+            table_name=table_name, 
+            title=title, 
+            instructions=instructions,
+            index_columns={}
+        )

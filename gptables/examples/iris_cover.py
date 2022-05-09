@@ -81,7 +81,6 @@ notes = {
     "Note text": ["I've got 99 problems and taxonomy is one.", "Goo Goo Dolls, 1998.", "This is an extra note"],
     }
 notes_table = pd.DataFrame.from_dict(notes)
-notesheet = gpt.Notesheet(notes_table)
 
 ## Use write_workbook to win!
 if __name__ == "__main__":
@@ -90,6 +89,6 @@ if __name__ == "__main__":
         filename=output_path,
         sheets=sheets,
         cover=cover,
-        notesheet=notesheet
+        notes_table=notes_table
     )
     print("Output written at: ", output_path)

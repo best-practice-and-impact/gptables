@@ -1,3 +1,4 @@
+import warnings
 import pandas as pd
 from pathlib import Path
 
@@ -9,9 +10,11 @@ def produce_workbook(
         sheets,
         theme = None,
         cover = None,
-        contentsheet = "Contents",
+        contentsheet_label = "Contents",
         contentsheet_options = {},
-        notesheet = None,
+        notes_table = None,
+        notesheet_label = "Notes",
+        notesheet_options = {},
         auto_width = True,
         ):
     """
@@ -25,19 +28,25 @@ def produce_workbook(
     sheets : dict
         mapping worksheet labels to gptables.GPTable objects
     theme : gptables.Theme, optional
-        formatting to be applied tot GPTable elements. gptheme is used by
+        formatting to be applied to GPTable elements. gptheme is used by
         default
     cover : gptables.Cover, optional
         cover page text. Including this argument will generate a cover page
-    contentsheet : str, False
+    contentsheet_label : str, None
         table of contents sheet label, defaults to "Contents"
-        if False, table of contents will not be generated
+        if None, table of contents will not be generated
     contentsheet_options : dict, optional
         dictionary of contentsheet customisation parameters
         valid keys are `additional_elements`, `column_names`,
         `table_name`, `title`, `subtitles`, `instructions`
-    notesheet : gptables.Notesheet, optional
-        notes page content. Including this argument will generate a notes page
+    notes_table : None
+        table with notes reference, text and (optional) link columns
+        if None, notes sheet will not be generated
+    notesheet_label : str
+        notes sheet label, defaults to "Notes"
+    notesheet_options : dict, optional
+        dictionary of notesheet customisation parameters
+        valid keys are `table_name`, `title`, `instructions`
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True
         by default.
@@ -58,7 +67,8 @@ def produce_workbook(
         ws = wb.add_worksheet(cover.cover_label)
         ws.write_cover(cover)
 
-    if contentsheet is not False:
+    contentsheet = {}
+    if contentsheet_label is not None:
         if contentsheet_options:
             valid_keys = ["additional_elements", "column_names",
                 "table_name", "title", "subtitles", "instructions"]
@@ -67,20 +77,21 @@ def produce_workbook(
                     "'column_names', 'table_name', 'title', 'subtitles', 'instructions'")
                 raise ValueError(msg)
         contents_gptable = wb.make_table_of_contents(sheets, **contentsheet_options)
-        sheets = {contentsheet: contents_gptable, **sheets}
-    
-    # Add notesheet in correct position
-    if notesheet is not None:
-        ws = wb.add_worksheet(notesheet.label)
+        contentsheet = {contentsheet_label: contents_gptable}
 
-    for sheet, gptable in sheets.items():
-        ws = wb.add_worksheet(sheet)
+    wb.update_annotations(sheets)
+
+    notesheet = {}
+    if notes_table is None:
+        warnings.warn("No note text provided, notes sheet has not been generated")
+    else:
+        note_gptable = wb.make_notesheet(notes_table, **notesheet_options)
+        notesheet = {notesheet_label: note_gptable}
+
+    sheets = {**contentsheet, **notesheet, **sheets}     #TODO: add custom order from theme?
+    for label, gptable in sheets.items():
+        ws = wb.add_worksheet(label)
         ws.write_gptable(gptable, auto_width)
-
-    # Write notesheet using sheets written order
-    if notesheet is not None:
-        ws = wb.get_worksheet_by_name(notesheet.label)
-        ws.write_notesheet(notesheet, sheets, auto_width)
     
     return wb
 
@@ -92,7 +103,9 @@ def write_workbook(
         cover = None,
         contentsheet = "Contents",
         contentsheet_options = {},
-        notesheet = None,
+        notes_table = None,
+        notesheet_label = "Notes",
+        notesheet_options = {},
         auto_width = True,
         ):
 
@@ -137,7 +150,9 @@ def write_workbook(
         cover,
         contentsheet,
         contentsheet_options,
-        notesheet,
+        notes_table,
+        notesheet_label,
+        notesheet_options,
         auto_width
         )
     wb.close()
