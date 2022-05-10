@@ -46,7 +46,7 @@ class GPWorksheet(Worksheet):
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
     
 
-    def write_gptable(self, gptable, auto_width, reference_order=[], link_text_column_name=None, link_url_column_name=None):
+    def write_gptable(self, gptable, auto_width, reference_order=[]):
         """
         Write data from a GPTable object to the worksheet using the workbook
         Theme object for formatting.
@@ -76,6 +76,7 @@ class GPWorksheet(Worksheet):
         pos = [0, 0]
 
         self._reference_annotations(gptable, reference_order)
+        self._parse_urls(gptable)
 
         gptable = deepcopy(gptable)
 
@@ -103,11 +104,9 @@ class GPWorksheet(Worksheet):
                 pos,
                 gptable,
                 auto_width,
-                link_text_column_name,
-                link_url_column_name
                 )
 
-        self._mark_data_as_worksheet_table(gptable, theme.column_heading_format, link_url_column_name)
+        self._mark_data_as_worksheet_table(gptable, theme.column_heading_format)
 
 
     def _reference_annotations(self, gptable, reference_order):
@@ -174,8 +173,7 @@ class GPWorksheet(Worksheet):
         """
         Replaces references in a string or list/dict of strings. Works
         recursively on list elements and dict values. Other types are returned
-        without modification. Updates `ordered_refs` with newly detected
-        references.
+        without modification.
         
         Parameters
         ----------
@@ -235,6 +233,120 @@ class GPWorksheet(Worksheet):
             string = string.replace(text_refs[n], num_ref)
 
         return string
+
+
+    def _parse_urls(self, gptable):
+        """
+        Convert markdown URL formatting into URL, string tuple
+        
+        Parameters
+        ----------
+        gptable : gptables.GPTable
+            object containing data with urls        
+        """
+        elements = [
+            "title",
+            "subtitles",
+            "scope",
+            "units",
+            "legend",
+        ]
+
+        # Loop through elements, replacing urls in strings
+        for attr in elements:
+            attr_current = getattr(gptable, attr)
+            setattr(
+                    gptable,
+                    attr,
+                    self._replace_url_in_attr(
+                            attr_current,
+                            )
+                    )
+        self._parse_table_urls(gptable)
+    
+    def _parse_table_urls(self, gptable):
+        """
+        Parse URLs in table.
+        """
+        table = getattr(gptable, "table")
+        rows, columns = table.shape
+
+        for c in range(columns):
+            for r in range(rows):
+                cell = table.iloc[r, c]
+                table.iloc[r, c] = self._replace_url_in_attr(cell) # TODO: Fix this!!!
+
+        setattr(gptable, "table", table)
+    
+    def _replace_url_in_attr(self, data):
+        """
+        Replaces urls in a string or list/dict of strings. Works
+        recursively on list elements and dict values. Other types are returned
+        without modification.
+        
+        Parameters
+        ----------
+        data : any type
+            object containing strings to replace references in
+
+        Returns
+        -------
+        string : str
+            input string with markdown formatted URLs 
+            replaced with URL, string tuple
+        """
+        if isinstance(data, str):
+            data = self._replace_url(data)
+        if isinstance(data, list):
+            for n in range(len(data)):
+                data[n] = self._replace_url_in_attr(
+                        data[n],
+                        )
+        if isinstance(data, dict):
+            for key in data.keys():
+                data[key] = self._replace_url_in_attr(
+                        data[key],
+                        )
+
+        return data
+
+
+    @staticmethod
+    def _replace_url(string):
+        """
+        Given a single string, record occurrences of markdown 
+        style urls (formatted as `"[url](display_text)"`) and 
+        replace with tuples of `(url, string)`
+        
+        Parameters
+        ----------
+        string : str
+            the string to replace references within
+
+        Returns
+        -------
+        tuple
+            tuple with items `url` and `string`, where markdown 
+            style url in `string` is replaced with `display_text`            
+        """
+        f_url_pattern = r"\[.+\]\(.+\)" # "[display_text](url)"
+        f_urls = re.findall(f_url_pattern, string)
+        
+        if len(f_urls) == 0:
+            return string
+        
+        if len(f_urls) > 1:
+            msg = "More than one link found in cell. Excel only permits one link per cell"
+            raise ValueError(msg)
+        else:
+            f_url = f_urls[0]
+
+            url = re.split(r"\(", f_url)[1].replace(")", "")
+            display_text = re.split(r"\]", f_url)[0].replace("[", "")
+
+            string = re.sub(f_url_pattern, display_text, string)
+
+            return (url, string)
 
 
     def _write_element(self, pos, element, format_dict):
@@ -354,7 +466,7 @@ class GPWorksheet(Worksheet):
         return self._write_element_list(pos, element_list, format_dict)
 
 
-    def _write_table_elements(self, pos, gptable, auto_width, link_text_column_name=None, link_url_column_name=None):
+    def _write_table_elements(self, pos, gptable, auto_width):
         """
         Writes the table and units elements of a GPTable. Uses the
         Workbook Theme, plus any additional formatting associated with the
@@ -369,12 +481,7 @@ class GPWorksheet(Worksheet):
         auto_width : bool
             select if column widths should be determined automatically using
             length of text in index and columns
-        link_text_column_name: str, optional
-            name of (optional) column containing link text to display
-        link_url_column_name: str, optional
-            name of (optional) column contain link urls
-            column entries should start with either
-            `http://`, `https://`, `ftp://` or `mailto::`
+
 
         Returns
         -------
@@ -458,7 +565,7 @@ class GPWorksheet(Worksheet):
                 )
         
         ## Write table
-        pos = self._write_array(pos, data, formats, link_text_column_name, link_url_column_name)
+        pos = self._write_array(pos, data, formats)
 
         ## Set columns widths
         if auto_width:
@@ -524,7 +631,7 @@ class GPWorksheet(Worksheet):
                 )
 
 
-    def _write_array(self, pos, data, formats, link_text_column_name=None, link_url_column_name=None):
+    def _write_array(self, pos, data, formats):
         """
         Write a two-dimensional array to the current Worksheet, starting from
         the specified position.
@@ -538,12 +645,6 @@ class GPWorksheet(Worksheet):
             to each cell of data
         pos : list
             the position of the top left cell to start writing the array from
-        link_text_column_name: str, optional
-            name of (optional) column containing link text to display
-        link_url_column_name: str, optional
-            name of (optional) column contain link urls
-            column entries should start with either
-            `http://`, `https://`, `ftp://` or `mailto::`
             
         Returns
         -------
@@ -559,31 +660,18 @@ class GPWorksheet(Worksheet):
                 cell_data = data.iloc[row, col]
                 cell_format_dict = formats.iloc[row, col]
 
-                if data.columns[col] == link_text_column_name:
-                    self.write_url(
-                        row=pos[0] + row,
-                        col=pos[1] + col,
-                        url=data.loc[row, link_url_column_name],
-                        string=cell_data,
-                        cell_format=cell_format_dict,
+                self._smart_write(
+                    pos[0] + row,
+                    pos[1] + col,
+                    cell_data,
+                    cell_format_dict
                     )
-
-                if data.columns[col] == link_url_column_name:
-                    pass
-                
-                else:
-                    self._smart_write(
-                        pos[0] + row,
-                        pos[1] + col,
-                        cell_data,
-                        cell_format_dict
-                        )
         
         pos = [pos[0] + rows, 0]
         
         return pos
         
-    def _mark_data_as_worksheet_table(self, gptable, column_header_format_dict, link_url_column_name=None):
+    def _mark_data_as_worksheet_table(self, gptable, column_header_format_dict):
         """
         Marks the data to be recognised as a Worksheet Table in Excel.
         """
@@ -592,10 +680,6 @@ class GPWorksheet(Worksheet):
         column_header_format = self._workbook.add_format(column_header_format_dict)
         
         column_list = gptable.table.columns.tolist()
-        
-        if link_url_column_name is not None:
-            column_list.remove(link_url_column_name)
-            data_range[-1] = data_range[-1] - 1
         
         column_headers = [{'header': column, 'header_format': column_header_format} for column in column_list]
 
