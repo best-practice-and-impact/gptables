@@ -46,7 +46,7 @@ class GPWorksheet(Worksheet):
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
     
 
-    def write_gptable(self, gptable, auto_width, link_text_column_name=None, link_url_column_name=None):
+    def write_gptable(self, gptable, auto_width, reference_order=[], link_text_column_name=None, link_url_column_name=None):
         """
         Write data from a GPTable object to the worksheet using the workbook
         Theme object for formatting.
@@ -56,7 +56,9 @@ class GPWorksheet(Worksheet):
         gptable : gptables.GPTable
             object containing elements of the gptable to be written to the
             Worksheet
-        
+        reference_order : list, optional
+            order of annotations in workbook
+            must be provided if gptable uses annotations
         Returns
         -------
         None
@@ -64,12 +66,16 @@ class GPWorksheet(Worksheet):
         if not isinstance(gptable, GPTable):
             raise TypeError("`gptable` must be a gptables.GPTable object")
         
+        if len(gptable.annotations)>0 and len(reference_order)==0:
+            msg = "reference_order must be provided if gptable contains annotations"
+            raise ValueError(msg)
+        
         theme = self.theme
 
         # Write each GPTable element using appropriate Theme attr
         pos = [0, 0]
 
-        self._reference_annotations(gptable)
+        self._reference_annotations(gptable, reference_order)
 
         gptable = deepcopy(gptable)
 
@@ -104,7 +110,7 @@ class GPWorksheet(Worksheet):
         self._mark_data_as_worksheet_table(gptable, theme.column_heading_format, link_url_column_name)
 
 
-    def _reference_annotations(self, gptable):
+    def _reference_annotations(self, gptable, reference_order):
         """
         Replace note references with numbered references. Acts on `title`,
         `subtitles`, `table` and `notes` attributes of a GPTable. References 
@@ -114,6 +120,8 @@ class GPWorksheet(Worksheet):
         ----------
         gptable : gptables.GPTable
             object containing data with references to notes
+        reference_order : list
+            order of annotations in workbook
 
         Returns
         -------
@@ -126,8 +134,6 @@ class GPWorksheet(Worksheet):
                 "units",
                 "legend"
                 ]
-        # Store annotation references in order detected
-        ordered_refs = []
         
         # Loop through elements, replacing references in strings
         for attr in elements:
@@ -137,15 +143,13 @@ class GPWorksheet(Worksheet):
                     attr,
                     self._replace_reference_in_attr(
                             attr_current,
-                            ordered_refs
+                            reference_order
                             )
                     )
-        self._reference_table_annotations(gptable, ordered_refs)
-
-        gptable.annotations = ordered_refs
+        self._reference_table_annotations(gptable, reference_order)
         
 
-    def _reference_table_annotations(self, gptable, ordered_refs):
+    def _reference_table_annotations(self, gptable, reference_order):
          """
          Reference annotations in the table column headings and index columns.
          """
@@ -153,20 +157,20 @@ class GPWorksheet(Worksheet):
          
          table.columns = self._replace_reference_in_attr(
                  [x for x in table.columns],
-                 ordered_refs
+                 reference_order
                  )
          
          index_columns = gptable.index_columns.values()
          
          for col in index_columns:
              table.iloc[:, col] = table.iloc[:, col].apply(
-                     lambda x: self._replace_reference_in_attr(x, ordered_refs)
+                     lambda x: self._replace_reference_in_attr(x, reference_order)
                      )
 
          setattr(gptable, "table", table)
 
 
-    def _replace_reference_in_attr(self, data, ordered_refs):
+    def _replace_reference_in_attr(self, data, reference_order):
         """
         Replaces references in a string or list/dict of strings. Works
         recursively on list elements and dict values. Other types are returned
@@ -177,9 +181,8 @@ class GPWorksheet(Worksheet):
         ----------
         data : any type
             object containing strings to replace references in
-        ordered_refs : list
-            list of references used so far. New references will be added to
-            this list in order of detection
+        reference_order : list
+            order of annotations in workbook
 
         Returns
         -------
@@ -188,25 +191,25 @@ class GPWorksheet(Worksheet):
             where n is the order of appearance in the resulting document
         """
         if isinstance(data, str):
-            data = self._replace_reference(data, ordered_refs)
+            data = self._replace_reference(data, reference_order)
         if isinstance(data, list):
             for n in range(len(data)):
                 data[n] = self._replace_reference_in_attr(
                         data[n],
-                        ordered_refs
+                        reference_order
                         )
         if isinstance(data, dict):
             for key in data.keys():
                 data[key] = self._replace_reference_in_attr(
                         data[key],
-                        ordered_refs
+                        reference_order
                         )
 
         return data
     
 
     @staticmethod
-    def _replace_reference(string, ordered_refs):
+    def _replace_reference(string, reference_order):
         """
         Given a single string, record occurrences of new references (denoted by
         flanking dollar signs [$$reference$$]) and replace with number
@@ -216,9 +219,8 @@ class GPWorksheet(Worksheet):
         ----------
         string : str
             the string to replace references within
-        ordered_refs : list
-            list of references used so far. New references will be added to
-            this list in order of detection
+        reference_order : list
+            order of annotations in workbook
 
         Returns
         -------
@@ -229,9 +231,7 @@ class GPWorksheet(Worksheet):
         text_refs = re.findall(r"[$]{2}.*?[$]{2}", string)
         dict_refs = [w.replace("$", "") for w in text_refs]
         for n in range(len(dict_refs)):
-            if dict_refs[n] not in ordered_refs:
-                ordered_refs.append(dict_refs[n])
-            num_ref = "[note " + str(ordered_refs.index(dict_refs[n]) + 1) + "]"
+            num_ref = "[note " + str(reference_order.index(dict_refs[n]) + 1) + "]"
             string = string.replace(text_refs[n], num_ref)
 
         return string
@@ -839,8 +839,8 @@ class GPWorkbook(Workbook):
         for gptable in sheets.values():
             ordered_refs.extend(gptable.annotations)
 
-            # remove duplicates from ordered_refs and assign to self.annotations
-            self.annotations = list(dict.fromkeys(ordered_refs))
+        # remove duplicates from ordered_refs and assign to self.annotations
+        self.annotations = list(dict.fromkeys(ordered_refs))
 
     def make_table_of_contents(
         self,
