@@ -44,7 +44,7 @@ subtitles = [
     ]
 units = {1:"cm", 2:"cm"}
 scope = "Iris"
-source = "Source: Office for Iris Statistics"
+source = "[Source: Office for Iris Statistics](https://www.ons.gov.uk)"
 index = {2: 0}  # Column 0 is a level 2 index
 
 # or use kwargs to pass these to the appropriate parameters

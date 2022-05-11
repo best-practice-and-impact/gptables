@@ -248,7 +248,7 @@ class GPWorksheet(Worksheet):
             "title",
             "subtitles",
             "scope",
-            "units",
+            "source",
             "legend",
         ]
 
@@ -273,27 +273,24 @@ class GPWorksheet(Worksheet):
 
         for c in range(columns):
             for r in range(rows):
-                cell = table.iloc[r, c]
-                table.iloc[r, c] = self._replace_url_in_attr(cell) # TODO: Fix this!!!
+                cell = self._replace_url_in_attr(table.iloc[r, c])
+                if isinstance(cell, dict):
+                    table.iloc[r, c] = [cell] # store dict in pd.DataFrame
+                else:
+                    table.iloc[r, c] = cell
 
         setattr(gptable, "table", table)
     
     def _replace_url_in_attr(self, data):
         """
         Replaces urls in a string or list/dict of strings. Works
-        recursively on list elements and dict values. Other types are returned
-        without modification.
+        recursively on list elements and dict values. Other types
+        are returned without modification.
         
         Parameters
         ----------
         data : any type
             object containing strings to replace references in
-
-        Returns
-        -------
-        string : str
-            input string with markdown formatted URLs 
-            replaced with URL, string tuple
         """
         if isinstance(data, str):
             data = self._replace_url(data)
@@ -325,9 +322,10 @@ class GPWorksheet(Worksheet):
 
         Returns
         -------
-        tuple
-            tuple with items `url` and `string`, where markdown 
-            style url in `string` is replaced with `display_text`            
+        string or dict
+            if no markdown style urls found, returns sting
+            if found, return dictionary with key `string` and value `url`,
+            where markdown style url in `string` is replaced with `display_text`            
         """
         f_url_pattern = r"\[.+\]\(.+\)" # "[display_text](url)"
         f_urls = re.findall(f_url_pattern, string)
@@ -346,7 +344,7 @@ class GPWorksheet(Worksheet):
 
             string = re.sub(f_url_pattern, display_text, string)
 
-            return (url, string)
+            return {string: url}
 
 
     def _write_element(self, pos, element, format_dict):
@@ -703,11 +701,13 @@ class GPWorksheet(Worksheet):
             0-indexed row of cell to write to
         col : int
             0-indexed column of cell to write to
-        data : str or list
+        data : str or list or dict
             Simple string to be written with `format_dict` formatting. Or a
             list of alternating string and dictionary objects. Dictionaries
             specify additional formatting to be applied to the following string
             in the list.
+            Dictionaries will be written with (first) key as display text and
+            (first) value as URL.
         format_dict : dict
             Dictionary containing base format for the string.
             
@@ -736,6 +736,16 @@ class GPWorksheet(Worksheet):
                                    wb.add_format(format_dict),
                                    *args
                                    )
+        if isinstance(data, dict):
+            format_dict.update({"underline": True, "font_color": "blue"})
+            self.write_url(
+                row,
+                col,
+                list(data.values())[0],
+                wb.add_format(format_dict),
+                list(data.keys())[0],
+                *args
+            )
         else:
             # Write handles all other write types dynamically
             self.write(
