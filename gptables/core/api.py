@@ -79,7 +79,7 @@ def produce_workbook(
         contents_gptable = wb.make_table_of_contents(sheets, **contentsheet_options)
         contentsheet = {contentsheet_label: contents_gptable}
 
-    wb.update_annotations(sheets)
+    wb._update_annotations(sheets)
 
     notesheet = {}
     if notes_table is None:
@@ -91,7 +91,7 @@ def produce_workbook(
     sheets = {**contentsheet, **notesheet, **sheets}     #TODO: add custom order from theme?
     for label, gptable in sheets.items():
         ws = wb.add_worksheet(label)
-        ws.write_gptable(gptable, auto_width, wb.annotations)
+        ws.write_gptable(gptable, auto_width, wb._annotations)
     
     return wb
 

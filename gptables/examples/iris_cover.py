@@ -61,7 +61,6 @@ iris_table = gpt.GPTable(table=iris_summary, table_name="iris_statistics", **kwa
 iris_table_copy = deepcopy(iris_table)
 iris_table_copy.set_title("A copy of the first sheet$$note3$$")
 iris_table_copy.set_table_name("iris_statistics_copy")
-iris_table_copy.set_annotations() #TODO: update annotations automatically
 
 sheets = {
     "Iris Flower Dimensions": iris_table,

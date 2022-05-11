@@ -68,7 +68,7 @@ class GPTable:
         self.scope = None
         self.source = None
         self.legend = []
-        self.annotations = []
+        self._annotations = []
         
         self.additional_formatting = []
         
@@ -89,7 +89,6 @@ class GPTable:
         self.set_scope(scope)
         self.set_source(source)
         self.set_legend(legend)
-        self.set_annotations()
         self.set_additional_formatting(additional_formatting)
         self._set_data_range()
         
@@ -322,9 +321,9 @@ class GPTable:
         else:
             self.legend += new_legend
 
-    def set_annotations(self):
+    def _set_annotations(self):
         """
-        Set a list of note references to the `annotations` attribute.
+        Set a list of note references to the `_annotations` attribute.
         """
         elements = [
                 "title",
@@ -344,8 +343,8 @@ class GPTable:
         table_refs = self._get_references_from_table()
         ordered_refs.extend(table_refs)
 
-        # remove duplicates from ordered_refs and assign to self.annotations
-        self.annotations = list(dict.fromkeys(ordered_refs))
+        # remove duplicates from ordered_refs and assign to self._annotations
+        self._annotations = list(dict.fromkeys(ordered_refs))
 
 
     def _get_references_from_attr(self, data):

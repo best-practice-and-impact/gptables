@@ -66,7 +66,7 @@ class GPWorksheet(Worksheet):
         if not isinstance(gptable, GPTable):
             raise TypeError("`gptable` must be a gptables.GPTable object")
         
-        if len(gptable.annotations)>0 and len(reference_order)==0:
+        if len(gptable._annotations)>0 and len(reference_order)==0:
             msg = "reference_order must be provided if gptable contains annotations"
             raise ValueError(msg)
         
@@ -885,7 +885,7 @@ class GPWorkbook(Workbook):
     def __init__(self, filename=None, options={}):
         super(GPWorkbook, self).__init__(filename=filename, options=options)
         self.theme = None
-        self.annotations = None
+        self._annotations = None
         # Set default theme
         self.set_theme(gptheme)
 
@@ -928,13 +928,14 @@ class GPWorkbook(Workbook):
             raise TypeError(f"`theme` must be a gptables.Theme object, not: {type(theme)}")
         self.theme = theme
 
-    def update_annotations(self, sheets):
+    def _update_annotations(self, sheets):
         ordered_refs = []
         for gptable in sheets.values():
-            ordered_refs.extend(gptable.annotations)
+            gptable._set_annotations()
+            ordered_refs.extend(gptable._annotations)
 
-        # remove duplicates from ordered_refs and assign to self.annotations
-        self.annotations = list(dict.fromkeys(ordered_refs))
+        # remove duplicates from ordered_refs and assign to self._annotations
+        self._annotations = list(dict.fromkeys(ordered_refs))
 
     def make_table_of_contents(
         self,
@@ -1072,7 +1073,7 @@ class GPWorkbook(Workbook):
             instructions = "This worksheet contains one table."
 
         # order notes table by worksheet reference order
-        ordered_refs = self.annotations
+        ordered_refs = self._annotations
 
         order_df = pd.DataFrame({"order": ordered_refs})
         
