@@ -736,7 +736,7 @@ class GPWorksheet(Worksheet):
                                    wb.add_format(format_dict),
                                    *args
                                    )
-        if isinstance(data, dict):
+        elif isinstance(data, dict):
             format_dict.update({"underline": True, "font_color": "blue"})
             self.write_url(
                 row,
