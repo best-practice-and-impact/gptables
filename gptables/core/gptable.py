@@ -18,22 +18,22 @@ class GPTable:
         description of the table
     subtitles : list
         subtitles as a list of strings
-    instructions : str
-        instructions on the data location
-    scope : str
-        description of scope/basis of data in table
-    source : str
-        description of the source of the data in `table`
-    units : dict
+    instructions : str, optional
+        instructions on how to read the sheet. If not provided, default set as
+        "This worksheet contains one table. Some cells may refer to notes,
+        which can be found on the notes worksheet."
+    scope : str, optional
+        description of scope/basis of data in table if not included in title
+    source : str, optional
+        description of the source of the data in `table` if not included in cover
+    units : dict, optional
         units used in each (dict) column of `table`
-    legend : list
+    legend : list, optional
         descriptions of special notation used in `table`
-    annotations : list
-        notes that are referenced in header or table elements (excluding data)
-    index_columns : dict
+    index_columns : dict, optional
         mapping an index level to a 0-indexed column as {level: column}.
         Default is a level two index in the first column ({2: 0}).
-    additional_formatting : dict
+    additional_formatting : dict, optional
         table-specific formatting for columns, rows or individual cells
     """
 
@@ -367,9 +367,11 @@ class GPTable:
             ordered_refs.extend(self._get_references(data))
         if isinstance(data, list):
             for n in range(len(data)):
+                # self._get_references_from_attr(data[n], ordered_refs) #TODO: may work for other data types but needs tuning
                 ordered_refs.extend(self._get_references(data[n])) #TODO: no longer works for lists of anything other than strings, eg for integer values
         if isinstance(data, dict):
             for key in data.keys():
+                # self._get_references_from_attr(data[key], ordered_refs) #TODO: as above
                 ordered_refs.extend(self._get_references(data[key])) #TODO: as above
 
         return ordered_refs
