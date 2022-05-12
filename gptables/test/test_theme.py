@@ -62,8 +62,6 @@ index_3_format : {}
 data_format : {}
 source_format : {}
 legend_format : {}
-annotations_format : {}
-notes_format : {}
 description_order : []
 """
                 )
@@ -135,12 +133,6 @@ class TestConfigInitTheme:
                 {"font_size": 12},
             
             "legend":
-                {"font_size": 12},
-            
-            "annotations":
-                {"font_size": 12},
-            
-            "notes":
                 {"font_size": 12},
             
             "description_order":
@@ -225,11 +217,11 @@ class TestFormatValidationTheme:
         but not an unrelated attr. Previous bug updated all formats whenever
         one was updated.
         """
-        config = {"notes": {"font_size": 5}}
+        config = {"source": {"font_size": 5}}
         empty_theme.apply_config(config)
         
         exp = {"font_size": 5}
-        got = empty_theme.notes_format
+        got = empty_theme.source_format
         
         assert exp == got
         

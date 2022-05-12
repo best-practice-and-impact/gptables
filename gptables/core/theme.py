@@ -61,8 +61,6 @@ class Theme:
     legend_format : dict
 
     description_order : list
-    
-    annotations_format : list
     """
 
     def __init__(
@@ -93,8 +91,6 @@ class Theme:
             "data_format",
             "source_format",
             "legend_format",
-            "annotations_format",
-            "notes_format"
             ]
         
         for attr in self._format_attributes:
@@ -327,24 +323,6 @@ class Theme:
         existing items are replaced.
         """
         self.legend_format.update(format_dict)
-
-
-    @validate_single_format
-    def update_annotations_format(self, format_dict):
-        """
-        Update the `annotations_format` attribute. Where keys already exist,
-        existing items are replaced.
-        """
-        self.annotations_format.update(format_dict)
-
-
-    @validate_single_format
-    def update_notes_format(self, format_dict):
-        """
-        Update the `notes_format` attribute. Where keys already exist, existing
-        items are replaced.
-        """
-        self.notes_format.update(format_dict)
 
 
     def update_description_order(self, order_list):

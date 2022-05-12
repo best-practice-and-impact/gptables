@@ -49,12 +49,6 @@ source:
 legend:
     font_size: 12
 
-annotations:
-    font_size: 12
-
-notes:
-    font_size: 12
-
 description_order:
     - instructions
     - legend

@@ -10,10 +10,10 @@ def produce_workbook(
         sheets,
         theme = None,
         cover = None,
-        contentsheet_label = "Contents",
+        contentsheet_label = "Contents", # TODO: Move label into options?
         contentsheet_options = {},
         notes_table = None,
-        notesheet_label = "Notes",
+        notesheet_label = "Notes", # TODO: as above
         notesheet_options = {},
         auto_width = True,
         ):
@@ -39,10 +39,10 @@ def produce_workbook(
         dictionary of contentsheet customisation parameters
         valid keys are `additional_elements`, `column_names`,
         `table_name`, `title`, `subtitles`, `instructions`
-    notes_table : None
+    notes_table : pd.DataFrame, None, optional
         table with notes reference, text and (optional) link columns
         if None, notes sheet will not be generated
-    notesheet_label : str
+    notesheet_label : str, None, optional
         notes sheet label, defaults to "Notes"
     notesheet_options : dict, optional
         dictionary of notesheet customisation parameters
