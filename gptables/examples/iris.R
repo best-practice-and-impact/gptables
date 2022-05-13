@@ -1,13 +1,12 @@
-library(dplyr)
+source("gptables/examples/R_install_dependency_file.R")
+library("magrittr")
 
-### Set up {reticulate}
 python_env_path <- "C:\\Path\\to\\env"
 
 reticulate::use_virtualenv(python_env_path)
 gpt <- reticulate::import("gptables")
 pd <- reticulate::import("pandas")
 
-### Read data and arrange
 iris_df <- reticulate::r_to_py(
   iris[c(5,1,2,3,4)]%>%
     group_by(Species) %>%
@@ -16,7 +15,6 @@ iris_df <- reticulate::r_to_py(
     )
 )
 
-### Define table elements
 table_name = "iris_statistics"
 title = list("Mean", reticulate::py_dict("italic", TRUE), " Iris", "$$note2$$ sepal dimensions")
 subtitles = c("1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
@@ -30,7 +28,6 @@ annotations = list(note1 = "I've got 99 problems and taxonomy is one.",
                    note2 = "Goo Goo Dolls, 1998.")
 notes = list("This note hath no reference.")
 
-### Pass to GPTable
 table = gpt$GPTable(table_name = table_name,
                     table = iris_df,
                     title = title,
@@ -42,5 +39,5 @@ table = gpt$GPTable(table_name = table_name,
                     annotations = annotations,
                     notes = notes)
 
-### Use write_workbook to win!
+
 wb <- gpt$write_workbook(filename = "R_iris_gptable.xlsx", sheets = list("iris" = table))
