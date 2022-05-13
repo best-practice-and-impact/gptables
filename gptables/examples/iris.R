@@ -1,5 +1,8 @@
 # Reticulate example works on R version 4.0.1 or less
 source("gptables/examples/R_install_dependency_file.R")
+
+packageRefresh(packagesReq)
+
 library("magrittr")
 
 python_env_path <- "C:\\Path\\to\\env"
