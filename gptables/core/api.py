@@ -10,10 +10,10 @@ def produce_workbook(
         sheets,
         theme = None,
         cover = None,
-        contentsheet_label = "Contents", # TODO: Move label into options?
+        contentsheet_label = "Contents",
         contentsheet_options = {},
         notes_table = None,
-        notesheet_label = "Notes", # TODO: as above
+        notesheet_label = "Notes",
         notesheet_options = {},
         auto_width = True,
         ):
@@ -88,7 +88,7 @@ def produce_workbook(
         note_gptable = wb.make_notesheet(notes_table, **notesheet_options)
         notesheet = {notesheet_label: note_gptable}
 
-    sheets = {**contentsheet, **notesheet, **sheets}     #TODO: add custom order from theme?
+    sheets = {**contentsheet, **notesheet, **sheets}
     for label, gptable in sheets.items():
         ws = wb.add_worksheet(label)
         ws.write_gptable(gptable, auto_width, wb._annotations)

@@ -737,15 +737,20 @@ class GPWorksheet(Worksheet):
                                    *args
                                    )
         elif isinstance(data, dict):
+            url = list(data.values())[0]
+            display_text = list(data.keys())[0]
+
             format_dict.update({"underline": True, "font_color": "blue"})
+
             self.write_url(
                 row,
                 col,
-                list(data.values())[0],
+                url,
                 wb.add_format(format_dict),
-                list(data.keys())[0],
+                display_text,
                 *args
             )
+
         else:
             # Write handles all other write types dynamically
             self.write(
