@@ -8,5 +8,4 @@ packageRefresh <- function(pkgList) {
   if(length(newPackages)) {
     install.packages(newPackages)
   }
-  lapply(pkgList, library, character.only = T)
-}
+  }
