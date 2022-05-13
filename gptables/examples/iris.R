@@ -5,9 +5,6 @@ packageRefresh(packagesReq)
 
 library("magrittr")
 
-python_env_path <- "C:\\Path\\to\\env"
-
-reticulate::use_virtualenv(python_env_path)
 gpt <- reticulate::import("gptables")
 pd <- reticulate::import("pandas")
 
