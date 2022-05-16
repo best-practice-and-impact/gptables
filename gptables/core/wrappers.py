@@ -9,7 +9,7 @@ from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
 
 from .theme import Theme
-from .gptable import GPTable
+from .gptable import GPTable, FormatList
 from gptables.utils.unpickle_themes import gptheme
 
 
@@ -76,7 +76,7 @@ class GPWorksheet(Worksheet):
         pos = [0, 0]
 
         self._reference_annotations(gptable, reference_order)
-        self._parse_urls(gptable)
+        self._parse_urls(gptable) # TODO: document and raise error - attribute can't have custom formatting and url in same element
 
         gptable = deepcopy(gptable)
 
@@ -149,24 +149,24 @@ class GPWorksheet(Worksheet):
         
 
     def _reference_table_annotations(self, gptable, reference_order):
-         """
-         Reference annotations in the table column headings and index columns.
-         """
-         table = getattr(gptable, "table")
-         
-         table.columns = self._replace_reference_in_attr(
-                 [x for x in table.columns],
-                 reference_order
-                 )
-         
-         index_columns = gptable.index_columns.values()
-         
-         for col in index_columns:
-             table.iloc[:, col] = table.iloc[:, col].apply(
-                     lambda x: self._replace_reference_in_attr(x, reference_order)
-                     )
+        """
+        Reference annotations in the table column headings and index columns.
+        """
+        table = getattr(gptable, "table")
+        
+        table.columns = self._replace_reference_in_attr(
+                [x for x in table.columns],
+                reference_order
+                )
+        
+        index_columns = gptable.index_columns.values()
 
-         setattr(gptable, "table", table)
+        for col in index_columns:
+            table.iloc[:, col] = table.iloc[:, col].apply(
+                    lambda x: self._replace_reference_in_attr(x, reference_order)
+                    )
+
+        setattr(gptable, "table", table)
 
 
     def _replace_reference_in_attr(self, data, reference_order):
@@ -202,6 +202,14 @@ class GPWorksheet(Worksheet):
                         data[key],
                         reference_order
                         )
+        if isinstance(data, FormatList):
+            data_list = data.list
+            for n in range(len(data_list)):
+                data_list[n] = self._replace_reference_in_attr(
+                        data_list[n],
+                        reference_order
+                        )
+            data = FormatList(data_list)
 
         return data
     
@@ -716,8 +724,9 @@ class GPWorksheet(Worksheet):
         None
         """
         wb = self._workbook  # Reference to Workbook that contains sheet
-        if isinstance(data, list):
-            # At this point, any list should be a rich-text element
+
+        if isinstance(data, FormatList):
+            data = data.list
             data_with_formats = []
             for item in data:
                 # Convert dicts to Format (with merge onto base format)
@@ -729,13 +738,14 @@ class GPWorksheet(Worksheet):
                     data_with_formats.append(item)
             if len(data) > 3:
                 data_with_formats.insert(-1, wb.add_format(format_dict))
-            
+        
             self.write_rich_string(row,
                                    col,
                                    *data_with_formats,
                                    wb.add_format(format_dict),
                                    *args
                                    )
+
         elif isinstance(data, dict):
             url = list(data.values())[0]
             display_text = list(data.keys())[0]
@@ -997,7 +1007,7 @@ class GPWorkbook(Workbook):
 
         contents = {}
         for label, gptable in sheets.items(): 
-            contents_entry = []                   
+            contents_entry = []
             contents_entry.append(self._strip_annotation_references(gptable.title))
 
             if additional_elements is not None:
@@ -1007,13 +1017,17 @@ class GPWorkbook(Workbook):
                         [contents_entry.append(self._strip_annotation_references(element)) for element in content]
                     else:
                         contents_entry.append(self._strip_annotation_references(content))
-            contents[label] = [contents_entry]
+            contents[label] = contents_entry # works for FormatList
+            # contents[label] = [contents_entry] # works for not FormatList - check
 
             contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index()
+        # contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index()
 
-            contents_table.iloc[:, 1] = contents_table.iloc[:, 1].str.join("\n")
+            # contents_table.iloc[:, 1] = contents_table.iloc[:, 1].str.join("\n") # works for list of strings
+        # contents_table.iloc[:, 1] = contents_table.iloc[:, 1].str.join("\n")
 
             contents_table.columns = column_names
+        # contents_table.columns = column_names
 
         return GPTable(
             table=contents_table, 
@@ -1031,7 +1045,13 @@ class GPWorkbook(Workbook):
         pattern = r"\$\$.*?\$\$"
         if isinstance(text, str):
             no_annotations = re.sub(pattern, "", text)
-        elif isinstance(text, list):
+        elif isinstance(text, FormatList):
+            no_annotations = FormatList([
+                re.sub(pattern, "", part)
+                if isinstance(part, str) else part
+                for part in text.list
+                ])
+        elif isinstance(text, list): # TODO: check this still gets used
             no_annotations = [
                 re.sub(pattern, "", part)
                 if isinstance(part, str) else part

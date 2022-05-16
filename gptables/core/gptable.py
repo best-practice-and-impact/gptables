@@ -167,7 +167,7 @@ class GPTable:
         return column_index in range(self.table.shape[1])
         
 
-    def _set_column_headings(self):
+    def _set_column_headings(self): # TODO: check custom formatting in headers
         """
         Sets the `column_headings` attribute to the set of column indexes that
         are not assigned to `index_columns`.
@@ -176,6 +176,27 @@ class GPTable:
         self._column_headings = {x for x in range(self.table.shape[1])} - index_cols
     
     
+    def _validate_all_column_names_have_text(self):
+        """
+        Validate that all column names in header row have text.
+        """
+        for column_name in self.table.columns:
+            if len(column_name) > 0:
+                continue
+            else:
+                msg = ("Empty column name found in table data - column names must all have text")
+                raise ValueError(msg)
+
+
+    def _validate_no_duplicate_column_names(self):
+        """
+        Validate that there are no duplicate column names in table data.
+        """
+        if len(self.table.columns) != len(set(self.table.columns)):
+            msg = ("Duplicate column names found in table data - column names must be unique")
+            raise ValueError(msg)
+
+
     def set_table_name(self, new_table_name):
         """
         Set the `table_name` attribute.
@@ -197,10 +218,14 @@ class GPTable:
         Set the `title` attribute.
         """
         self._validate_text(new_title, "title")
-        self.title = new_title
-    
 
-    def add_subtitle(self, new_subtitle):
+        if type(new_title) == list:
+            new_title = FormatList(new_title)
+
+        self.title = new_title
+
+
+    def add_subtitle(self, new_subtitle): # TODO: custom formatting for subtitles
         """
         Add a single subtitle to the existing list of `subtitles`.
         """
@@ -208,7 +233,7 @@ class GPTable:
         self.subtitles.append(new_subtitle)
     
 
-    def set_subtitles(self, new_subtitles, overwrite=True):
+    def set_subtitles(self, new_subtitles, overwrite=True): # TODO: custom formatting for subtitles
         """
         Set a list of subtitles to the `subtitles` attribute. Overwrites
         existing ist of subtitles by default. If `overwrite` is False, new list
@@ -237,6 +262,9 @@ class GPTable:
         """
         self._validate_text(new_instructions, "instructions")
 
+        # if type(new_instructions) == list:
+        #     FormatList(new_instructions)
+
         if len(new_instructions) == 0:
             self.instructions = "This worksheet contains one table. Some cells may refer to notes, which can be found on the notes worksheet."
         else:
@@ -251,11 +279,14 @@ class GPTable:
             new_scope = ""
             return
 
+        # if type(new_scope) == list:
+        #     FormatList(new_scope)
+
         self._validate_text(new_scope, "scope")
         self.scope = new_scope        
 
 
-    def set_units(self, new_units):
+    def set_units(self, new_units): # TODO: custom formatting in units?
         """
         Adds units to column headers.
         Units should be in the format {column: units_text}. Column can be column name or 0-indexed column
@@ -287,13 +318,16 @@ class GPTable:
         if new_source == None:
             new_source = ""
             return
-        
+
+        # if type(new_source) == list:
+        #     FormatList(new_source)
+
         self._validate_text(new_source, "source")
             
         self.source = new_source
     
 
-    def add_legend(self, new_legend):
+    def add_legend(self, new_legend): # TODO: custom formatting in legend?
         """
         Add a single legend entry to the existing `legend` list.
         """
@@ -301,7 +335,7 @@ class GPTable:
         self.subtitles.append(new_legend)
     
 
-    def set_legend(self, new_legend, overwrite=True):
+    def set_legend(self, new_legend, overwrite=True): # TODO: custom formatting in legend?
         """
         Set a list of legend entries to the `legend` attribute. Overwrites
         existing legend entries by default. If overwrite is False, new entries 
@@ -367,12 +401,16 @@ class GPTable:
             ordered_refs.extend(self._get_references(data))
         if isinstance(data, list):
             for n in range(len(data)):
-                # self._get_references_from_attr(data[n], ordered_refs) #TODO: may work for other data types but needs tuning
-                ordered_refs.extend(self._get_references(data[n])) #TODO: no longer works for lists of anything other than strings, eg for integer values
+                if isinstance(data[n], str):
+                    ordered_refs.extend(self._get_references(data[n]))
         if isinstance(data, dict):
             for key in data.keys():
-                # self._get_references_from_attr(data[key], ordered_refs) #TODO: as above
-                ordered_refs.extend(self._get_references(data[key])) #TODO: as above
+                ordered_refs.extend(self._get_references(data[key]))
+        if isinstance(data, FormatList):
+            data_list = data.list
+            for n in range(len(data_list)):
+                if isinstance(data_list[n], str):
+                    ordered_refs.extend(self._get_references(data_list[n]))
 
         return ordered_refs
         
@@ -452,27 +490,6 @@ class GPTable:
             if label not in self._valid_format_labels:
                 msg = (f"`{label}` is not a valid XlsxWriter Format property")
                 raise ValueError(msg)
-                
-
-    def _validate_all_column_names_have_text(self):
-        """
-        Validate that all column names in header row have text.
-        """
-        for column_name in self.table.columns:
-            if len(column_name) > 0:
-                continue
-            else:
-                msg = ("Empty column name found in table data - column names must all have text")
-                raise ValueError(msg)
-
-
-    def _validate_no_duplicate_column_names(self):
-        """
-        Validate that there are no duplicate column names in table data.
-        """
-        if len(self.table.columns) != len(set(self.table.columns)):
-            msg = ("Duplicate column names found in table data - column names must be unique")
-            raise ValueError(msg)
 
 
     def _set_data_range(self):
@@ -523,3 +540,11 @@ class GPTable:
                    f" strings and dictionaries (rich-text). {type(obj)} are"
                    " not valid text elements.")
             raise TypeError(msg)
+
+class FormatList:
+    """
+    Class for storing list of alternating string and dictionary objects.
+    Dictionaries specify additional formatting to be applied to the following string.
+    """
+    def __init__(self, list):
+        self.list = list
