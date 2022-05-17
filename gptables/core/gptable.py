@@ -326,11 +326,11 @@ class GPTable:
             new_source = ""
             return
 
+        self._validate_text(new_source, "source")
+
         if isinstance(new_source, list):
             new_source = FormatList(new_source)
 
-        self._validate_text(new_source, "source")
-            
         self.source = new_source
     
 
