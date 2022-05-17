@@ -9,7 +9,7 @@ import xlsxwriter
 import gptables
 from gptables.core.wrappers import GPWorkbook
 from gptables.core.wrappers import GPWorksheet
-from gptables import Theme
+from gptables import Theme, FormatList
 from gptables import gptheme
 import pytest
 
@@ -17,7 +17,7 @@ Tb = namedtuple("Testbook", "wb ws")
 
 valid_text_elements = [  # Not None
     "This is a string",
-    ["More than ", {"italic": True}, "just ", "a string"]
+    FormatList(["More than ", {"italic": True}, "just ", "a string"])
 ]
 
 test_text_list = [
