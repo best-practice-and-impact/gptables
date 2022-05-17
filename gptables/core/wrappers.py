@@ -283,7 +283,7 @@ class GPWorksheet(Worksheet):
             for r in range(rows):
                 cell = self._replace_url_in_attr(table.iloc[r, c])
                 if isinstance(cell, dict):
-                    table.iloc[r, c] = [cell] # store dict in pd.DataFrame
+                    table.iloc[r, c] = [cell] # TODO: works for 3.6, not for 3.8
                 else:
                     table.iloc[r, c] = cell
 
@@ -725,23 +725,66 @@ class GPWorksheet(Worksheet):
         """
         wb = self._workbook  # Reference to Workbook that contains sheet
 
-        if isinstance(data, FormatList):
+        if isinstance(data, list):
+            if any([isinstance(element, FormatList) for element in data]):
+                data_with_newlines = []
+
+                first_element = data.copy()[0]
+                if isinstance(first_element, FormatList):
+                    first_element = first_element.list
+                else:
+                    first_element = [first_element]
+                data_with_newlines.extend(first_element)
+
+                for element in data[1:]:
+                    if isinstance(element, FormatList):
+                        element_with_newline = ["\n" + element.list[0], *element.list]
+                    else:
+                        element_with_newline = ["\n" + str(element)]
+                    data_with_newlines.extend(element_with_newline)
+
+                self._smart_write(
+                    row,
+                    col,
+                    FormatList(data_with_newlines),
+                    format_dict,
+                    *args
+                    )
+
+            else:
+                data_string = "\n".join(data)
+
+                self._smart_write(
+                    row,
+                    col,
+                    data_string,
+                    format_dict,
+                    *args
+                )
+
+        elif isinstance(data, FormatList):
             data = data.list
-            data_with_formats = []
+            data_with_custom_formats = []
             for item in data:
                 # Convert dicts to Format (with merge onto base format)
                 if isinstance(item, dict):
                     rich_format = format_dict.copy()
                     rich_format.update(item) 
-                    data_with_formats.append(wb.add_format(rich_format))
+                    data_with_custom_formats.append(wb.add_format(rich_format))
                 else:
-                    data_with_formats.append(item)
-            if len(data) > 3:
-                data_with_formats.insert(-1, wb.add_format(format_dict))
-        
+                    data_with_custom_formats.append(item)
+
+            data_with_all_formats = []
+            for n in range(len(data_with_custom_formats)-1):
+                data_with_all_formats.append(data_with_custom_formats[n])
+                if isinstance(data_with_custom_formats[n], str):
+                    if isinstance(data_with_custom_formats[n+1], str):
+                        data_with_all_formats.append(wb.add_format(format_dict))
+            data_with_all_formats.append(data_with_custom_formats[-1])
+
             self.write_rich_string(row,
                                    col,
-                                   *data_with_formats,
+                                   *data_with_all_formats,
                                    wb.add_format(format_dict),
                                    *args
                                    )
@@ -1017,17 +1060,11 @@ class GPWorkbook(Workbook):
                         [contents_entry.append(self._strip_annotation_references(element)) for element in content]
                     else:
                         contents_entry.append(self._strip_annotation_references(content))
-            contents[label] = contents_entry # works for FormatList
-            # contents[label] = [contents_entry] # works for not FormatList - check
+            contents[label] = [contents_entry] # TODO: check if this works for >3.6
 
-            contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index()
-        # contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index()
+        contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index()
 
-            # contents_table.iloc[:, 1] = contents_table.iloc[:, 1].str.join("\n") # works for list of strings
-        # contents_table.iloc[:, 1] = contents_table.iloc[:, 1].str.join("\n")
-
-            contents_table.columns = column_names
-        # contents_table.columns = column_names
+        contents_table.columns = column_names
 
         return GPTable(
             table=contents_table, 

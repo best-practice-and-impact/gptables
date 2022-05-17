@@ -79,5 +79,6 @@ if __name__ == "__main__":
         filename=output_path, 
         sheets=sheets,
         notes_table=notes_table,
+        contentsheet_options={"additional_elements": ["subtitles", "scope"]}
         )
     print("Output written at: ", output_path)
