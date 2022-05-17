@@ -1092,7 +1092,7 @@ class GPWorkbook(Workbook):
                 if isinstance(part, str) else part
                 for part in text.list
                 ])
-        elif isinstance(text, list): # TODO: check this still gets used
+        elif isinstance(text, list): # TODO: this shouldn't get used - check and delete
             no_annotations = [
                 re.sub(pattern, "", part)
                 if isinstance(part, str) else part

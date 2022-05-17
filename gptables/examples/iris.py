@@ -37,7 +37,7 @@ iris_summary.rename(
 
 ## Define table elements
 table_name = "iris_statistics"
-title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"] # TODO: formatting currently won't work
+title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
 # title = "Mean Iris$$note2$$ sepal dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",

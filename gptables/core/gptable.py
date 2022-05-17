@@ -225,7 +225,7 @@ class GPTable:
         self.title = new_title
 
 
-    def add_subtitle(self, new_subtitle): # TODO: custom formatting for subtitles
+    def add_subtitle(self, new_subtitle):
         """
         Add a single subtitle to the existing list of `subtitles`.
         """
@@ -237,7 +237,7 @@ class GPTable:
         self.subtitles.append(new_subtitle)
 
 
-    def set_subtitles(self, new_subtitles, overwrite=True): # TODO: custom formatting for subtitles
+    def set_subtitles(self, new_subtitles, overwrite=True):
         """
         Set a list of subtitles to the `subtitles` attribute. Overwrites
         existing ist of subtitles by default. If `overwrite` is False, new list
