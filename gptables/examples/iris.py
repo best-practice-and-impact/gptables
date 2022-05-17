@@ -41,10 +41,10 @@ title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"] # TODO
 # title = "Mean Iris$$note2$$ sepal dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
-    "Just another subtitle",
+    ["Just another", {"bold": True}, " subtitle"]
     ]
 units = {1:"cm", 2:"cm"}
-scope = "Iris"
+scope = [{"bold": True}, "Iris", " flowers"]
 source = "[Source: Office for Iris Statistics](https://www.ons.gov.uk)"
 index = {2: 0}  # Column 0 is a level 2 index
 

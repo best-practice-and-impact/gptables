@@ -738,7 +738,11 @@ class GPWorksheet(Worksheet):
 
                 for element in data[1:]:
                     if isinstance(element, FormatList):
-                        element_with_newline = ["\n" + element.list[0], *element.list]
+                        element = element.list
+                        element_stings = [item for item in element if isinstance(item, str)]
+                        first_string = element_stings[0]
+                        new_string = "\n" + first_string
+                        element_with_newline = [new_string if item == first_string else item for item in element]
                     else:
                         element_with_newline = ["\n" + str(element)]
                     data_with_newlines.extend(element_with_newline)

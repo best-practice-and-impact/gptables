@@ -219,7 +219,7 @@ class GPTable:
         """
         self._validate_text(new_title, "title")
 
-        if type(new_title) == list:
+        if isinstance(new_title, list):
             new_title = FormatList(new_title)
 
         self.title = new_title
@@ -230,8 +230,12 @@ class GPTable:
         Add a single subtitle to the existing list of `subtitles`.
         """
         self._validate_text(new_subtitle, "subtitles")
+
+        if isinstance(new_subtitle, list):
+            new_subtitle = FormatList(new_subtitle)
+
         self.subtitles.append(new_subtitle)
-    
+
 
     def set_subtitles(self, new_subtitles, overwrite=True): # TODO: custom formatting for subtitles
         """
@@ -250,7 +254,9 @@ class GPTable:
 
         for text in new_subtitles:
             self._validate_text(text, "subtitles")
-            
+
+        new_subtitles = [FormatList(text) if isinstance(text, list) else text for text in new_subtitles]
+
         if overwrite:
             self.subtitles = new_subtitles
         else:
@@ -262,8 +268,8 @@ class GPTable:
         """
         self._validate_text(new_instructions, "instructions")
 
-        # if type(new_instructions) == list:
-        #     FormatList(new_instructions)
+        if isinstance(new_instructions, list):
+            new_instructions = FormatList(new_instructions)
 
         if len(new_instructions) == 0:
             self.instructions = "This worksheet contains one table. Some cells may refer to notes, which can be found on the notes worksheet."
@@ -279,11 +285,12 @@ class GPTable:
             new_scope = ""
             return
 
-        # if type(new_scope) == list:
-        #     FormatList(new_scope)
-
         self._validate_text(new_scope, "scope")
-        self.scope = new_scope        
+
+        if isinstance(new_scope, list):
+            new_scope = FormatList(new_scope)
+
+        self.scope = new_scope
 
 
     def set_units(self, new_units): # TODO: custom formatting in units?
@@ -319,8 +326,8 @@ class GPTable:
             new_source = ""
             return
 
-        # if type(new_source) == list:
-        #     FormatList(new_source)
+        if isinstance(new_source, list):
+            new_source = FormatList(new_source)
 
         self._validate_text(new_source, "source")
             
