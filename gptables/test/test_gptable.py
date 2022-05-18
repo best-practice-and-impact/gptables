@@ -191,7 +191,7 @@ class TestAttrValidationGPTable:
         with pytest.raises(TypeError):
             create_gptable_with_kwargs({attr: text})
 
-    @pytest.mark.skip(reason="currently treat subtitles and legend differently regarding custom formatting")
+
     @pytest.mark.parametrize("attr", gptable_list_text_attrs)
     @pytest.mark.parametrize("text", valid_text_elements)
     def test_valid_text_in_list_attrs(self, attr, text, create_gptable_with_kwargs):
@@ -200,12 +200,16 @@ class TestAttrValidationGPTable:
         parameters works as expected.
         """
         if text is not None:
-            text = [text, text]
-        gptable = create_gptable_with_kwargs({attr: text})
-        if text is not None:
-            assert getattr(gptable, attr) == text
+            text_list = [text, text]
+        else:
+            text_list = []
+
+        gptable = create_gptable_with_kwargs({attr: text_list})
+
+        if isinstance(text, str):
+            assert getattr(gptable, attr) == text_list
         elif isinstance(text, list):
-            assert getattr(gptable, attr).list == text
+            assert all([element.list == text for element in getattr(gptable, attr)])
         else:
             assert getattr(gptable, attr) == []
         
