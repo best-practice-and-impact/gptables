@@ -334,15 +334,19 @@ class GPTable:
         self.source = new_source
     
 
-    def add_legend(self, new_legend): # TODO: custom formatting in legend?
+    def add_legend(self, new_legend):
         """
         Add a single legend entry to the existing `legend` list.
         """
         self._validate_text(new_legend, "legend")
-        self.subtitles.append(new_legend)
+
+        if isinstance(new_legend, list):
+            new_legend = FormatList(new_legend)
+
+        self.legend.append(new_legend)
     
 
-    def set_legend(self, new_legend, overwrite=True): # TODO: custom formatting in legend?
+    def set_legend(self, new_legend, overwrite=True):
         """
         Set a list of legend entries to the `legend` attribute. Overwrites
         existing legend entries by default. If overwrite is False, new entries 
@@ -356,7 +360,9 @@ class GPTable:
             raise TypeError(msg)
         for text in new_legend:
             self._validate_text(text, "legend")
-        
+
+        new_legend = [FormatList(text) if isinstance(text, list) else text for text in new_legend]
+
         if overwrite:
             self.legend = new_legend
         else:
