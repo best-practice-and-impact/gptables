@@ -406,37 +406,6 @@ class GPWorksheet(Worksheet):
         return pos
 
 
-    def _write_hyperlinked_toc_entry(self, pos, sheet_name):
-        """
-        Write a table of contents entry. Includes a hyperlink to the sheet
-        in the first column. Then data for that sheet in the second column.
-
-        Parameters
-        ----------
-        pos : list
-            the position of the worksheet cell to write the elements to
-        sheet_name : str
-            name of sheet to hyperlink to
-
-        Returns
-        -------
-        pos: list
-            new position to write next element from
-        """
-        theme = self.theme
-
-        link = f"internal:'{sheet_name}'!A1"
-        hyperlink_format = deepcopy(theme.cover_text_format)
-        hyperlink_format.update({"underline": True, "font_color": "blue"})
-        self._smart_write(
-            *pos,
-            link,
-            hyperlink_format,
-            sheet_name
-            )        
-
-        return [pos[0] , pos[1] + 1]
-
     def _write_instructions(self, pos, element, format_dict):
         """
         Alias for writting description elements by name.
@@ -755,6 +724,15 @@ class GPWorksheet(Worksheet):
                     *args
                     )
 
+            elif len(data) == 1:
+                self._smart_write(
+                    row,
+                    col,
+                    data[0],
+                    format_dict,
+                    *args
+                )
+
             else:
                 data_string = "\n".join(data)
 
@@ -1064,9 +1042,12 @@ class GPWorkbook(Workbook):
                         [contents_entry.append(self._strip_annotation_references(element)) for element in content]
                     else:
                         contents_entry.append(self._strip_annotation_references(content))
-            contents[label] = [contents_entry] # TODO: check if this works for >3.6
 
-        contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index()
+            link = {label: f"internal:'{label}'!A1"}
+
+            contents[label] = [link, contents_entry] # TODO: check if this works for >3.6
+
+        contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index(drop=True)
 
         contents_table.columns = column_names
 
