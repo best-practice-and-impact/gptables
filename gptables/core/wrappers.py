@@ -695,106 +695,118 @@ class GPWorksheet(Worksheet):
         wb = self._workbook  # Reference to Workbook that contains sheet
 
         if isinstance(data, list):
-            if any([isinstance(element, FormatList) for element in data]):
-                data_with_newlines = []
+            if len(data) == 1:
+                data = data[0]
+                self._smart_write(row, col, data, format_dict, *args)
 
-                first_element = data.copy()[0]
-                if isinstance(first_element, FormatList):
-                    first_element = first_element.list
-                else:
-                    first_element = [first_element]
-                data_with_newlines.extend(first_element)
-
-                for element in data[1:]:
-                    if isinstance(element, FormatList):
-                        element = element.list
-                        element_stings = [item for item in element if isinstance(item, str)]
-                        first_string = element_stings[0]
-                        new_string = "\n" + first_string
-                        element_with_newline = [new_string if item == first_string else item for item in element]
-                    else:
-                        element_with_newline = ["\n" + str(element)]
-                    data_with_newlines.extend(element_with_newline)
-
-                self._smart_write(
-                    row,
-                    col,
-                    FormatList(data_with_newlines),
-                    format_dict,
-                    *args
-                    )
-
-            elif len(data) == 1:
-                self._smart_write(
-                    row,
-                    col,
-                    data[0],
-                    format_dict,
-                    *args
-                )
+            elif any([isinstance(element, FormatList) for element in data]):
+                self._write_with_newlines_and_custom_formats(wb, row, col, data, format_dict, *args)
 
             else:
-                data_string = "\n".join(data)
-
-                self._smart_write(
-                    row,
-                    col,
-                    data_string,
-                    format_dict,
-                    *args
-                )
+                self._write_with_newlines(wb, row, col, data, format_dict, *args)
 
         elif isinstance(data, FormatList):
-            data = data.list
-            data_with_custom_formats = []
-            for item in data:
-                # Convert dicts to Format (with merge onto base format)
-                if isinstance(item, dict):
-                    rich_format = format_dict.copy()
-                    rich_format.update(item) 
-                    data_with_custom_formats.append(wb.add_format(rich_format))
-                else:
-                    data_with_custom_formats.append(item)
-
-            data_with_all_formats = []
-            for n in range(len(data_with_custom_formats)-1):
-                data_with_all_formats.append(data_with_custom_formats[n])
-                if isinstance(data_with_custom_formats[n], str):
-                    if isinstance(data_with_custom_formats[n+1], str):
-                        data_with_all_formats.append(wb.add_format(format_dict))
-            data_with_all_formats.append(data_with_custom_formats[-1])
-
-            self.write_rich_string(row,
-                                   col,
-                                   *data_with_all_formats,
-                                   wb.add_format(format_dict),
-                                   *args
-                                   )
+            self._write_with_custom_formats(wb, row, col, data, format_dict, *args)
 
         elif isinstance(data, dict):
-            url = list(data.values())[0]
-            display_text = list(data.keys())[0]
-
-            format_dict.update({"underline": True, "font_color": "blue"})
-
-            self.write_url(
-                row,
-                col,
-                url,
-                wb.add_format(format_dict),
-                display_text,
-                *args
-            )
+            self._write_dict_as_url(wb, row, col, data, format_dict, *args)
 
         else:
             # Write handles all other write types dynamically
-            self.write(
-                    row,
-                    col,
-                    data,
-                    wb.add_format(format_dict),
-                    *args
-                    )
+            self.write(row, col, data, wb.add_format(format_dict), *args)
+
+
+    def _write_with_newlines_and_custom_formats(self, wb, row, col, data, format_dict, *args):
+        """
+        Take list of FormatList (and str), join with newline characters and smart write
+        """
+        data_with_newlines = []
+
+        first_element = data.copy()[0]
+        if isinstance(first_element, FormatList):
+            first_element = first_element.list
+        else:
+            first_element = [first_element]
+        data_with_newlines.extend(first_element)
+
+        for element in data[1:]:
+            if isinstance(element, FormatList):
+                element = element.list
+                element_stings = [item for item in element if isinstance(item, str)]
+                first_string = element_stings[0]
+                new_string = "\n" + first_string
+                element_with_newline = [new_string if item == first_string else item for item in element]
+            else:
+                element_with_newline = ["\n" + str(element)]
+            data_with_newlines.extend(element_with_newline)
+
+        self._write_with_custom_formats(
+            wb,
+            row,
+            col,
+            FormatList(data_with_newlines),
+            format_dict,
+            *args
+        )
+
+
+    def _write_with_newlines(self, wb, row, col, data, format_dict, *args):
+        """
+        Take list of str, join with newline character and write
+        """
+        data_string = "\n".join(data)
+
+        self.write(
+            row,
+            col,
+            data_string,
+            wb.add_format(format_dict),
+            *args
+        )
+
+
+    def _write_with_custom_formats(self, wb, row, col, data, format_dict, *args):
+        data_with_custom_formats = []
+        for item in data.list:
+            # Convert dicts to Format (with merge onto base format)
+            if isinstance(item, dict):
+                rich_format = format_dict.copy()
+                rich_format.update(item)
+                data_with_custom_formats.append(wb.add_format(rich_format))
+            else:
+                data_with_custom_formats.append(item)
+
+        data_with_all_formats = []
+        for n in range(len(data_with_custom_formats)-1):
+            data_with_all_formats.append(data_with_custom_formats[n])
+            if isinstance(data_with_custom_formats[n], str):
+                if isinstance(data_with_custom_formats[n+1], str):
+                    data_with_all_formats.append(wb.add_format(format_dict))
+        data_with_all_formats.append(data_with_custom_formats[-1])
+
+        self.write_rich_string(
+            row,
+            col,
+            *data_with_all_formats,
+            wb.add_format(format_dict),
+            *args
+        )
+
+
+    def _write_dict_as_url(self, workbook, row, col, data, format_dict, *args):
+        url = list(data.values())[0]
+        display_text = list(data.keys())[0]
+
+        format_dict.update({"underline": True, "font_color": "blue"})
+
+        self.write_url(
+            row,
+            col,
+            url,
+            workbook.add_format(format_dict),
+            display_text,
+            *args
+        )
 
 
     @staticmethod
