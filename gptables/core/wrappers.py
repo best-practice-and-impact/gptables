@@ -1042,14 +1042,14 @@ class GPWorkbook(Workbook):
                     "'subtitles', 'scope', 'source' and 'instructions'")
                 raise ValueError(msg)
 
-        contents = {}
+        contents_dict = {}
         for label, gptable in sheets.items(): 
             contents_entry = []
             contents_entry.append(self._strip_annotation_references(gptable.title))
 
             if additional_elements is not None:
                 for element in additional_elements:
-                    content = getattr(gptable, element)        
+                    content = getattr(gptable, element)
                     if element == "subtitles":
                         [contents_entry.append(self._strip_annotation_references(element)) for element in content]
                     else:
@@ -1057,9 +1057,9 @@ class GPWorkbook(Workbook):
 
             link = {label: f"internal:'{label}'!A1"}
 
-            contents[label] = [link, contents_entry] # TODO: check if this works for >3.6
+            contents_dict[label] = [link, contents_entry] # TODO: check if this works for >3.6
 
-        contents_table = pd.DataFrame.from_dict(contents, orient="index").reset_index(drop=True)
+        contents_table = pd.DataFrame.from_dict(contents_dict, orient="index").reset_index(drop=True)
 
         contents_table.columns = column_names
 

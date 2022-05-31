@@ -9,7 +9,8 @@ import xlsxwriter
 import gptables
 from gptables.core.wrappers import GPWorkbook
 from gptables.core.wrappers import GPWorksheet
-from gptables import Theme, FormatList
+from gptables.core.gptable import FormatList
+from gptables import Theme
 from gptables import gptheme
 import pytest
 

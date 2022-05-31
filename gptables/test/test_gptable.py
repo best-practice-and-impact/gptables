@@ -4,7 +4,7 @@ from pandas.testing import assert_frame_equal
 from contextlib import contextmanager
 
 
-from gptables import GPTable, FormatList
+from gptables import GPTable
 
 
 # TODO: These should be stored in GPTable
