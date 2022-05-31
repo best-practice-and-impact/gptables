@@ -467,16 +467,16 @@ class GPWorksheet(Worksheet):
         gptable.table.replace(regex=r'^\s*$', value=np.NaN, inplace=True)
         if gptable.table.isna().values.any():
             msg = ("""
-            Empty or null cell found in table, replace with
-            appropriate shorthand before inputting to gptables.
+            Empty or null cell found in table, the reason for missingness should
+            be included above the table before inputting to gptables.
+            There should only be one reason otherwise a shorthand should be provided.
             Guidance on shorthand can be found at:
             https://gss.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
             """)
-            raise ValueError(msg)
+            warnings.warn(msg)
 
         # Raise error if any table element is only special characters
-        gptable.table.replace(regex=r'^\W*$', value=np.NaN, inplace=True)
-        if gptable.table.isna().values.any():
+        if gptable.table.stack().str.contains('^\W*$').any():
             msg = ("""
             Cell found containing only special characters, replace with
             alphanumeric characters before inputting to gptables.
@@ -710,6 +710,9 @@ class GPWorksheet(Worksheet):
 
         elif isinstance(data, dict):
             self._write_dict_as_url(wb, row, col, data, format_dict, *args)
+            
+        elif pd.isna(data):
+            self.write_blank(row, col, None, wb.add_format(format_dict))
 
         else:
             # Write handles all other write types dynamically
