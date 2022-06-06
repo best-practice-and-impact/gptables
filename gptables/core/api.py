@@ -1,3 +1,4 @@
+import warnings
 import pandas as pd
 from pathlib import Path
 
@@ -9,8 +10,12 @@ def produce_workbook(
         sheets,
         theme = None,
         cover = None,
+        contentsheet_label = "Contents",
+        contentsheet_options = {},
+        notes_table = None,
+        notesheet_label = "Notes",
+        notesheet_options = {},
         auto_width = True,
-        disable_footer_parentheses = False,
         ):
     """
     Produces a GPWorkbook, ready to be written to the specified `.xlsx` file
@@ -22,17 +27,29 @@ def produce_workbook(
         path to write final workbook to (an `.xlsx` file)
     sheets : dict
         mapping worksheet labels to gptables.GPTable objects
-    theme : gptables.Theme, optional)
-        formatting to be applied tot GPTable elements. gptheme is used by
+    theme : gptables.Theme, optional
+        formatting to be applied to GPTable elements. gptheme is used by
         default
     cover : gptables.Cover, optional
-        cover page text. Including this argument will generat a cover page
+        cover page text. Including this argument will generate a cover page
+    contentsheet_label : str, None
+        table of contents sheet label, defaults to "Contents"
+        if None, table of contents will not be generated
+    contentsheet_options : dict, optional
+        dictionary of contentsheet customisation parameters
+        valid keys are `additional_elements`, `column_names`,
+        `table_name`, `title`, `subtitles`, `instructions`
+    notes_table : pd.DataFrame, None, optional
+        table with notes reference, text and (optional) link columns
+        if None, notes sheet will not be generated
+    notesheet_label : str, None, optional
+        notes sheet label, defaults to "Notes"
+    notesheet_options : dict, optional
+        dictionary of notesheet customisation parameters
+        valid keys are `table_name`, `title`, `instructions`
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True
         by default.
-    disable_footer_parentheses : bool, optional
-        indicate if addition of parentheses to footer elements should be
-        disabled. Note that disabling this decreases machine-readability.
         
     Returns
     -------
@@ -48,11 +65,33 @@ def produce_workbook(
 
     if cover is not None:
         ws = wb.add_worksheet(cover.cover_label)
-        ws.write_cover(cover, sheets, auto_width)
-    
-    for sheet, gptable in sheets.items():
-        ws = wb.add_worksheet(sheet)
-        ws.write_gptable(gptable, auto_width, disable_footer_parentheses)
+        ws.write_cover(cover)
+
+    contentsheet = {}
+    if contentsheet_label is not None:
+        if contentsheet_options:
+            valid_keys = ["additional_elements", "column_names",
+                "table_name", "title", "subtitles", "instructions"]
+            if not all(key in valid_keys for key in contentsheet_options.keys()):
+                msg = ("Valid `contentsheet_options` keys are 'additional_elements',"
+                    "'column_names', 'table_name', 'title', 'subtitles', 'instructions'")
+                raise ValueError(msg)
+        contents_gptable = wb.make_table_of_contents(sheets, **contentsheet_options)
+        contentsheet = {contentsheet_label: contents_gptable}
+
+    wb._update_annotations(sheets)
+
+    notesheet = {}
+    if notes_table is None:
+        warnings.warn("No note text provided, notes sheet has not been generated")
+    else:
+        note_gptable = wb.make_notesheet(notes_table, **notesheet_options)
+        notesheet = {notesheet_label: note_gptable}
+
+    sheets = {**contentsheet, **notesheet, **sheets}
+    for label, gptable in sheets.items():
+        ws = wb.add_worksheet(label)
+        ws.write_gptable(gptable, auto_width, wb._annotations)
     
     return wb
 
@@ -62,8 +101,12 @@ def write_workbook(
         sheets,
         theme = None,
         cover = None,
+        contentsheet = "Contents",
+        contentsheet_options = {},
+        notes_table = None,
+        notesheet_label = "Notes",
+        notesheet_options = {},
         auto_width = True,
-        disable_footer_parentheses = False,
         ):
 
     """
@@ -83,12 +126,18 @@ def write_workbook(
         formatting to be applied tot GPTable elements. ``gptheme`` is used by
         default
     cover : gptables.Cover, optional
-        cover page text. Including this argument will generat a cover page
+        cover page text. Including this argument will generate a cover page
+    contentsheet : str, False
+        table of contents sheet label, defaults to "Contents"
+        if False, table of contents will not be generated
+    contentsheet_options : dict, optional
+        dictionary of contentsheet customisation parameters
+        valid keys are `additional_elements`, `column_names`,
+        `table_name`, `title`, `subtitles`, `instructions`
+    notesheet : gptables.Notesheet, optional
+        notes page content. Including this argument will generate a notes page
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True by default.
-    disable_footer_parentheses : bool, optional
-        indicate if addition of parentheses to footer elements should be
-        disabled. Note that disabling this decreases machine-readability.
 
     Returns
     -------
@@ -99,8 +148,12 @@ def write_workbook(
         sheets,
         theme,
         cover,
-        auto_width,
-        disable_footer_parentheses
+        contentsheet,
+        contentsheet_options,
+        notes_table,
+        notesheet_label,
+        notesheet_options,
+        auto_width
         )
     wb.close()
 
@@ -166,6 +219,5 @@ def quick_and_dirty_workbook(
         filename = filename,
         sheets = sheets,
         theme = theme,
-        auto_width = auto_width,
-        disable_footer_parentheses = True
+        auto_width = auto_width
         )

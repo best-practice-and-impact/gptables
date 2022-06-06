@@ -10,7 +10,7 @@ from gptables import GPTable
 # TODO: These should be stored in GPTable
 gptable_text_attrs = ["title", "scope", "source"]
 
-gptable_list_text_attrs = ["subtitles", "legend", "notes"]
+gptable_list_text_attrs = ["subtitles", "legend"]
 
 
 valid_index_columns = [
@@ -78,10 +78,8 @@ def test_init_defaults(create_gptable_with_kwargs):
     assert empty_gptable.index_columns == {}
     assert empty_gptable.subtitles == []
     assert empty_gptable.legend == []
-    assert empty_gptable.annotations == {}
-    assert empty_gptable.notes == []
+    assert empty_gptable._annotations == []
     assert empty_gptable.additional_formatting == []
-    assert empty_gptable.include_index_column_headings == False
     
     # Other
     assert empty_gptable.index_levels == 0
@@ -175,8 +173,12 @@ class TestAttrValidationGPTable:
         Also test that None is allowed.
         """
         gptable = create_gptable_with_kwargs({attr: text})
-        assert getattr(gptable, attr) == text
-    
+
+        if isinstance(text, list):
+            assert getattr(gptable, attr).list == text
+        else:
+            assert getattr(gptable, attr) == text
+
 
     @pytest.mark.parametrize("attr", gptable_list_text_attrs)
     @pytest.mark.parametrize("text", invalid_text_elements)
@@ -198,60 +200,19 @@ class TestAttrValidationGPTable:
         parameters works as expected.
         """
         if text is not None:
-            text = [text, text]
-        gptable = create_gptable_with_kwargs({attr: text})
-        if text is not None:
-            assert getattr(gptable, attr) == text
+            text_list = [text, text]
+        else:
+            text_list = []
+
+        gptable = create_gptable_with_kwargs({attr: text_list})
+
+        if isinstance(text, str):
+            assert getattr(gptable, attr) == text_list
+        elif isinstance(text, list):
+            assert all([element.list == text for element in getattr(gptable, attr)])
         else:
             assert getattr(gptable, attr) == []
-
-
-    @pytest.mark.parametrize("reference", [42, (0, 0), None])
-    def test_invalid_annotations_keys(self, reference, create_gptable_with_kwargs):
-        """
-        Test that setting annotations keys that are not strings raise a
-        TypeError.
-        """    
-        with pytest.raises(TypeError):
-            create_gptable_with_kwargs({
-                "annotations": {reference: "valid value"}
-                })
-    
-
-    @pytest.mark.parametrize("reference", ["1", "spam"])
-    def test_valid_annotations_keys(self, reference, create_gptable_with_kwargs):
-        """
-        Test that setting str annotation keys works.
-        """
-        gptable = create_gptable_with_kwargs({
-            "annotations": {reference: "valid value"}
-            })
-        assert getattr(gptable, "annotations") == {reference: "valid value"}
-    
-
-    @pytest.mark.parametrize("text", invalid_text_elements)
-    def test_invalid_annotations_values(self, text, create_gptable_with_kwargs):
-        """
-        Test that setting annotations values that are not valid text elements
-        raises a TypeError.
-        """
-        with pytest.raises(TypeError):
-            create_gptable_with_kwargs({
-            "annotations": {"valid_key": text}
-            })
-    
-
-    @pytest.mark.parametrize("text", valid_text_elements)
-    def test_valid_annotations_values(self, text, create_gptable_with_kwargs):
-        """
-        Test that setting annotations values that valid text elements works as
-        expected.
-        """        
-        gptable = create_gptable_with_kwargs({
-            "annotations": {"valid_key": text}
-            })
-        assert getattr(gptable, "annotations") == {"valid_key": text}
-    
+        
 
     @pytest.mark.parametrize("key", invalid_text_elements[2:] + ["invalid_key"])
     def test_invalid_additional_format_keys(self, key, create_gptable_with_kwargs):

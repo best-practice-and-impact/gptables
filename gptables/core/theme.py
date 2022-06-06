@@ -37,11 +37,13 @@ class Theme:
     cover_subtitle_format : dict
 
     cover_text_format : dict
-    
+
     title_format : dict
 
     subtitle_format : dict
     
+    instructions_format : dict
+
     scope_format : dict
     
     column_heading_format : dict
@@ -57,12 +59,8 @@ class Theme:
     source_format : dict
     
     legend_format : dict
-    
-    annotations_format : dict
-    
-    notes_format : dict
-    
-    footer_order : list
+
+    description_order : list
     """
 
     def __init__(
@@ -84,6 +82,7 @@ class Theme:
             "cover_text_format",
             "title_format",
             "subtitle_format",
+            "instructions_format",
             "scope_format",
             "column_heading_format",
             "index_1_format",
@@ -92,15 +91,13 @@ class Theme:
             "data_format",
             "source_format",
             "legend_format",
-            "annotations_format",
-            "notes_format"
             ]
         
         for attr in self._format_attributes:
             setattr(self, attr, {})
         
         ## Other attributes
-        self.footer_order = []
+        self.description_order = []
         
         # Valid Them format attributes
         self._valid_attrs = [
@@ -175,7 +172,7 @@ class Theme:
         
         # Update with individual methods
         for key, value in cfg.items():
-            if key == "footer_order":
+            if key == "description_order":
                 getattr(self, "update_" + key)(value)
             elif key in self._valid_attrs:
                 if value is not None:
@@ -264,6 +261,7 @@ class Theme:
         """
         self.cover_text_format.update(format_dict)
 
+
     @validate_single_format
     def update_title_format(self, format_dict):
         """
@@ -280,6 +278,15 @@ class Theme:
         existing items are replaced.
         """
         self.subtitle_format.update(format_dict)
+
+
+    @validate_single_format
+    def update_instructions_format(self, format_dict):
+        """
+        Update the `instructions_format` attribute. Where keys already exist,
+        existing items are replaced.
+        """
+        self.instructions_format.update(format_dict)
 
 
     @validate_single_format    
@@ -300,15 +307,6 @@ class Theme:
         self.location_format.update(format_dict)
 
 
-    # @validate_single_format
-    # def update_units_format(self, format_dict):
-    #     """
-    #     Update the `units_format` attribute. Where keys already exist, existing
-    #     items are replaced.
-    #     """
-    #     self.units_format.update(format_dict)
-
-
     @validate_single_format
     def update_source_format(self, format_dict):
         """
@@ -327,37 +325,19 @@ class Theme:
         self.legend_format.update(format_dict)
 
 
-    @validate_single_format
-    def update_annotations_format(self, format_dict):
+    def update_description_order(self, order_list):
         """
-        Update the `annotations_format` attribute. Where keys already exist,
-        existing items are replaced.
-        """
-        self.annotations_format.update(format_dict)
-
-
-    @validate_single_format
-    def update_notes_format(self, format_dict):
-        """
-        Update the `notes_format` attribute. Where keys already exist, existing
-        items are replaced.
-        """
-        self.notes_format.update(format_dict)
-
-
-    def update_footer_order(self, order_list):
-        """
-        Update the `footer_order` attribute. Overrides existing order.
+        Update the `description_order` attribute. Overrides existing order.
         """
         if not isinstance(order_list, list):
-            msg = ("`footer_order` must be a list of footer element names")
+            msg = ("`description_order` must be a list of description element names")
             raise TypeError(msg)
 
-        valid_elements = ["source", "legend", "notes", "annotations"]
+        valid_elements = ["instructions", "source", "legend", "scope"]
         if not all(element in valid_elements for element in order_list):
-            msg = (f"`footer_order` elements must be in {valid_elements}")
+            msg = (f"`description_order` elements must be in {valid_elements}")
             raise ValueError(msg)
-        self.footer_order = order_list
+        self.description_order = order_list
 
 
     def print_attributes(self):

@@ -35,20 +35,15 @@ iris_summary.rename(
 )
 
 ## Define table elements
-title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
+title = "Mean Iris$$note2$$ sepal dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
-    "Just another subtitile",
+    "Just another subtitle",
     ]
 units = {"Mean Sepal Length": "cm", "Mean Sepal Width": "cm"}
 scope = "Iris"
 source = "Source: Office for Iris Statistics"
 index = {2: 0}  # Column 0 is a level 2 index
-annotations = {
-    "note1": "I've got 99 problems and taxonomy is one.",
-    "note2": "Goo Goo Dolls, 1998.",
-    }
-notes = ["This note hath no reference."]
 
 # or use kwargs to pass these to the appropriate parameters
 kwargs = {
@@ -58,35 +53,42 @@ kwargs = {
     "scope": scope,
     "source": source,
     "index_columns": index,
-    "annotations": annotations,
-    "notes": notes
     }
 
 ## Define our GPTable
 iris_table = gpt.GPTable(table=iris_summary, table_name="iris_statistics", **kwargs)
 
 iris_table_copy = deepcopy(iris_table)
-iris_table_copy.set_title("A copy of the first sheet$$note2$$")
+iris_table_copy.set_title("A copy of the first sheet$$note3$$")
 iris_table_copy.set_table_name("iris_statistics_copy")
 
+sheets = {
+    "Iris Flower Dimensions": iris_table,
+    "Copy of Iris Flower Dimensions": iris_table_copy
+}
+
 cover = gpt.Cover(
-    cover_label="Notes",
-    title="A Worbook containing good practice tables",
+    cover_label="Cover",
+    title="A Workbook containing good practice tables",
     intro=["This is some introductory information", "And some more"],
     about=["Even more info about my data", "And a little more"],
     contact=["John Doe", "Tel: 345345345"],
-    additional_elements=["subtitles", "scope", "source", "notes"]
     )
+
+## Notesheet
+notes = {
+    "Note reference": ["note1", "note2", "note3"],
+    "Note text": ["I've got 99 problems and taxonomy is one.", "Goo Goo Dolls, 1998.", "This is an extra note"],
+    }
+notes_table = pd.DataFrame.from_dict(notes)
 
 ## Use write_workbook to win!
 if __name__ == "__main__":
     output_path = parent_dir / "python_iris_cover_gptable.xlsx"
     gpt.write_workbook(
         filename=output_path,
-        sheets={
-            "Iris Flower Dimensions": iris_table,
-            "Copy of Iris Flower Dimensions": iris_table_copy,
-        },
-        cover=cover
+        sheets=sheets,
+        cover=cover,
+        notes_table=notes_table
     )
     print("Output written at: ", output_path)
