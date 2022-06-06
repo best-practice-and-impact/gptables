@@ -20,6 +20,8 @@ title:
 subtitle:
     font_size: 15
 
+instructions:
+
 scope:
 
 column_heading:
@@ -43,14 +45,8 @@ source:
 legend:
     font_size: 12
 
-annotations:
-    font_size: 12
-
-notes:
-    font_size: 12
-
-footer_order:
+description_order:
+    - instructions
     - source
     - legend
-    - annotations
-    - notes
+    - scope

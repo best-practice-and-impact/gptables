@@ -9,7 +9,7 @@ from gptables import gptheme
 
 
 
-valid_footer_elements = ["legend", "notes", "annotations", "source"]
+valid_description_elements = ["legend", "instructions", "scope", "source"]
 
 
 def powerset(iterable):
@@ -34,7 +34,7 @@ class TestCleanInitTheme:
     
 
     def test_default_other_attrs(self, empty_theme):
-        assert empty_theme.footer_order == []
+        assert empty_theme.description_order == []
 
 
     def test_print_attributes(self, empty_theme):
@@ -53,6 +53,7 @@ cover_subtitle_format : {}
 cover_text_format : {}
 title_format : {}
 subtitle_format : {}
+instructions_format : {}
 scope_format : {}
 column_heading_format : {}
 index_1_format : {}
@@ -61,9 +62,7 @@ index_3_format : {}
 data_format : {}
 source_format : {}
 legend_format : {}
-annotations_format : {}
-notes_format : {}
-footer_order : []
+description_order : []
 """
                 )
 
@@ -136,18 +135,12 @@ class TestConfigInitTheme:
             "legend":
                 {"font_size": 12},
             
-            "annotations":
-                {"font_size": 12},
-            
-            "notes":
-                {"font_size": 12},
-            
-            "footer_order":
+            "description_order":
                 [
-                "source",
-                "legend",
-                "annotations",
-                "notes",
+                    "instructions",
+                    "legend",
+                    "source",
+                    "scope"
                 ],
                 }
         got = Theme(config)
@@ -224,11 +217,11 @@ class TestFormatValidationTheme:
         but not an unrelated attr. Previous bug updated all formats whenever
         one was updated.
         """
-        config = {"notes": {"font_size": 5}}
+        config = {"source": {"font_size": 5}}
         empty_theme.apply_config(config)
         
         exp = {"font_size": 5}
-        got = empty_theme.notes_format
+        got = empty_theme.source_format
         
         assert exp == got
         
@@ -251,12 +244,12 @@ class TestOtherValidationTheme:
             None
             ]
         )
-    def test_invalid_footer_order_type(self, format_order, empty_theme):
+    def test_invalid_description_order_type(self, format_order, empty_theme):
         """
-        Test that non-list footer_order entries raise a TypeError.
+        Test that non-list description_order entries raise a TypeError.
         """
         with pytest.raises(TypeError):
-            empty_theme.update_footer_order(format_order)
+            empty_theme.update_description_order(format_order)
 
 
     @pytest.mark.parametrize(
@@ -268,20 +261,20 @@ class TestOtherValidationTheme:
             [[]]
             ]
         )             
-    def test_invalid_footer_order_values(self, format_order, empty_theme):
+    def test_invalid_description_order_values(self, format_order, empty_theme):
         """
-        Test that list footer_order entries containing invalid elements raises
+        Test that list description_order entries containing invalid elements raises
         a ValueError.
         """
         with pytest.raises(ValueError):
-            empty_theme.update_footer_order(format_order)
+            empty_theme.update_description_order(format_order)
     
 
-    @pytest.mark.parametrize("footer_order", powerset(valid_footer_elements))
-    def test_valid_footer_order_values(self, footer_order, empty_theme):
+    @pytest.mark.parametrize("description_order", powerset(valid_description_elements))
+    def test_valid_description_order_values(self, description_order, empty_theme):
         """
-        Test that valid list footer_order entries are used to set
+        Test that valid list description_order entries are used to set
         the corresponding attribute.
         """
-        empty_theme.update_footer_order(list(footer_order))
-        assert getattr(empty_theme, "footer_order") == list(footer_order)
+        empty_theme.update_description_order(list(description_order))
+        assert getattr(empty_theme, "description_order") == list(description_order)
