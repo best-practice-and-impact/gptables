@@ -44,6 +44,7 @@ subtitles = [
     ["Just another", {"bold": True}, " subtitle"]
     ]
 units = {1:"cm", 2:"cm"}
+table_notes = {0: "$$note1$$", 2: "$$note3$$"}
 scope = [{"bold": True}, "Iris", " flowers"]
 source = "[Source: Office for Iris Statistics](https://www.ons.gov.uk)"
 index = {2: 0}  # Column 0 is a level 2 index
@@ -54,6 +55,7 @@ kwargs = {
     "title": title,
     "subtitles": subtitles,
     "units": units,
+    "table_notes": table_notes,
     "scope": scope,
     "source": source,
     "index_columns": index,
@@ -66,9 +68,9 @@ sheets = {"Iris Flower Dimensions": iris_table}
 
 ## Notesheet
 notes = {
-    "Note reference": ["note1", "note2"],
-    "Note text": ["I've got 99 problems and taxonomy is one.", "Goo Goo Dolls, 1998."],
-    "Useful link": ["[google](https://www.google.com)", "[duckduckgo](https://duckduckgo.com/)"],
+    "Note reference": ["note1", "note2", "note3"],
+    "Note text": ["I've got 99 problems and taxonomy is one.", "Goo Goo Dolls, 1998.", "Just another note"],
+    "Useful link": ["[google](https://www.google.com)", "[duckduckgo](https://duckduckgo.com/)", "[ONS](https://www.ons.gov.uk)"],
     }
 notes_table = pd.DataFrame.from_dict(notes)
 
