@@ -111,9 +111,9 @@ class GPWorksheet(Worksheet):
 
     def _reference_annotations(self, gptable, reference_order):
         """
-        Replace note references with numbered references. Acts on `title`,
-        `subtitles`, `table` and `notes` attributes of a GPTable. References 
-        are numbered from top left of spreadsheet, working across each row.
+        Replace note references with numbered references and move to end of element.
+        Acts on `title`, `subtitles`, `table` and `notes` attributes of a GPTable.
+        References are numbered from top left of spreadsheet, working across each row.
         
         Parameters
         ----------
@@ -238,7 +238,7 @@ class GPWorksheet(Worksheet):
         dict_refs = [w.replace("$", "") for w in text_refs]
         for n in range(len(dict_refs)):
             num_ref = "[note " + str(reference_order.index(dict_refs[n]) + 1) + "]"
-            string = string.replace(text_refs[n], num_ref)
+            string = string.replace(text_refs[n], "") + num_ref
 
         return string
 

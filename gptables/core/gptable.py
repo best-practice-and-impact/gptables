@@ -414,8 +414,7 @@ class GPTable:
             ordered_refs.extend(self._get_references(data))
         if isinstance(data, list):
             for n in range(len(data)):
-                if isinstance(data[n], str):
-                    ordered_refs.extend(self._get_references(data[n]))
+                ordered_refs.extend(self._get_references_from_attr(data[n]))
         if isinstance(data, dict):
             for key in data.keys():
                 ordered_refs.extend(self._get_references(data[key]))
