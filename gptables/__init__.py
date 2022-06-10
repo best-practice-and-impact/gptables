@@ -10,7 +10,6 @@ from gptables.core.api import (
         # API functions
         produce_workbook,
 	    write_workbook,
-        quick_and_dirty_workbook
         )
 
 __doc__ = """
