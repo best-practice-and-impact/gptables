@@ -21,7 +21,7 @@ Nothing to see here.
 Released (PyPI)
 ===============
 
-v0.3.2
+v0.4.0
 ------
 :Date: 2021-01-30
 
