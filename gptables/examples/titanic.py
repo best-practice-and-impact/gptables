@@ -6,7 +6,6 @@ gptables example using the Titanic dataset.
 import gptables as gpt
 import pandas as pd
 import numpy as np
-import os
 from pathlib import Path
 
 parent_dir = Path(__file__).parent
@@ -28,36 +27,45 @@ titanic_analysis = pd.DataFrame(
     }
 ).reset_index()
 
+table_name = "titanic_by_sex"
 title = "Titanic$$note2$$ analysis by sex"
 subtitles = ["Derived from a Kaggle competition dataset$$note1$$"]
 units = {"Survived": "sum$$note3$$", 2: "mode", 3: "sum", "Fare": "mean"}
 scope = "Titanic$$note2$$"
 source = "Source: Kaggle"
 index = {2: 0}
-annotations = {
-    "note1": "www.kaggle.com/titanic",
-    "note2": "Celine Dion.",
-    "note3": "Total count.",
-    }
-notes = ["This note hath no reference."]
 
 kwargs = {
+    "table_name": table_name,
     "title": title,
     "subtitles": subtitles,
     "units": units,
     "scope": scope,
     "source": source,
     "index_columns": index,
-    "annotations": annotations,
-    "notes": notes,
     }
 
 # define our GPTable
 titanic_table = gpt.GPTable(table=titanic_analysis, **kwargs)
 
+sheets = {"titanic analysis by sex": titanic_table}
+
+## Notesheet
+notes = {
+    "Note reference": ["note1", "note2", "note3", "note4"],
+    "Note text": ["www.kaggle.com/titanic",
+                  "Celine Dion.",
+                  "Total count.",
+                  "This note hath no reference."],
+    }
+notes_table = pd.DataFrame.from_dict(notes)
+
 if __name__ == "__main__":
     output_path = parent_dir / "python_titanic_gptable.xlsx"
     gpt.write_workbook(
-        filename=output_path, auto_width=True, sheets={"titanic analysis by sex": titanic_table}
+        filename=output_path,
+        sheets=sheets,
+        notes_table=notes_table,
+        contentsheet_options={"additional_elements": ["subtitles", "scope"]}
         )
     print("Output written at: ", output_path)
