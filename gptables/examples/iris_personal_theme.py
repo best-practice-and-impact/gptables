@@ -40,14 +40,14 @@ iris_summary.rename(
 
 ## Define table elements
 table_name = "iris_statistics"
-title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
+title = "Mean Iris$$note2$$ sepal dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
-    "Just another subtitile",
+    "Just another subtitle",
     ]
 units = {1:"cm", 2:"cm"}
 scope = "Iris"
-source = "[Source: Office for Iris Statistics](https://www.ons.gov.uk)"
+source = "Source: Office for Iris Statistics"
 index = {2: 0}  # Column 0 is a level 2 index
 
 # or use kwargs to pass these to the appropriate parameters
@@ -68,10 +68,10 @@ sheets = {"Iris Flower Dimensions": iris_table}
 
 ## Notesheet
 notes = {
-    "Note reference": ["note1", "note2", "note3"],
+    "Note reference": ["note1", "note2"],
     "Note text": ["I've got 99 problems and taxonomy is one.",
-                  "Goo Goo Dolls, 1998.",
-                  "This note hath no reference."],
+                  "Goo Goo Dolls, 1998."],
+    "Useful link": ["[google](https://www.google.com)", "[duckduckgo](https://duckduckgo.com/)"],
     }
 notes_table = pd.DataFrame.from_dict(notes)
 
@@ -84,6 +84,6 @@ if __name__ == "__main__":
         sheets={"Iris Flower Dimensions": iris_table},
         theme = gpt.Theme(theme_path),
         notes_table=notes_table,
-        
+        contentsheet_options={"additional_elements": ["subtitles", "scope"]}
         )
     print("Output written at: ", output_path)

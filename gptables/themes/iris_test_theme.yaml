@@ -4,17 +4,14 @@ global:
     font_color: 'automatic'
 
 cover_title:
-    bold: False
     font_size: 17
 
 cover_subtitle:
-    bold: False
     font_size: 15
 
 cover_text:
 
 title:
-    bold: False
     font_size: 16
     
 subtitle:
@@ -25,19 +22,20 @@ instructions:
 scope:
 
 column_heading:
-    bold: False
     bottom: 1
     text_wrap: 1
 
 index_1:
-    bold: False
+    text_wrap: 1
 
 index_2:
+    text_wrap: 1
 
 index_3:
-    italic: False
+    text_wrap: 1
 
 data:
+    text_wrap: 1
 
 source:
     font_size: 12
