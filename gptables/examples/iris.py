@@ -37,15 +37,14 @@ iris_summary.rename(
 
 ## Define table elements
 table_name = "iris_statistics"
-title = ["Mean", {"italic": True}, " Iris", "$$note2$$ sepal dimensions"]
-# title = "Mean Iris$$note2$$ sepal dimensions"
+title = "Mean Iris$$note2$$ sepal dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
-    ["Just another", {"bold": True}, " subtitle"]
+    "Just another subtitle"
     ]
 units = {1:"cm", 2:"cm"}
-scope = [{"bold": True}, "Iris", " flowers"]
-source = "[Source: Office for Iris Statistics](https://www.ons.gov.uk)"
+scope = "Iris"
+source = "Source: Office for Iris Statistics"
 index = {2: 0}  # Column 0 is a level 2 index
 
 # or use kwargs to pass these to the appropriate parameters
