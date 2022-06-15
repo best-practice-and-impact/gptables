@@ -1149,7 +1149,7 @@ class GPWorkbook(Workbook):
         if not unreferenced_notes.empty:
             warnings.warn(f"The following notes are not referenced: {list(unreferenced_notes['order'])}")
 
-            ordered_notes = ordered_notes.append(unreferenced_notes)
+            ordered_notes = pd.concat([ordered_notes, unreferenced_notes])
 
         # replace note references with note number
         ordered_notes = (ordered_notes
