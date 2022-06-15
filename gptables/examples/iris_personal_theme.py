@@ -47,13 +47,8 @@ subtitles = [
     ]
 units = {1:"cm", 2:"cm"}
 scope = "Iris"
-source = "Source: Office for Iris Statistics"
+source = "[Source: Office for Iris Statistics](https://www.ons.gov.uk)"
 index = {2: 0}  # Column 0 is a level 2 index
-annotations = {
-    "note1": "I've got 99 problems and taxonomy is one.",
-    "note2": "Goo Goo Dolls, 1998.",
-    }
-notes = ["This note hath no reference."]
 
 # or use kwargs to pass these to the appropriate parameters
 kwargs = {
@@ -63,20 +58,32 @@ kwargs = {
     "units": units,
     "scope": scope,
     "source": source,
-    "index_columns": index,
-    "annotations": annotations,
-    "notes": notes,
+    "index_columns": index
     }
 
 ## Define our GPTable
 iris_table = gpt.GPTable(table=iris_summary, **kwargs)
+
+sheets = {"Iris Flower Dimensions": iris_table}
+
+## Notesheet
+notes = {
+    "Note reference": ["note1", "note2", "note3"],
+    "Note text": ["I've got 99 problems and taxonomy is one.",
+                  "Goo Goo Dolls, 1998.",
+                  "This note hath no reference."],
+    }
+notes_table = pd.DataFrame.from_dict(notes)
 
 ## Use write_workbook to win!
 if __name__ == "__main__":
     output_path = parent_dir / "python_iris_theme_gptable.xlsx"
     theme_path = str(Path(__file__).parent.parent / "themes/iris_test_theme.yaml")
     gpt.write_workbook(
-        filename=output_path, sheets={"Iris Flower Dimensions": iris_table},
-        theme = gpt.Theme(theme_path)
+        filename=output_path,
+        sheets={"Iris Flower Dimensions": iris_table},
+        theme = gpt.Theme(theme_path),
+        notes_table=notes_table,
+        
         )
     print("Output written at: ", output_path)

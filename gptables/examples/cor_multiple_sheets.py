@@ -16,7 +16,6 @@ one way to make this definition concise.
 from copy import deepcopy
 import gptables as gpt
 import pandas as pd
-import os
 from pathlib import Path
 
 ## Read data and arrange
