@@ -908,8 +908,11 @@ class GPWorksheet(Worksheet):
     @staticmethod
     def _longest_line_length(cell_val):
         """
-        Calculate the length of the longest line within a string. If the string contains line breaks,
-        this will return the length of the longest line. Expects new lines to be marked with '\r\n'
+        Calculate the length of the longest line within a cell.
+        If the cell contains a string, the longest length between line breaks is returned.
+        If the cell contains a link formatted as [{display_text: link}], the longest length is calculated from the display text.
+        If the cell contains a list of strings, the length of the longest string in the list is returned.
+        Expects new lines to be marked with "\n", "\r\n" or new lines in multiline strings.
 
         Parameters
         ----------
@@ -926,6 +929,12 @@ class GPWorksheet(Worksheet):
 
         if isinstance(cell_val, str):
             return(max([len(line) for line in re.split(split_strings, cell_val)]))
+        elif isinstance(cell_val, list):
+            if isinstance(cell_val[0], dict):
+                # text with links are stored as {text: link}, extract key to calculate text length
+                return(max([len(line) for line in re.split(split_strings, list(cell_val[0])[0])]))
+            else:
+                return(max([len(line) for line in cell_val]))
         else:
             return(0)
         
