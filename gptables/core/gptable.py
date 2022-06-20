@@ -84,12 +84,12 @@ class GPTable:
         self.set_title(title)
         self.set_subtitles(subtitles)
         self.set_instructions(instructions)
+        self.set_additional_formatting(additional_formatting)
         self.set_table(table, index_columns, units)
         self.set_table_name(table_name)
         self.set_scope(scope)
         self.set_source(source)
         self.set_legend(legend)
-        self.set_additional_formatting(additional_formatting)
         self._set_data_range()
         
 
@@ -315,8 +315,34 @@ class GPTable:
                    " ({column: units_text})")
             
             raise TypeError(msg)
+        
+        if len(self.additional_formatting) > 0:
+            self._add_units_to_additional_formatting(new_headers)
 
         self.units = new_units
+
+    def _add_units_to_additional_formatting(self, col_names):
+        """
+        
+        Parameters
+        ----------
+        col_names: dict
+            with keys old names and values new names, where new names are old names plus units
+           
+        Return
+        ------
+        None
+        """
+        formatting_list = self.additional_formatting
+        for dictionary in formatting_list:
+            if list(dictionary.keys()) == ["column"]:
+                format = list(dictionary.values())[0]
+                
+                # new_name if name==old_name else name for name in col_names
+                format["columns"] = [col_names[name] if name in list(col_names.keys()) else name for name in format["columns"]]
+
+        self.additional_formatting = formatting_list
+
 
     def set_source(self, new_source):
         """
