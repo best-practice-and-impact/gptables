@@ -7,32 +7,23 @@ Mapping
 The ``GPTable`` Class is used to map your data and metadata to table elements.
 The supported table elements are represented like this in the output `.xlsx` file:
 
-.. figure:: static/table_mapping.png
+.. figure:: static/table_mapping.png #TODO: Make and add new image
    :figclass: align-center
-
-Where you do not want to include an element, but no default is defined for that parameter,
-pass ``None`` to the relevant parameter when creating a ``GPTable`` instance.
-
-By default, index column headings are not displayed in the output.
-Set ``include_index_column_headings`` to ``True`` to show these headings.
+   :alt: #TODO: Add alt text - in caption?
 
 
-Notes and Annotations
+Notes
 ---------------------
 
-Notes are text elements that appear below the table, which refer to large
-sections or all of the table.
+Notes are text elements that appear on the separately generated ``Notesheet``.
 
-Annotations are notes which refer to specific aspects of the table or metadata.
-For annotation text to appear, it must be referenced in another text element of
-the ``GPTable``. Annotation references are supported in all table elements,
-expect for the table data - inserting references here would reduce the usability of the data.
+Notes can be referenced in all table elements, expect for the table data #TODO: Check this is still true
+- inserting references here would reduce the usability of the data.
+We use double dollar symbols (``$$``) to denote notes in text. For example,
+this note could be referenced as ``"My table title $$Reference$$"``.
 
-Annotations are defined as a dictionary of the ``{"Reference": "Annotation text"}``.
-We use double dollar symbols (``$$``) to denote annotations in text. For example,
-this annotation could be references as ``"My table title $$Reference$$"``.
-
-References in text are replaced with numbers, in increasing order down the table output.
+References in text are replaced with numbers, in increasing order from the top-
+left corner of the first sheet containing a data table.
 
 See this in practice under :ref:`Example Usage`.
 
@@ -41,10 +32,11 @@ Rich Text
 ---------
 
 Rich text is text that contains mixed formatting. You shouldn't use formatting
-to represent data or important information, as most formatting is not machine readable.
-You can still use to make things look pretty for people using their eyes.
+to represent data or important information, as most formatting is neither
+accessible nor machine readable. You can still use to make things look
+appealing for sighted people.
 
-All ``GPTable`` text elements support rich text. Where you would normally provide a string
+All ``GPTable`` text elements support rich text. Where you would normally provide a string # TODO: I don't think this is true anymore
 to a parameter, you can instead provide a list of strings and dictionaries. Dictionaries
 in this list should contain valid `XlsxWriter format properties`_ and values. The formatting
 defined in these dictionaries will be applied to the next string in the list. This formatting is
@@ -52,7 +44,7 @@ applied in addition to the formatting of that element specified in the :class:`~
 
 .. _`XlsxWriter format properties`: https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties
 
-``["It is ", {"italic": True}, "inevitable"]`` would give you "It is `inevitable`".
+``["It is ", {"bold": True}, "inevitable"]`` would give you "It is *inevitable*".
 
 See this in practice under :ref:`Example Usage`.
 
@@ -67,7 +59,7 @@ Bespoke formatting can be applied to an individual ``GPTable`` via the ``additio
 when creating a ``GPTable`` instance. This parameter takes a list of dictionaries, where each dictionary
 defines formatting for one or more rows, columns or cells.
 
-These dictionaries have a single key indicating the type of selection, from from "column", "row" or "cell".
+These dictionaries have a single key indicating the type of selection, from "column", "row" or "cell".
 Their value is another dictionary, which specifies the indexing, formatting and whether row and column
 indexes are included in the selection.
 

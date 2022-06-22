@@ -7,6 +7,10 @@ Theme
 The easiest way to design your own theme is to create a
 YAML configuration file. You should take a copy of our default theme
 configuration file and adjust it to suit your needs.
+When designing a theme, please consult the `Analysis Function guidance`_ to
+ensure your new formatting is accessible.
+
+.. _`Analysis Function guidance`: https://analysisfunction.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/
 
 Most of the top level names in the config file represent table elements or their metadata.
 The parameters passed below these names are `XlsxWriter format properties`_, so you
@@ -21,14 +25,12 @@ The three ``cover_`` format names refer to elements of the cover page generated 
 
 .. note:: All top levels names must exist in the config file. Where no properties need to be passed, leave empty after the colon.
 
-The final two names in the config file are special attributes which do not take
-XlsxWriter properties. They do the following:
+The final name in the config file is a special attribute which doed not take
+XlsxWriter properties. It does the following:
 
-* ``footer_order`` - specify the order of footer elements.
-  Must contain a list including ``source``, ``legend``, ``annotations`` and ``notes``,
+* ``description_order`` - specify the order of description elements.
+  Must contain a list including ``instructions``, ``legend``, ``source`` and ``scope``,
   in the order that you would like them to appear.
-* ``missing_value`` - specify the string that will be use to represent missing values (``numpy.nan``).
-  A legend is automatically generated for this string, when missing values are present.
 
 The configuration file for our default theme looks like this:
 
@@ -41,6 +43,8 @@ For minor adjustments to a theme, a deepcopy can be taken before using the
 
 ``Theme`` objects can altenatively be configured using dictionaries, with the same
 structure as the configuration files.
+
+An example using a personalised theme YAML file can be found under :ref:`Example Usage`.
 
 
 ``Theme`` Class

@@ -27,15 +27,14 @@ It advocates a strong adherence to the guidance by restricting the range of poss
 The default formatting theme ``gptheme`` accommodates many use cases.
 However, the :class:`~.core.theme.Theme` Class allows development of custom themes, where alternative formatting is required.
 
-``gptables`` is developed and maintained by the `Best Practice and Impact`_
-division of the Office for National Statistics, UK.
+``gptables`` is developed and maintained by the `Analysis Function`_.
 
-.. _`guidance on good practice spreadsheets`: https://gss.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/
+.. _`guidance on good practice spreadsheets`: https://analysisfunction.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/
 
-.. _`Best Practice and Impact`: https://gss.civilservice.gov.uk/about-us/support-for-the-gss/
+.. _`Analysis Function`: https://analysisfunction.civilservice.gov.uk/
 
 
-4 Simple Steps
+5 Simple Steps
 --------------
 
 1. You map your data to the elements of a :class:`~.core.gptable.GPTable`.
@@ -44,7 +43,9 @@ division of the Office for National Statistics, UK.
 
 3. Optionally design a :class:`~.core.cover.Cover` to provide information that relates to all of the tables in your Workbook.
 
-4. You :func:`~.core.api.write_workbook` to win.
+4. Upload a dataframe with information about any notes.
+
+5. You :func:`~.core.api.write_workbook` to win.
 
 
 .. toctree::
