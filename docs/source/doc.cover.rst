@@ -12,7 +12,7 @@ Mapping
 -------
 
 To include a cover sheet, map your text elements to the attributes of a ``Cover`` object and pass this object to the ``cover`` parameter of either :func:`~.core.api.produce_workbook` or :func:`~.core.api.write_workbook`.
-Text attributes which take a list (most except for title) will write one element per cell horizontally in the Worksheet. #TODO: this shouldn't be done any more - check and remove if it is still possible
+Text attributes which take a list (most except for title) will write one element per cell vertically in the Worksheet.
 
 Formatting
 ----------

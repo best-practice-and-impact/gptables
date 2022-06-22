@@ -7,9 +7,16 @@ Mapping
 The ``GPTable`` Class is used to map your data and metadata to table elements.
 The supported table elements are represented like this in the output `.xlsx` file:
 
-.. figure:: static/table_mapping.png #TODO: Make and add new image
+.. figure:: static/table_mapping.png
    :figclass: align-center
-   :alt: #TODO: Add alt text - in caption?
+   :alt: Cells A1 to A6 contain the title, subtitles, instructions, legend,
+   source and scope. These parameters are mapped individually. The next row
+   contains the column headings. Within the same row but on a new line are the
+   units. The table note references are within the same row on a new line under
+   the units. In columns 1, 2 and 3 of the next row down are index levels 1, 2
+   and 3. In the next columns are the data. Column headings, indices and data
+   are supplied as a pandas DataFrame. Units and table note references are
+   mapped individually.
 
 
 Notes
@@ -17,16 +24,36 @@ Notes
 
 Notes are text elements that appear on the separately generated ``Notesheet``.
 
-Notes can be referenced in all table elements, expect for the table data #TODO: Check this is still true
-- inserting references here would reduce the usability of the data.
-We use double dollar symbols (``$$``) to denote notes in text. For example,
-this note could be referenced as ``"My table title $$Reference$$"``.
+Notes can be referenced in the ``title``, ``subtitles``, ``scope``, ``source``
+and ``legend`` elements. Notes corresponding to entries in the data can be
+referenced using the ``table_notes`` element. This will add a note reference to
+the relevant column heading. Note references cannot be added to data cells, as
+inserting references here would reduce the usability of the data. We use double
+dollar symbols (``$$``) to denote notes in text. For example, a note could be
+referenced as ``"My table title $$Reference$$"``.
 
 References in text are replaced with numbers, in increasing order from the top-
 left corner of the first sheet containing a data table.
 
 See this in practice under :ref:`Example Usage`.
 
+
+Links
+-----
+
+Links can added to text using the format ``[display text](link)``. Links are
+supported in the ``title``, ``subtitles``, ``scope``, ``source``and ``legend``
+elements. They will also be applied to cells within the data table that use
+this format. Links should start with one of the following prefixes:
+``http://``, ``https://``, ``ftp://``, ``mailto::``, ``internal:`` or
+``external:``. For more information about the usage of the local URIs, see the
+`XlsxWriter documentation`_.
+
+.. _`XlsxWriter documentation`: https://xlsxwriter.readthedocs.io/worksheet.html#worksheet-write-url
+
+.. note:: Excel does not support links being applied to specific words within
+      cells. The link will be applied to the whole cell, not just the
+      display text.
 
 Rich Text
 ---------
@@ -36,17 +63,24 @@ to represent data or important information, as most formatting is neither
 accessible nor machine readable. You can still use to make things look
 appealing for sighted people.
 
-All ``GPTable`` text elements support rich text. Where you would normally provide a string # TODO: I don't think this is true anymore
-to a parameter, you can instead provide a list of strings and dictionaries. Dictionaries
-in this list should contain valid `XlsxWriter format properties`_ and values. The formatting
-defined in these dictionaries will be applied to the next string in the list. This formatting is
-applied in addition to the formatting of that element specified in the :class:`~.core.theme.Theme`.
+Rich text is supported in the ``title``, ``subtitles``, ``scope``, ``source``
+and ``legend`` elements. Where you would normally provide a string to a
+parameter, you can instead provide a list of strings and dictionaries.
+Dictionaries in this list should contain valid `XlsxWriter format properties`_
+and values. The formatting defined in these dictionaries will be applied to the
+next string in the list. This formatting is applied in addition to the
+formatting of that element specified in the :class:`~.core.theme.Theme`.
 
 .. _`XlsxWriter format properties`: https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties
 
 ``["It is ", {"bold": True}, "inevitable"]`` would give you "It is *inevitable*".
 
 See this in practice under :ref:`Example Usage`.
+
+.. note:: Rich text is not currently supported if the cell also contains note
+      references or links. This may be changed in the future if there is
+      sufficient user need, so please raise an issue if this is functionality
+      you need.
 
 
 Additional formatting
