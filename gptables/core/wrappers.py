@@ -130,7 +130,7 @@ class GPWorksheet(Worksheet):
                 "title",
                 "subtitles",
                 "scope",
-                "units",
+                "source",
                 "legend"
                 ]
         

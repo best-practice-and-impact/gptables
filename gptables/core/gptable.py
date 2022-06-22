@@ -410,6 +410,7 @@ class GPTable:
                 "title",
                 "subtitles",
                 "scope",
+                "source",
                 "legend"
                 ]
         
