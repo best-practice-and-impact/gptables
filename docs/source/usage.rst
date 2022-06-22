@@ -8,7 +8,7 @@ This section demonstrates usage of the gptables API functions and core Classes.
 For source code and data used in these examples, please see the
 examples_ directory of the package.
 
-.. _examples: https://github.com/best-practice-and-impact/gptables/tree/dev/gptables/examples
+.. _examples: https://github.com/best-practice-and-impact/gptables/tree/main/gptables/examples
 
 .. todo:: Replace datasets in examples with open online datasets
 
