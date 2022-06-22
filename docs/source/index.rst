@@ -43,7 +43,7 @@ However, the :class:`~.core.theme.Theme` Class allows development of custom them
 
 3. Optionally design a :class:`~.core.cover.Cover` to provide information that relates to all of the tables in your Workbook.
 
-4. Upload a dataframe with information about any notes.
+4. Optionally upload a ``notes_table`` with information about any notes.
 
 5. You :func:`~.core.api.write_workbook` to win.
 

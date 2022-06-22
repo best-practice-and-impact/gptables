@@ -37,16 +37,15 @@ operations possible. The default theme ``gptheme`` should accommodate most use
 cases. However, the ``Theme`` object allows development of custom themes, where
 other formatting is required.
 
-``gptables`` is developed and maintained by the `Best Practice and Impact`_
-division of the Office for National Statistics, UK.
+``gptables`` is developed and maintained by the `Analysis Function`_.
 
-.. _`guidance on good practice spreadsheets`: https://gss.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/
+.. _`guidance on good practice spreadsheets`: https://analysisfunction.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/
 
-.. _`Best Practice and Impact`: https://gss.civilservice.gov.uk/about-us/support-for-the-gss/
-
+.. _`Analysis Function`: https://analysisfunction.civilservice.gov.uk/
 
 
-4 Simple Steps
+
+5 Simple Steps
 --------------
 
 1. You map your data to the elements of a ``GPTable``.
@@ -55,5 +54,7 @@ division of the Office for National Statistics, UK.
 
 3. Optionally design a ``Cover`` page to provide information that relates to all of the tables in your Workbook.
 
-4. You ``write_workbook`` to win.
+4. Optionally upload a ``notes_table`` with information about any notes.
+
+5. You ``write_workbook`` to win.
 """

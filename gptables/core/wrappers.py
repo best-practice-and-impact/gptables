@@ -471,7 +471,7 @@ class GPWorksheet(Worksheet):
             be included above the table before inputting to gptables.
             There should only be one reason otherwise a shorthand should be provided.
             Guidance on shorthand can be found at:
-            https://gss.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
+            https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
             """)
             warnings.warn(msg)
 
@@ -481,7 +481,7 @@ class GPWorksheet(Worksheet):
             Cell found containing only special characters, replace with
             alphanumeric characters before inputting to gptables.
             Guidance on symbols in tables can be found at:
-            https://gss.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
+            https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
             """)
             raise ValueError(msg)
 
