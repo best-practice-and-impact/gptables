@@ -245,7 +245,7 @@ class TestGPWorksheetFooterText:
         test_text_dict = {
                 "$$key$$": "This is a value with a $$reference$$",
                 "another_key": "Another value",
-                "third_key": "$$one$$ more reference"
+                "third_key": "$$one$$more reference"
                 }
         got_text = testbook.ws._replace_reference_in_attr(
                 test_text_dict,
@@ -255,7 +255,7 @@ class TestGPWorksheetFooterText:
         exp_text_dict = {
                 "$$key$$": "This is a value with a [note 1]",
                 "another_key": "Another value",
-                "third_key": "[note 2] more reference"
+                "third_key": "more reference[note 2]"
                 }
         
         assert got_text == exp_text_dict
