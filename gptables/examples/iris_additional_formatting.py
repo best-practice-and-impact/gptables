@@ -25,7 +25,6 @@ which can also be modified.
 import gptables as gpt
 import pandas as pd
 import numpy as np
-import os
 from pathlib import Path
 
 ## Read data and arrange
@@ -53,13 +52,13 @@ for func in funcs:
     subtables.append(iris_data.groupby("class").agg(func))
     subtables.append(pd.DataFrame(iris_data.iloc[:,0:4].agg(func).rename("All")).T)
 iris_summary = pd.concat(subtables)
-iris_summary["func"] = ["Mean"] * 4 + ["Median"] * 4
+iris_summary["Average"] = ["Mean"] * 4 + ["Median"] * 4
 
 # Reshape
 iris_summary = iris_summary.reset_index()
-iris_summary = iris_summary.melt(["index", "func"])
+iris_summary = iris_summary.melt(["index", "Average"])
 iris_summary = iris_summary.pivot_table(
-    index=["variable", "func"], columns="index", values="value"
+    index=["variable", "Average"], columns="index", values="value"
     ).reset_index()
 
 ## Define table elements
@@ -67,9 +66,9 @@ table_name = "iris_statistics"
 title = "Iris flower dimensions"
 subtitles = [
     "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems",
-    "Just another subtitile",
+    [{"bold": True}, "Just", " another subtitle"]
     ]
-units = {0:"cm"}
+units = {key: "cm" for key in range(2,6)}
 scope = "Iris"
 index = {1: 0, 2: 1}
 
@@ -82,15 +81,13 @@ additional_formatting = [
         "column": {
             "columns": ["Setosa", "Versicolor"],  # str, int or list of either
             "format": {"align": "center"},
-            "include_names": False,  # Whether to include column headings (optional)
         }
     },
-    {"column": {"columns": [3], "format": {"left": 1}, "include_names": True}},
+    {"column": {"columns": [3], "format": {"left": 1}}},
     {
         "row": {
             "rows": -1,  # Numbers only, but can refer to last row using -1
             "format": {"bottom": 1},  # Underline row
-            "include_names": True,  # Whether to include row indexes
         }
     },
     ]
