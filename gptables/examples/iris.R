@@ -10,7 +10,7 @@ pd <- reticulate::import("pandas")
 
 iris_df <- reticulate::r_to_py(
   iris[c(5,1,2,3,4)]%>%
-    group_by(Species) %>%
+    dplyr::group_by(Species) %>%
     dplyr::summarize("Mean Sepal Length" = mean(Sepal.Length, na.rm=TRUE),
                      "Mean Sepal Width" = mean(Sepal.Width, na.rm=TRUE)
     )
