@@ -12,24 +12,24 @@ class GPTable:
     table : pandas.DataFrame
         table to be written to an Excel workbook
     table_name : str
-        name for table
-        should be unique with no spaces and start with a character or underscore
+        name for table. Should be unique with no spaces and start with a
+        character or underscore.
     title : str
-        description of the table
-    subtitles : list
+        title of the table
+    subtitles : List[str], optional
         subtitles as a list of strings
     instructions : str, optional
-        instructions on how to read the sheet. If not provided, default set as
+        instructions on how to read the sheet. If not provided, defaults to
         "This worksheet contains one table. Some cells may refer to notes,
         which can be found on the notes worksheet."
     scope : str, optional
         description of scope/basis of data in table if not included in title
     source : str, optional
-        description of the source of the data in `table` if not included in cover
+        description of the source of the data in table if not included in cover
     units : dict, optional
-        units used in each (dict) column of `table`
+        units used in each (dict) column of table
     legend : list, optional
-        descriptions of special notation used in `table`
+        descriptions of special notation used in table
     index_columns : dict, optional
         mapping an index level to a 0-indexed column as {level: column}.
         Default is a level two index in the first column ({2: 0}).

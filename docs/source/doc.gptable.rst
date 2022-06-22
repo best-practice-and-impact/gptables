@@ -151,4 +151,4 @@ See this in practice under :ref:`Example Usage`.
 -----------------
 
 .. automodule:: gptables.core.gptable
-    :members:
+    :members: GPTable
