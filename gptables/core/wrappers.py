@@ -933,6 +933,9 @@ class GPWorksheet(Worksheet):
             if isinstance(cell_val[0], dict):
                 # text with links are stored as {text: link}, extract key to calculate text length
                 return(max([len(line) for line in re.split(split_strings, list(cell_val[0])[0])]))
+            elif isinstance(cell_val[0], FormatList):
+                string = cell_val[0].string
+                return(max([len(line) for line in re.split(split_strings, string)]))
             else:
                 return(max([len(line) for line in cell_val]))
         else:

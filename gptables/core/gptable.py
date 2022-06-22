@@ -594,3 +594,12 @@ class FormatList:
     """
     def __init__(self, list):
         self.list = list
+        self._set_string_property()
+
+    def _set_string_property(self):
+        string = ""
+        for entry in self.list:
+            if isinstance(entry, str):
+                string += entry
+
+        self.string = string
