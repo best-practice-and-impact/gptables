@@ -76,7 +76,7 @@ class GPWorksheet(Worksheet):
         pos = [0, 0]
 
         self._reference_annotations(gptable, reference_order)
-        self._parse_urls(gptable) # TODO: document and raise error - attribute can't have custom formatting and url in same element
+        self._parse_urls(gptable)
 
         gptable = deepcopy(gptable)
 
@@ -148,7 +148,7 @@ class GPWorksheet(Worksheet):
         self._reference_table_annotations(gptable, reference_order)
         
 
-    def _reference_table_annotations(self, gptable, reference_order):
+    def _reference_table_annotations(self, gptable, reference_order): # TODO: properly integrate this with table_notes parameter
         """
         Reference annotations in the table column headings and index columns.
         """
@@ -283,7 +283,7 @@ class GPWorksheet(Worksheet):
             for r in range(rows):
                 cell = self._replace_url_in_attr(table.iloc[r, c])
                 if isinstance(cell, dict):
-                    table.iloc[r, c] = [cell] # TODO: works for 3.6, not for 3.8
+                    table.iloc[r, c] = [cell]
                 else:
                     table.iloc[r, c] = cell
 
@@ -1072,7 +1072,7 @@ class GPWorkbook(Workbook):
 
             link = {label: f"internal:'{label}'!A1"}
 
-            contents_dict[label] = [link, contents_entry] # TODO: check if this works for >3.6
+            contents_dict[label] = [link, contents_entry]
 
         contents_table = pd.DataFrame.from_dict(contents_dict, orient="index").reset_index(drop=True)
 
