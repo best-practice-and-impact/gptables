@@ -25,6 +25,7 @@ core_data = pd.read_csv(parent_dir / "coreB.csv")
 # 3 tables: summary, children and young people, and adults
 summ = core_data.loc[:, ["age", "total_cost"]]
 summ = summ.groupby("age").sum().reset_index()
+summ.columns = ["Age group", "Total cost"]
 
 # This returns adults first as per the data
 ages = core_data.age.unique()
@@ -33,9 +34,10 @@ dct = {ages[0]: pd.DataFrame(), ages[1]: pd.DataFrame()}
 for key in dct:
     frame = core_data.loc[core_data.age == key, ["reoffence_group", "total_cost"]]
     frame = frame.groupby("reoffence_group").sum().reset_index()
+    frame.columns = ["Reoffence group", "Total cost"]
     dct[key] = frame
 
-dct["summary"] = summ
+dct["Summary"] = summ
 
 
 ## Define table elements for each table
@@ -55,7 +57,7 @@ for table in ["summary", "adults", "children"]:
     table_parameters_dict[table] = table_parameters
 
 elements = {
-    "summary": table_parameters_dict["summary"], 
+    "Summary": table_parameters_dict["summary"], 
     "Adults": table_parameters_dict["adults"], 
     "Children and young people": table_parameters_dict["children"]
 }
