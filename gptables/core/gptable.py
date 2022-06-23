@@ -318,14 +318,14 @@ class GPTable:
 
             self.table = self.table.rename(columns = new_headers)
 
+            if len(self.additional_formatting) > 0:
+                self._add_units_to_additional_formatting(new_headers)
+
         elif not new_units is None:
             msg = ("`units` attribute must be a dictionary or None"
                    " ({column: units_text})")
             
             raise TypeError(msg)
-        
-        if len(self.additional_formatting) > 0:
-            self._add_units_to_additional_formatting(new_headers)
 
         self.units = new_units
 
