@@ -54,6 +54,7 @@ table_parameters_dict = {}
 for table in ["summary", "adults", "children"]:
     table_parameters = deepcopy(example)
     table_parameters["table_name"] = f"{table}_table"
+    table_parameters["title"] = f"Cost of reoffending - {table}"
     table_parameters_dict[table] = table_parameters
 
 elements = {
