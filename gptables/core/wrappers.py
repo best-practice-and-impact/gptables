@@ -8,6 +8,8 @@ from copy import deepcopy
 from xlsxwriter.workbook import Workbook
 from xlsxwriter.worksheet import Worksheet
 
+from gptables.core.cover import Cover
+
 from .theme import Theme
 from .gptable import GPTable, FormatList
 from gptables.utils.unpickle_themes import gptheme
@@ -30,6 +32,8 @@ class GPWorksheet(Worksheet):
         """
         theme = self.theme
         pos = [0, 0]
+
+        self._parse_urls(cover)
 
         pos = self._write_element(pos, cover.title, theme.cover_title_format)
 
@@ -243,34 +247,43 @@ class GPWorksheet(Worksheet):
         return string
 
 
-    def _parse_urls(self, gptable):
+    def _parse_urls(self, sheet):
         """
         Convert markdown URL formatting into URL, string tuple
         
         Parameters
         ----------
-        gptable : gptables.GPTable
+        sheet : gptables.GPTable, gptables.Cover
             object containing data with urls        
         """
-        elements = [
-            "title",
-            "subtitles",
-            "scope",
-            "source",
-            "legend",
-        ]
+        if isinstance(sheet, GPTable):
+            elements = [
+                "title",
+                "subtitles",
+                "scope",
+                "source",
+                "legend",
+            ]
+        elif isinstance(sheet, Cover):
+            elements = [
+                "title",
+                "intro",
+                "about",
+                "contact",
+            ]
 
         # Loop through elements, replacing urls in strings
         for attr in elements:
-            attr_current = getattr(gptable, attr)
+            attr_current = getattr(sheet, attr)
             setattr(
-                    gptable,
+                    sheet,
                     attr,
                     self._replace_url_in_attr(
                             attr_current,
                             )
                     )
-        self._parse_table_urls(gptable)
+        if isinstance(sheet, GPTable):
+            self._parse_table_urls(sheet)
     
     def _parse_table_urls(self, gptable):
         """

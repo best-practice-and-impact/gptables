@@ -12,7 +12,6 @@ This automatically determines the width of the first column on the cover sheet, 
 import gptables as gpt
 import pandas as pd
 import numpy as np
-import os
 from pathlib import Path
 from copy import deepcopy
 
@@ -27,7 +26,7 @@ iris_summary.index = [_[5:].capitalize() for _ in iris_summary.index]
 iris_summary.reset_index(inplace=True)
 iris_summary.rename(
     columns={
-        "class": "Class",
+        "index": "Class",
         "sepal_length": "Mean Sepal Length",
         "sepal_width": "Mean Sepal Width",
     },
@@ -72,7 +71,7 @@ cover = gpt.Cover(
     title="A Workbook containing good practice tables",
     intro=["This is some introductory information", "And some more"],
     about=["Even more info about my data", "And a little more"],
-    contact=["John Doe", "Tel: 345345345"],
+    contact=["John Doe", "Tel: 345345345", "Email: [john.doe@snailmail.com](mailto:john.doe@snailmail.com)"],
     )
 
 ## Notesheet
