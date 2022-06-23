@@ -28,11 +28,11 @@ titanic_analysis = pd.DataFrame(
 ).reset_index()
 
 table_name = "titanic_by_sex"
-title = "Titanic$$note2$$ analysis by sex"
-subtitles = ["Derived from a Kaggle competition dataset$$note1$$"]
-units = {"Survived": "sum$$note3$$", 2: "mode", 3: "sum", "Fare": "mean"}
-scope = "Titanic$$note2$$"
-source = "Source: Kaggle"
+title = "Titanic$$singer$$ analysis by sex"
+subtitles = ["Derived from a Kaggle competition dataset$$kaggle_link$$"]
+units = {"Survived": "sum$$statistic$$", 2: "mode", 3: "sum", "Fare": "mean"}
+scope = "Titanic$$singer$$"
+source = "[Source: Kaggle](https://www.kaggle.com/competitions/titanic/overview)"
 index = {2: 0}
 
 kwargs = {
@@ -51,14 +51,7 @@ titanic_table = gpt.GPTable(table=titanic_analysis, **kwargs)
 sheets = {"titanic analysis by sex": titanic_table}
 
 ## Notesheet
-notes = {
-    "Note reference": ["note1", "note2", "note3", "note4"],
-    "Note text": ["www.kaggle.com/titanic",
-                  "Celine Dion.",
-                  "Total count.",
-                  "This note hath no reference."],
-    }
-notes_table = pd.DataFrame.from_dict(notes)
+notes_table = pd.read_csv(parent_dir / "titanic_notes.csv")
 
 if __name__ == "__main__":
     output_path = parent_dir / "python_titanic_gptable.xlsx"

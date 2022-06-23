@@ -103,7 +103,9 @@ class TestConfigInitTheme:
      
             "subtitle":
                 {"font_size": 14},
-            
+
+            "instructions": None,
+
             "scope": None,
 
             "column_heading":
@@ -122,11 +124,7 @@ class TestConfigInitTheme:
             
             "index_2": {"text_wrap": 1},
             
-            "index_3":
-                {
-                "italic": True,
-                "text_wrap": 1
-                },
+            "index_3": {"text_wrap": 1},
             
             "data": {"text_wrap": 1},
             
