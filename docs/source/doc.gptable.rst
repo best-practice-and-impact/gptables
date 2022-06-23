@@ -45,7 +45,7 @@ Links can added to text using the format ``[display text](link)``. Links are
 supported in the ``title``, ``subtitles``, ``scope``, ``source``and ``legend``
 elements. They will also be applied to cells within the data table that use
 this format. Links should start with one of the following prefixes:
-``http://``, ``https://``, ``ftp://``, ``mailto::``, ``internal:`` or
+``http://``, ``https://``, ``ftp://``, ``mailto:``, ``internal:`` or
 ``external:``. For more information about the usage of the local URIs, see the
 `XlsxWriter documentation`_.
 
