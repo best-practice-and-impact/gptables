@@ -44,6 +44,7 @@ class GPTable:
                  scope=None,
                  source=None,
                  units=None,
+                 table_notes=None,
                  subtitles=[],
                  instructions="",
                  legend=[],
@@ -56,6 +57,7 @@ class GPTable:
         self.subtitles = []
         
         self.units = None  # str or {units (str):column index (int)} dict
+        self.table_notes = None  # str or {units (str):column index (int)} dict
         
         self._VALID_INDEX_LEVELS = [1, 2, 3]
         self.index_levels = 0
@@ -85,7 +87,7 @@ class GPTable:
         self.set_subtitles(subtitles)
         self.set_instructions(instructions)
         self.set_additional_formatting(additional_formatting)
-        self.set_table(table, index_columns, units)
+        self.set_table(table, index_columns, units, table_notes)
         self.set_table_name(table_name)
         self.set_scope(scope)
         self.set_source(source)
@@ -93,9 +95,9 @@ class GPTable:
         self._set_data_range()
         
 
-    def set_table(self, new_table, new_index_columns = None, new_units = None):
+    def set_table(self, new_table, new_index_columns = None, new_units = None, new_table_notes = None):
         """
-        Set the `table`, `index_columns` and 'units' attributes. Overwrites
+        Set the `table`, `index_columns`, `units` and `table_notes` attributes. Overwrites
         existing values for these attributes.
         """
         if not isinstance(new_table, pd.DataFrame):
@@ -117,10 +119,16 @@ class GPTable:
         if new_index_columns is None:
             new_index_columns = self.index_columns
         self.set_index_columns(new_index_columns)
+
         if new_units is None:
             new_units = self.units
         self.set_units(new_units)
-        
+
+        if new_table_notes is None:
+            new_table_notes = self.table_notes
+        self.set_table_notes(new_table_notes)
+
+
     def set_index_columns(self, new_index_columns):
         """
         Set the `index_columns` attribute. Overwrites any existing values.
@@ -343,6 +351,30 @@ class GPTable:
 
         self.additional_formatting = formatting_list
 
+    def set_table_notes(self, new_table_notes): # TODO: custom formatting in column headers?
+        """
+        Adds note references to column headers.
+        `table_notes` should be in the format {column: "$$note_reference$$"}.
+        Column can be column name or 0-indexed column number in `table`.
+        """
+        if isinstance(new_table_notes, dict) and len(new_table_notes) > 0:
+            for value in new_table_notes.values():
+                self._validate_text(value, "table_notes")
+
+            # Convert numeric keys to column names
+            new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_table_notes.keys()]
+            new_headers_values = [f"{key} \n{value}" for key, value in zip(new_headers_keys, new_table_notes.values())]
+            new_headers = dict(zip(new_headers_keys, new_headers_values))
+
+            self.table = self.table.rename(columns = new_headers)
+
+        elif not new_table_notes is None:
+            msg = ("`table_notes` attribute must be a dictionary or None"
+                   " ({column: '$$note_reference$$'})")
+            raise TypeError(msg)
+
+        self.table_notes = new_table_notes
+
 
     def set_source(self, new_source):
         """
@@ -402,7 +434,6 @@ class GPTable:
                 "title",
                 "subtitles",
                 "scope",
-                "units",
                 "legend"
                 ]
         
@@ -440,8 +471,7 @@ class GPTable:
             ordered_refs.extend(self._get_references(data))
         if isinstance(data, list):
             for n in range(len(data)):
-                if isinstance(data[n], str):
-                    ordered_refs.extend(self._get_references(data[n]))
+                ordered_refs.extend(self._get_references_from_attr(data[n]))
         if isinstance(data, dict):
             for key in data.keys():
                 ordered_refs.extend(self._get_references(data[key]))

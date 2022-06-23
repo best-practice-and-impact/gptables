@@ -115,9 +115,9 @@ class GPWorksheet(Worksheet):
 
     def _reference_annotations(self, gptable, reference_order):
         """
-        Replace note references with numbered references. Acts on `title`,
-        `subtitles`, `table` and `notes` attributes of a GPTable. References 
-        are numbered from top left of spreadsheet, working across each row.
+        Replace note references with numbered references and move to end of element.
+        Acts on `title`, `subtitles`, `table` and `notes` attributes of a GPTable.
+        References are numbered from top left of spreadsheet, working across each row.
         
         Parameters
         ----------
@@ -242,7 +242,7 @@ class GPWorksheet(Worksheet):
         dict_refs = [w.replace("$", "") for w in text_refs]
         for n in range(len(dict_refs)):
             num_ref = "[note " + str(reference_order.index(dict_refs[n]) + 1) + "]"
-            string = string.replace(text_refs[n], num_ref)
+            string = string.replace(text_refs[n], "") + num_ref
 
         return string
 
@@ -489,7 +489,7 @@ class GPWorksheet(Worksheet):
             warnings.warn(msg)
 
         # Raise error if any table element is only special characters
-        if gptable.table.stack().str.contains('^\W*$').any():
+        if gptable.table.stack().str.contains('^[^a-zA-Z0-9_]*$').any():
             msg = ("""
             Cell found containing only special characters, replace with
             alphanumeric characters before inputting to gptables.
@@ -921,8 +921,11 @@ class GPWorksheet(Worksheet):
     @staticmethod
     def _longest_line_length(cell_val):
         """
-        Calculate the length of the longest line within a string. If the string contains line breaks,
-        this will return the length of the longest line. Expects new lines to be marked with '\r\n'
+        Calculate the length of the longest line within a cell.
+        If the cell contains a string, the longest length between line breaks is returned.
+        If the cell contains a link formatted as [{display_text: link}], the longest length is calculated from the display text.
+        If the cell contains a list of strings, the length of the longest string in the list is returned.
+        Expects new lines to be marked with "\n", "\r\n" or new lines in multiline strings.
 
         Parameters
         ----------
@@ -939,6 +942,12 @@ class GPWorksheet(Worksheet):
 
         if isinstance(cell_val, str):
             return(max([len(line) for line in re.split(split_strings, cell_val)]))
+        elif isinstance(cell_val, list):
+            if isinstance(cell_val[0], dict):
+                # text with links are stored as {text: link}, extract key to calculate text length
+                return(max([len(line) for line in re.split(split_strings, list(cell_val[0])[0])]))
+            else:
+                return(max([len(line) for line in cell_val]))
         else:
             return(0)
         

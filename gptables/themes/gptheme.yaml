@@ -28,6 +28,7 @@ column_heading:
     bold: True
     bottom: 1
     text_wrap: 1
+    valign: top
 
 index_1:
     bold: True

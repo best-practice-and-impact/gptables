@@ -110,7 +110,8 @@ class TestConfigInitTheme:
                 {
                 "bold": True,
                 "bottom": 1,
-                "text_wrap": 1
+                "text_wrap": 1,
+                "valign": "top"
                 },
             
             "index_1":
