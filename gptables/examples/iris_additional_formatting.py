@@ -56,9 +56,9 @@ iris_summary["Average"] = ["Mean"] * 4 + ["Median"] * 4
 
 # Reshape
 iris_summary = iris_summary.reset_index()
-iris_summary = iris_summary.melt(["index", "Average"])
+iris_summary = iris_summary.melt(["index", "Average"], var_name="Iris feature")
 iris_summary = iris_summary.pivot_table(
-    index=["variable", "Average"], columns="index", values="value"
+    index=["Iris feature", "Average"], columns="index", values="value"
     ).reset_index()
 
 ## Define table elements
