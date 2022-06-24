@@ -133,9 +133,10 @@ class GPWorksheet(Worksheet):
         elements = [
                 "title",
                 "subtitles",
+                "legend",
+                "source",
                 "scope",
                 "units",
-                "legend"
                 ]
         
         # Loop through elements, replacing references in strings
@@ -260,10 +261,11 @@ class GPWorksheet(Worksheet):
             elements = [
                 "title",
                 "subtitles",
-                "scope",
-                "source",
                 "legend",
-            ]
+                "source",
+                "scope",
+                "units",
+                ]
         elif isinstance(sheet, Cover):
             elements = [
                 "title",

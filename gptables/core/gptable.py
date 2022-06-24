@@ -433,8 +433,10 @@ class GPTable:
         elements = [
                 "title",
                 "subtitles",
+                "legend",
+                "source",
                 "scope",
-                "legend"
+                "units",
                 ]
         
         ordered_refs = []
