@@ -9,6 +9,7 @@ import xlsxwriter
 import gptables
 from gptables.core.wrappers import GPWorkbook
 from gptables.core.wrappers import GPWorksheet
+from gptables.core.gptable import FormatList
 from gptables import Theme
 from gptables import gptheme
 import pytest
@@ -17,7 +18,7 @@ Tb = namedtuple("Testbook", "wb ws")
 
 valid_text_elements = [  # Not None
     "This is a string",
-    ["More than ", {"italic": True}, "just ", "a string"]
+    FormatList(["More than ", {"italic": True}, "just ", "a string"])
 ]
 
 test_text_list = [
@@ -27,9 +28,9 @@ test_text_list = [
     ]
 
 exp_text_list = [
-    "This has a (1)",
+    "This has a [note 1]",
     "This one doesn't",
-    "Here's another (2)"
+    "Here's another [note 2]"
     ]
 
 
@@ -202,61 +203,37 @@ class TestGPWorksheetFooterText:
     """
 
 
-    @pytest.mark.parametrize("text,enclosed", [
-        ("", "()"),
-        ("This has a $$reference$$", "(This has a $$reference$$)"),
-        ("(Already have some)", "((Already have some))")
-        ]
-    )
-    def test__enclose_text_string(self, text, enclosed, testbook):
-        """
-        Test that strings are correctly flanked with parentheses.
-        """
-        test_text = testbook.ws._enclose_text(text)
-        assert test_text == enclosed
-
-
-    def test__enclose_text_list(self, testbook):
-        """
-        Test that rich text is flanked with parentheses.
-        """
-        test_list = ["An", {"bold": True}, "example", "note"]
-        got = testbook.ws._enclose_text(test_list)
-        exp = ["(", "An", {"bold": True}, "example", "note", ")"]
-        assert got == exp
-
     @pytest.mark.parametrize("text", test_text_list)
     def test__replace_reference(self, text, testbook):
         """
         Test that references ($$ref$$ style) in strings are replaced with
-        numbers, in order of appearance. Also tests replacement in lists.
+        [note n], in order of appearance. Also tests replacement in lists.
         """
         got_output = []
-        ordered_refs = []
+        reference_order = ["reference", "one"]
 
-        got_output = [testbook.ws._replace_reference(text, ordered_refs) for text in test_text_list]
+        got_output = [testbook.ws._replace_reference(text, reference_order) for text in test_text_list]
     
         exp_refs = ["reference", "one"]
-        assert ordered_refs == exp_refs
+        assert reference_order == exp_refs
         assert got_output == exp_text_list
 
 
     @pytest.mark.parametrize("text,refs,output",
         zip(test_text_list,
         [["reference"], [], ["one"]],
-        ["This has a (1)", "This one doesn't", "Here's another (1)"]
+        ["This has a [note 1]", "This one doesn't", "Here's another [note 2]"]
         ))
     def test__replace_reference_in_attr_str(self, text, refs, output, testbook):
         """
         Test that references are replaced in a single string.
         """
-        ordered_refs = []
+        reference_order = ["reference", "one"]
         got_text = testbook.ws._replace_reference_in_attr(
                 text,
-                ordered_refs
+                reference_order
                 )
 
-        assert ordered_refs == refs
         assert got_text == output
 
 
@@ -264,23 +241,21 @@ class TestGPWorksheetFooterText:
         """
         Test that references are replaced in dictionary values, but not keys.
         """
-        ordered_refs = []
+        reference_order = ["reference", "one"]
         test_text_dict = {
                 "$$key$$": "This is a value with a $$reference$$",
                 "another_key": "Another value",
-                "third_key": "$$one$$ more reference"
+                "third_key": "$$one$$more reference"
                 }
         got_text = testbook.ws._replace_reference_in_attr(
                 test_text_dict,
-                ordered_refs
+                reference_order
                 )
-        
-        assert ordered_refs == ["reference", "one"]
-        
+                
         exp_text_dict = {
-                "$$key$$": "This is a value with a (1)",
+                "$$key$$": "This is a value with a [note 1]",
                 "another_key": "Another value",
-                "third_key": "(2) more reference"
+                "third_key": "more reference[note 2]"
                 }
         
         assert got_text == exp_text_dict
@@ -318,20 +293,7 @@ class TestGPWorksheetFormatUpdate:
         exp.iloc[0] = [{"bold": True} for n in range(3)]
         exp.iloc[1] = [{"bold": True} for n in range(3)]
         assert_frame_equal(test, exp)
-
-
-class TestGPWorkbookStatic:
-
-    @pytest.mark.parametrize("input, expected", [
-        ("no references", "no references"),
-        ("ref at end$$1$$", "ref at end"),
-        ("$$1$$ref at start", "ref at start"),
-        ("two$$1$$ refs$$2$$", "two refs"),
-        ("three$$1$$ refs$$2$$, wow$$3$$", "three refs, wow")
-    ])
-    def test__strip_annotation_references(self, input, expected):
-        assert GPWorksheet._strip_annotation_references(input) == expected
-        
+    
         
 class TestGPWorkbook:
     """

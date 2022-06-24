@@ -9,52 +9,78 @@ The supported table elements are represented like this in the output `.xlsx` fil
 
 .. figure:: static/table_mapping.png
    :figclass: align-center
+   :alt: Cells A1 to A6 contain the title, subtitles, instructions, legend,
+   source and scope. These parameters are mapped individually. The next row
+   contains the column headings. Within the same row but on a new line are the
+   units. The table note references are within the same row on a new line under
+   the units. In columns 1, 2 and 3 of the next row down are index levels 1, 2
+   and 3. In the next columns are the data. Column headings, indices and data
+   are supplied as a pandas DataFrame. Units and table note references are
+   mapped individually.
 
-Where you do not want to include an element, but no default is defined for that parameter,
-pass ``None`` to the relevant parameter when creating a ``GPTable`` instance.
 
-By default, index column headings are not displayed in the output.
-Set ``include_index_column_headings`` to ``True`` to show these headings.
-
-
-Notes and Annotations
+Notes
 ---------------------
 
-Notes are text elements that appear below the table, which refer to large
-sections or all of the table.
+Notes are text elements that appear on the separately generated ``Notesheet``.
 
-Annotations are notes which refer to specific aspects of the table or metadata.
-For annotation text to appear, it must be referenced in another text element of
-the ``GPTable``. Annotation references are supported in all table elements,
-expect for the table data - inserting references here would reduce the usability of the data.
+Notes can be referenced in the ``title``, ``subtitles``, ``scope``, ``source``
+and ``legend`` elements. Notes corresponding to entries in the data can be
+referenced using the ``table_notes`` element. This will add a note reference to
+the relevant column heading. Note references cannot be added to data cells, as
+inserting references here would reduce the usability of the data. We use double
+dollar symbols (``$$``) to denote notes in text. For example, a note could be
+referenced as ``"My table title $$Reference$$"``.
 
-Annotations are defined as a dictionary of the ``{"Reference": "Annotation text"}``.
-We use double dollar symbols (``$$``) to denote annotations in text. For example,
-this annotation could be references as ``"My table title $$Reference$$"``.
-
-References in text are replaced with numbers, in increasing order down the table output.
+References in text are replaced with numbers, in increasing order from the top-
+left corner of the first sheet containing a data table.
 
 See this in practice under :ref:`Example Usage`.
 
+
+Links
+-----
+
+Links can added to text using the format ``[display text](link)``. Links are
+supported in the ``title``, ``subtitles``, ``scope``, ``source``and ``legend``
+elements. They will also be applied to cells within the data table that use
+this format. Links should start with one of the following prefixes:
+``http://``, ``https://``, ``ftp://``, ``mailto:``, ``internal:`` or
+``external:``. For more information about the usage of the local URIs, see the
+`XlsxWriter documentation`_.
+
+.. _`XlsxWriter documentation`: https://xlsxwriter.readthedocs.io/worksheet.html#worksheet-write-url
+
+.. note:: Excel does not support links being applied to specific words within
+      cells. The link will be applied to the whole cell, not just the
+      display text.
 
 Rich Text
 ---------
 
 Rich text is text that contains mixed formatting. You shouldn't use formatting
-to represent data or important information, as most formatting is not machine readable.
-You can still use to make things look pretty for people using their eyes.
+to represent data or important information, as most formatting is neither
+accessible nor machine readable. You can still use to make things look
+appealing for sighted people.
 
-All ``GPTable`` text elements support rich text. Where you would normally provide a string
-to a parameter, you can instead provide a list of strings and dictionaries. Dictionaries
-in this list should contain valid `XlsxWriter format properties`_ and values. The formatting
-defined in these dictionaries will be applied to the next string in the list. This formatting is
-applied in addition to the formatting of that element specified in the :class:`~.core.theme.Theme`.
+Rich text is supported in the ``title``, ``subtitles``, ``scope``, ``source``
+and ``legend`` elements. Where you would normally provide a string to a
+parameter, you can instead provide a list of strings and dictionaries.
+Dictionaries in this list should contain valid `XlsxWriter format properties`_
+and values. The formatting defined in these dictionaries will be applied to the
+next string in the list. This formatting is applied in addition to the
+formatting of that element specified in the :class:`~.core.theme.Theme`.
 
 .. _`XlsxWriter format properties`: https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties
 
-``["It is ", {"italic": True}, "inevitable"]`` would give you "It is `inevitable`".
+``["It is ", {"bold": True}, "inevitable"]`` would give you "It is *inevitable*".
 
 See this in practice under :ref:`Example Usage`.
+
+.. note:: Rich text is not currently supported if the cell also contains note
+      references or links. This may be changed in the future if there is
+      sufficient user need, so please raise an issue if this is functionality
+      you need.
 
 
 Additional formatting
@@ -67,7 +93,7 @@ Bespoke formatting can be applied to an individual ``GPTable`` via the ``additio
 when creating a ``GPTable`` instance. This parameter takes a list of dictionaries, where each dictionary
 defines formatting for one or more rows, columns or cells.
 
-These dictionaries have a single key indicating the type of selection, from from "column", "row" or "cell".
+These dictionaries have a single key indicating the type of selection, from "column", "row" or "cell".
 Their value is another dictionary, which specifies the indexing, formatting and whether row and column
 indexes are included in the selection.
 
@@ -125,4 +151,4 @@ See this in practice under :ref:`Example Usage`.
 -----------------
 
 .. automodule:: gptables.core.gptable
-    :members:
+    :members: GPTable

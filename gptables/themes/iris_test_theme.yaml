@@ -4,34 +4,28 @@ global:
     font_color: 'automatic'
 
 cover_title:
-    bold: True
-    font_size: 16
+    font_size: 17
 
 cover_subtitle:
-    bold: True
-    font_size: 14
+    font_size: 15
 
 cover_text:
 
 title:
-    bold: True
     font_size: 16
     
 subtitle:
-    font_size: 14
+    font_size: 15
 
 instructions:
 
 scope:
 
 column_heading:
-    bold: True
     bottom: 1
     text_wrap: 1
-    valign: top
 
 index_1:
-    bold: True
     text_wrap: 1
 
 index_2:
@@ -51,6 +45,6 @@ legend:
 
 description_order:
     - instructions
-    - legend
     - source
+    - legend
     - scope

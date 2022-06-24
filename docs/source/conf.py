@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('../'))
 
 project = 'gptables'
 copyright = ' Crown Copyright'
-author = 'David Foster & Alexander Newton'
+author = 'David Foster, Alexander Newton, Rowan Hemsi, Jacob Cole, Dan Shiloh and Jaehee Ryoo'
 
 # The full version, including alpha/beta/rc tags
 with open(os.path.abspath("../../VERSION")) as f:
