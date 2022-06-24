@@ -436,12 +436,7 @@ class GPTable:
                 "legend",
                 "source",
                 "scope",
-<<<<<<< HEAD
                 "units",
-=======
-                "source",
-                "legend"
->>>>>>> dev
                 ]
         
         ordered_refs = []

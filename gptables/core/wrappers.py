@@ -136,12 +136,7 @@ class GPWorksheet(Worksheet):
                 "legend",
                 "source",
                 "scope",
-<<<<<<< HEAD
                 "units",
-=======
-                "source",
-                "legend"
->>>>>>> dev
                 ]
         
         # Loop through elements, replacing references in strings
