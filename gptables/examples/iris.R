@@ -33,9 +33,9 @@ iris_df <- reticulate::r_to_py(
 )
 
 table_name = "iris_statistics"
-title = "Mean Iris $$note2$$ sepal dimensions"
+title = "Mean Iris$$note2$$ sepal dimensions"
 subtitles = c("1936 Fisher, R.A; The use of multiple measurements in taxonomic problems$$note1$$",
-              "Just another subtitile $$note3$$")
+              "Just another subtitle")
 units = reticulate::dict(list("1" = "cm", "2" = "cm"), convert = FALSE)
 table_notes = reticulate::dict(list("0" = "$$note1$$", "2" = "$$note3$$"), convert = FALSE)
 scope = "Iris"
@@ -48,6 +48,7 @@ table = gpt$GPTable(table = iris_df,
                     title = title,
                     subtitles = subtitles,
                     units = units,
+                    table_notes = table_notes,
                     scope = scope,
                     source = souce,
                     index_columns = index_columns)
