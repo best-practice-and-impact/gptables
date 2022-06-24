@@ -15,6 +15,14 @@ and this project tries its very best to adhere to
 Unreleased
 ===================
 
+
+Released (PyPI)
+===============
+
+v1.0.0
+------
+:Date: 2022-06-04
+
 **Added** 
 
 * contents page added to workbook by default. Can be disabled or customised by supplying ``contentsheet_label`` and ``contentsheet_options`` parameters to ``produce_workbook`` or ``write_workbook``.
@@ -55,10 +63,6 @@ Unreleased
 * incorrect version numbers in changelog
 * minor typos in docs
 
-
-
-Released (PyPI)
-===============
 
 v0.4.0
 ------
