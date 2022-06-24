@@ -815,13 +815,14 @@ class GPWorksheet(Worksheet):
         url = list(data.values())[0]
         display_text = list(data.keys())[0]
 
-        format_dict.update({"underline": True, "font_color": "blue"})
+        url_format = format_dict.copy()
+        url_format.update({"underline": True, "font_color": "blue"})
 
         self.write_url(
             row,
             col,
             url,
-            workbook.add_format(format_dict),
+            workbook.add_format(url_format),
             display_text,
             *args
         )
