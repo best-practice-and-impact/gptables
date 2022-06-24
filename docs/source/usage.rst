@@ -8,7 +8,7 @@ This section demonstrates usage of the gptables API functions and core Classes.
 For source code and data used in these examples, please see the
 examples_ directory of the package.
 
-.. _examples: https://github.com/best-practice-and-impact/gptables/tree/dev/gptables/examples
+.. _examples: https://github.com/best-practice-and-impact/gptables/tree/main/gptables/examples
 
 .. todo:: Replace datasets in examples with open online datasets
 
@@ -41,13 +41,6 @@ examples_ directory of the package.
     :lines: 16-
 
 
-.. automodule:: gptables.examples.iris_quick_and_dirty
-
-.. literalinclude:: ../../gptables/examples/iris_quick_and_dirty.py
-    :language: python
-    :lines: 20-
-
-
 R Usage
 -------
 
@@ -55,7 +48,10 @@ Use of ``gptables`` in R requires use of python via the `reticulate <https://rst
 
 This example demonstrates basic usage of the pacakge in R. More advanced usage will
 use a similar approach to python (above), but may require use of ``reticulate`` functions
-to create/modify python objects.
+to create/modify python objects. 
 
 .. literalinclude:: ../../gptables/examples/iris.R
     :language: R
+
+R users may also be interested in the `a11ytables <https://co-analysis.github.io/a11ytables/>`_
+R package, developed by the Cabinet Office.

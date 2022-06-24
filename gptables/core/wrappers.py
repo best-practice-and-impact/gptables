@@ -80,7 +80,7 @@ class GPWorksheet(Worksheet):
         pos = [0, 0]
 
         self._reference_annotations(gptable, reference_order)
-        self._parse_urls(gptable) # TODO: document and raise error - attribute can't have custom formatting and url in same element
+        self._parse_urls(gptable)
 
         gptable = deepcopy(gptable)
 
@@ -134,7 +134,7 @@ class GPWorksheet(Worksheet):
                 "title",
                 "subtitles",
                 "scope",
-                "units",
+                "source",
                 "legend"
                 ]
         
@@ -152,7 +152,7 @@ class GPWorksheet(Worksheet):
         self._reference_table_annotations(gptable, reference_order)
         
 
-    def _reference_table_annotations(self, gptable, reference_order):
+    def _reference_table_annotations(self, gptable, reference_order): # TODO: properly integrate this with table_notes parameter
         """
         Reference annotations in the table column headings and index columns.
         """
@@ -296,7 +296,7 @@ class GPWorksheet(Worksheet):
             for r in range(rows):
                 cell = self._replace_url_in_attr(table.iloc[r, c])
                 if isinstance(cell, dict):
-                    table.iloc[r, c] = [cell] # TODO: works for 3.6, not for 3.8
+                    table.iloc[r, c] = [cell]
                 else:
                     table.iloc[r, c] = cell
 
@@ -484,7 +484,7 @@ class GPWorksheet(Worksheet):
             be included above the table before inputting to gptables.
             There should only be one reason otherwise a shorthand should be provided.
             Guidance on shorthand can be found at:
-            https://gss.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
+            https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
             """)
             warnings.warn(msg)
 
@@ -494,7 +494,7 @@ class GPWorksheet(Worksheet):
             Cell found containing only special characters, replace with
             alphanumeric characters before inputting to gptables.
             Guidance on symbols in tables can be found at:
-            https://gss.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
+            https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
             """)
             raise ValueError(msg)
 
@@ -946,6 +946,9 @@ class GPWorksheet(Worksheet):
             if isinstance(cell_val[0], dict):
                 # text with links are stored as {text: link}, extract key to calculate text length
                 return(max([len(line) for line in re.split(split_strings, list(cell_val[0])[0])]))
+            elif isinstance(cell_val[0], FormatList):
+                string = cell_val[0].string
+                return(max([len(line) for line in re.split(split_strings, string)]))
             else:
                 return(max([len(line) for line in cell_val]))
         else:
@@ -1082,7 +1085,7 @@ class GPWorkbook(Workbook):
 
             link = {label: f"internal:'{label}'!A1"}
 
-            contents_dict[label] = [link, contents_entry] # TODO: check if this works for >3.6
+            contents_dict[label] = [link, contents_entry]
 
         contents_table = pd.DataFrame.from_dict(contents_dict, orient="index").reset_index(drop=True)
 
