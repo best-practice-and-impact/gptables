@@ -133,9 +133,10 @@ class GPWorksheet(Worksheet):
         elements = [
                 "title",
                 "subtitles",
-                "scope",
+                "legend",
                 "source",
-                "legend"
+                "scope",
+                "units",
                 ]
         
         # Loop through elements, replacing references in strings
@@ -260,10 +261,11 @@ class GPWorksheet(Worksheet):
             elements = [
                 "title",
                 "subtitles",
-                "scope",
-                "source",
                 "legend",
-            ]
+                "source",
+                "scope",
+                "units",
+                ]
         elif isinstance(sheet, Cover):
             elements = [
                 "title",
@@ -813,13 +815,14 @@ class GPWorksheet(Worksheet):
         url = list(data.values())[0]
         display_text = list(data.keys())[0]
 
-        format_dict.update({"underline": True, "font_color": "blue"})
+        url_format = format_dict.copy()
+        url_format.update({"underline": True, "font_color": "blue"})
 
         self.write_url(
             row,
             col,
             url,
-            workbook.add_format(format_dict),
+            workbook.add_format(url_format),
             display_text,
             *args
         )
