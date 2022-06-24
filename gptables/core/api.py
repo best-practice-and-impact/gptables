@@ -26,27 +26,27 @@ def produce_workbook(
     filename : str
         path to write final workbook to (an `.xlsx` file)
     sheets : dict
-        mapping worksheet labels to gptables.GPTable objects
+        mapping worksheet labels to ``GPTable`` objects
     theme : gptables.Theme, optional
-        formatting to be applied to GPTable elements. gptheme is used by
-        default
+        formatting to be applied to GPTable elements. ``gptheme`` is used by
+        default.
     cover : gptables.Cover, optional
-        cover page text. Including this argument will generate a cover page
-    contentsheet_label : str, None
-        table of contents sheet label, defaults to "Contents"
-        if None, table of contents will not be generated
+        cover page text. Including this argument will generate a cover page.
+    contentsheet_label : str
+        table of contents sheet label, defaults to "Contents". If None, table
+        of contents will not be generated.
     contentsheet_options : dict, optional
-        dictionary of contentsheet customisation parameters
-        valid keys are `additional_elements`, `column_names`,
-        `table_name`, `title`, `subtitles`, `instructions`
-    notes_table : pd.DataFrame, None, optional
-        table with notes reference, text and (optional) link columns
-        if None, notes sheet will not be generated
-    notesheet_label : str, None, optional
+        dictionary of contentsheet customisation parameters. Valid keys are
+        `additional_elements`, `column_names`, `table_name`, `title`,
+        `subtitles` and `instructions`.
+    notes_table : pd.DataFrame, optional
+        table with notes reference, text and (optional) link columns. If None,
+        notes sheet will not be generated.
+    notesheet_label : str, optional
         notes sheet label, defaults to "Notes"
     notesheet_options : dict, optional
-        dictionary of notesheet customisation parameters
-        valid keys are `table_name`, `title`, `instructions`
+        dictionary of notesheet customisation parameters. Valid keys are
+        `table_name`, `title` and `instructions`.
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True
         by default.
@@ -123,21 +123,28 @@ def write_workbook(
     sheets : dict
         mapping worksheet labels to ``GPTable`` objects
     theme : gptables.Theme, optional
-        formatting to be applied tot GPTable elements. ``gptheme`` is used by
-        default
+        formatting to be applied to GPTable elements. ``gptheme`` is used by
+        default.
     cover : gptables.Cover, optional
-        cover page text. Including this argument will generate a cover page
-    contentsheet : str, False
-        table of contents sheet label, defaults to "Contents"
-        if False, table of contents will not be generated
+        cover page text. Including this argument will generate a cover page.
+    contentsheet_label : str
+        table of contents sheet label, defaults to "Contents". If None, table
+        of contents will not be generated.
     contentsheet_options : dict, optional
-        dictionary of contentsheet customisation parameters
-        valid keys are `additional_elements`, `column_names`,
-        `table_name`, `title`, `subtitles`, `instructions`
-    notesheet : gptables.Notesheet, optional
-        notes page content. Including this argument will generate a notes page
+        dictionary of contentsheet customisation parameters. Valid keys are
+        `additional_elements`, `column_names`, `table_name`, `title`,
+        `subtitles` and `instructions`
+    note_table : pd.DataFrame, optional
+        table with notes reference, text and (optional) link columns. If None,
+        notes sheet will not be generated.
+    notesheet_label : str, optional
+        notes sheet label, defaults to "Notes"
+    notesheet_options : dict, optional
+        dictionary of notesheet customisation parameters. Valid keys are
+        `table_name`, `title` and `instructions`.
     auto_width : bool, optional
-        indicate if column widths should be automatically determined. True by default.
+        indicate if column widths should be automatically determined. True by
+        default.
 
     Returns
     -------
