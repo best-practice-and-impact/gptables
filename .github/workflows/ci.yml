@@ -112,7 +112,7 @@ jobs:
         pip install --upgrade-strategy eager -e .[docs]
     - name: Build the book
       run: |
-        (cd docs && make html)
+        (cd docs && make clean && make html)
         
   publish:
     name: Publish to PyPi
