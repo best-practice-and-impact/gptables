@@ -19,6 +19,10 @@ Unreleased
 
 * Restructure and rewording of changelog
 
+**Fixed**
+
+* Image alt text in user documentation
+
 
 Released (PyPI)
 ===============
@@ -31,7 +35,7 @@ v1.0.0
 
 Cover:
 
-* links formatted using the markdown format of ``"[display text](link)"`` will be rendered with the display text showing and the link applying for the corresponding cell. Links must start with ``http://``, ``https://``, ``ftp://``, ``mailto::``, ``internal:`` or ``external:``
+* links formatted using the markdown format of ``"[display text](link)"`` will be rendered with the display text showing and the link applying for the corresponding cell. Links must start with ``http://``, ``https://``, ``ftp://``, ``mailto:``, ``internal:`` or ``external:``
 
 Table of contents:
 
