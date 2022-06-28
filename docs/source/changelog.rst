@@ -62,6 +62,7 @@ API functions
 
 Notes
 * notes are now numbered according to position in workbook, starting from cell A1 of the first data sheet. Previously, notes were ordered independently for each worksheet
+* note references in text elements are moved to the end of the text. This is to make them more accessible and avoid disrupting the text.
 
 Data tables
 * ``units`` are now written on a new line with the the corresponding column heading cell, instead of above the table
