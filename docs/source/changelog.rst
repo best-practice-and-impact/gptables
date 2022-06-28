@@ -22,6 +22,7 @@ Unreleased
 **Fixed**
 
 * Image alt text in user documentation
+* Deployment of docs in CI
 
 
 Released (PyPI)
