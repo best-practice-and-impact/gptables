@@ -225,7 +225,7 @@ class GPTable:
         """
         Set the `title` attribute.
         """
-        self._validate_text(new_title, "title")
+        self._validate_text(new_title, "title", optional=False)
 
         if isinstance(new_title, list):
             new_title = FormatList(new_title)
@@ -274,7 +274,7 @@ class GPTable:
         """
         Set `instructions` attribute.
         """
-        self._validate_text(new_instructions, "instructions")
+        self._validate_text(new_instructions, "instructions", optional=False)
 
         if len(new_instructions) == 0:
             self.instructions = "This worksheet contains one table. Some cells may refer to notes, which can be found on the notes worksheet."
@@ -586,17 +586,23 @@ class GPTable:
         ]
 
     @staticmethod
-    def _validate_text(obj, attr):
+    def _validate_text(obj, attr, optional = True):
         """
         Validate that an object contains valid text elements. These are either
-        strings or list of strings and dictionaries.
+        strings or list of strings and dictionaries. If optional = True, object
+        can be None, otherwise an error will be raised if object is None.
         """
-        if isinstance(obj, str) or obj is None:
+        if isinstance(obj, str):
             return None
-        
-        msg = (f"{attr} text should be provided as strings or lists of"
-                   f" strings and dictionaries (rich-text). {type(obj)} are"
-                   " not valid text elements.")
+
+        if obj is None:
+            if optional:
+                return None
+            else:
+                msg = (f"{attr} attribute cannot be None. Provide text as "
+                    f"string or list of strings and dictionaries (rich-text).")
+                raise TypeError(msg)
+
         if isinstance(obj, list):
             for element in obj:
                 if not isinstance(element, (str, dict)):
