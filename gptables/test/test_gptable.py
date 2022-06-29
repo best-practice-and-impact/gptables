@@ -8,7 +8,9 @@ from gptables import GPTable
 
 
 # TODO: These should be stored in GPTable
-gptable_text_attrs = ["title", "scope", "source"]
+gptable_compulsory_text_attrs = ["title", "instructions"]
+
+gptable_optional_text_attrs = ["scope", "source"]
 
 gptable_list_text_attrs = ["subtitles", "legend"]
 
@@ -20,13 +22,15 @@ valid_index_columns = [
     {1: "one", 2: "two", 3: "three"}
     ]
 
-valid_text_elements = [
+valid_text_elements_excl_none = [
     "This is a string",
     ["This is ", {"bold": True}, "rich", "text"],
-    None
 ]
 
-invalid_text_elements = [
+valid_text_elements_incl_none = valid_text_elements_excl_none.copy()
+valid_text_elements_incl_none.append(None)
+
+invalid_text_elements_excl_none = [
     dict(),
     set(),
     42,
@@ -34,6 +38,8 @@ invalid_text_elements = [
     True
 ]
 
+invalid_text_elements_incl_none = invalid_text_elements_excl_none.copy()
+invalid_text_elements_incl_none.append(None)
 
 @contextmanager
 def does_not_raise():
@@ -155,9 +161,19 @@ class TestAttrValidationGPTable:
             create_gptable_with_kwargs({"table": not_a_table})
     
 
-    @pytest.mark.parametrize("attr", gptable_text_attrs)
-    @pytest.mark.parametrize("not_text", invalid_text_elements)
-    def test_invalid_text_in_str_attrs(self, attr, not_text, create_gptable_with_kwargs):
+    @pytest.mark.parametrize("attr", gptable_compulsory_text_attrs)
+    @pytest.mark.parametrize("not_text", invalid_text_elements_incl_none)
+    def test_invalid_text_in_compulsory_str_attrs(self, attr, not_text, create_gptable_with_kwargs):
+        """
+        Test that setting an invalid GPTable text types raises a TypeError for
+        each attribute that holds a string.
+        """
+        with pytest.raises(TypeError):
+            create_gptable_with_kwargs({attr: not_text})
+
+    @pytest.mark.parametrize("attr", gptable_optional_text_attrs)
+    @pytest.mark.parametrize("not_text", invalid_text_elements_excl_none)
+    def test_invalid_text_in_optional_str_attrs(self, attr, not_text, create_gptable_with_kwargs):
         """
         Test that setting an invalid GPTable text types raises a TypeError for
         each attribute that holds a string.
@@ -166,9 +182,24 @@ class TestAttrValidationGPTable:
             create_gptable_with_kwargs({attr: not_text})
     
 
-    @pytest.mark.parametrize("attr", gptable_text_attrs)
-    @pytest.mark.parametrize("text", valid_text_elements)
-    def test_valid_text_in_str_attrs(self, attr, text, create_gptable_with_kwargs):
+    @pytest.mark.parametrize("attr", gptable_compulsory_text_attrs)
+    @pytest.mark.parametrize("text", valid_text_elements_excl_none)
+    def test_valid_text_in_compulsory_str_attrs(self, attr, text, create_gptable_with_kwargs):
+        """
+        Test that setting valid GPTable text elements works as expected. Test
+        strings and list containing strings and format dicts (rich text).
+        Also test that None is allowed.
+        """
+        gptable = create_gptable_with_kwargs({attr: text})
+
+        if isinstance(text, list):
+            assert getattr(gptable, attr).list == text
+        else:
+            assert getattr(gptable, attr) == text
+
+    @pytest.mark.parametrize("attr", gptable_optional_text_attrs)
+    @pytest.mark.parametrize("text", valid_text_elements_incl_none)
+    def test_valid_text_in_compulsory_str_attrs(self, attr, text, create_gptable_with_kwargs):
         """
         Test that setting valid GPTable text elements works as expected. Test
         strings and list containing strings and format dicts (rich text).
@@ -183,7 +214,7 @@ class TestAttrValidationGPTable:
 
 
     @pytest.mark.parametrize("attr", gptable_list_text_attrs)
-    @pytest.mark.parametrize("text", invalid_text_elements)
+    @pytest.mark.parametrize("text", invalid_text_elements_incl_none)
     def test_invalid_text_in_list_attrs(self, attr, text, create_gptable_with_kwargs):
         """
         Test that setting list of invalid text elements to GPTable list
@@ -195,7 +226,7 @@ class TestAttrValidationGPTable:
 
 
     @pytest.mark.parametrize("attr", gptable_list_text_attrs)
-    @pytest.mark.parametrize("text", valid_text_elements)
+    @pytest.mark.parametrize("text", valid_text_elements_excl_none)
     def test_valid_text_in_list_attrs(self, attr, text, create_gptable_with_kwargs):
         """
         Test that setting list of valid text elements to GPTable list
@@ -216,7 +247,7 @@ class TestAttrValidationGPTable:
             assert getattr(gptable, attr) == []
         
 
-    @pytest.mark.parametrize("key", invalid_text_elements[2:] + ["invalid_key"])
+    @pytest.mark.parametrize("key", invalid_text_elements_incl_none[2:] + ["invalid_key"])
     def test_invalid_additional_format_keys(self, key, create_gptable_with_kwargs):
         """
         Test that adding additional formatting with an invalid key raises an
@@ -241,7 +272,7 @@ class TestAttrValidationGPTable:
         assert getattr(gptable, "additional_formatting") == [{key: {"format": {"bold": True}}}]
     
 
-    @pytest.mark.parametrize("format_label", invalid_text_elements[2:] + ["not_a_format"])
+    @pytest.mark.parametrize("format_label", invalid_text_elements_incl_none[2:] + ["not_a_format"])
     def test_invalid_additional_format_labels(self, format_label, create_gptable_with_kwargs):
         """
         Test that adding additional formatting with a format parameter that is
