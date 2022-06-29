@@ -276,11 +276,10 @@ class GPTable:
         """
         self._validate_text(new_instructions, "instructions")
 
-        if isinstance(new_instructions, list):
-            new_instructions = FormatList(new_instructions)
-
         if len(new_instructions) == 0:
             self.instructions = "This worksheet contains one table. Some cells may refer to notes, which can be found on the notes worksheet."
+        elif isinstance(new_instructions, list):
+            self.instructions = FormatList(new_instructions)
         else:
             self.instructions = new_instructions
 
