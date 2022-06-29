@@ -48,8 +48,6 @@ def create_gptable_with_kwargs():
             "table": pd.DataFrame(),
             "table_name": "",
             "title": "",
-            "scope": "",
-            "source": "",
             "index_columns": {}  # Override default, as no columns in table
             }
         if format_dict is not None:
@@ -67,25 +65,29 @@ def test_init_defaults(create_gptable_with_kwargs):
 
     # Required args
     assert empty_gptable.title == ""
-    assert empty_gptable.scope == ""
-    assert empty_gptable.units == None
-    assert empty_gptable.source == ""
+    assert empty_gptable.table_name == ""
+
     assert_frame_equal(
             empty_gptable.table, pd.DataFrame().reset_index(drop=True)
             )
-    
+
     # Optional args
+    assert empty_gptable.scope == None
+    assert empty_gptable.source == None
+    assert empty_gptable.units == None
     assert empty_gptable.index_columns == {}
     assert empty_gptable.subtitles == []
     assert empty_gptable.legend == []
-    assert empty_gptable._annotations == []
     assert empty_gptable.additional_formatting == []
-    
+    assert empty_gptable.instructions == "This worksheet contains one table. Some cells may refer to notes, which can be found on the notes worksheet."
+
     # Other
     assert empty_gptable.index_levels == 0
     assert empty_gptable._column_headings == set()
     assert empty_gptable._VALID_INDEX_LEVELS == [1, 2, 3]
-    
+    assert empty_gptable._annotations == []
+    assert empty_gptable.data_range == [2, 0, 2, -1]
+
 
 class TestAttrValidationGPTable:
     @pytest.mark.parametrize("level", [4, 0, -1])
