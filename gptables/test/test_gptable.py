@@ -159,7 +159,44 @@ class TestAttrValidationGPTable:
         """
         with pytest.raises(TypeError):
             create_gptable_with_kwargs({"table": not_a_table})
-    
+
+
+    def test_set_table_name(self, create_gptable_with_kwargs):
+        """
+        Test that setting GPTable table name with a valid string works as expected
+        """
+        gptable = create_gptable_with_kwargs({"table_name": "table_name"})
+        assert gptable.table_name == "table_name"
+
+
+    @pytest.mark.parametrize("invalid_name", invalid_text_elements_incl_none)
+    def test_invalid_type_table_name(self, invalid_name, create_gptable_with_kwargs):
+        """
+        Test that setting GPTable table name to object other than string raises
+        an error.
+        """
+        with pytest.raises(TypeError):
+            create_gptable_with_kwargs({"table_name": invalid_name})
+
+
+    def test_table_name_not_list(self, create_gptable_with_kwargs):
+        """
+        Test that setting GPTable table name to a list, eg with rich text,
+        raises an error.
+        """
+        with pytest.raises(TypeError):
+            create_gptable_with_kwargs({"table_name": []})
+
+
+    @pytest.mark.parametrize("invalid_name", [" ", "  "])
+    def test_invalid_characters_table_name(self, invalid_name, create_gptable_with_kwargs):
+        """
+        Test that setting GPTable table name to string with whitespace raises
+        an error.
+        """
+        with pytest.raises(ValueError):
+            create_gptable_with_kwargs({"table_name": invalid_name})
+
 
     @pytest.mark.parametrize("attr", gptable_compulsory_text_attrs)
     @pytest.mark.parametrize("not_text", invalid_text_elements_incl_none)
