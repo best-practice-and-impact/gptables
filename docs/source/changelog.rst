@@ -41,6 +41,8 @@ Unreleased
   Python>=3.6
 * ``contentsheet_label`` parameter added to ``write_workbook``. Previously
   parameter was included in documentation but not in function.
+* Remove trailing whitespace when units or table notes added to column headers
+* Providing table notes will no longer break additional formatting
 * Rich text in ``instructions`` property will no longer raise an error.
 * Image alt text in user documentation
 * Deployment of docs in CI
