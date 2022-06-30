@@ -362,7 +362,7 @@ class GPTable:
 
             # Convert numeric keys to column names
             new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_table_notes.keys()]
-            new_headers_values = [f"{key} \n{value}" for key, value in zip(new_headers_keys, new_table_notes.values())]
+            new_headers_values = [f"{key}\n{value}" for key, value in zip(new_headers_keys, new_table_notes.values())]
             new_headers = dict(zip(new_headers_keys, new_headers_values))
 
             self.table = self.table.rename(columns = new_headers)
