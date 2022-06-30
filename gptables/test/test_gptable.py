@@ -354,7 +354,7 @@ class TestAttrValidationGPTable:
         assert getattr(gptable, "additional_formatting") == additional_formatting
 
 
-    @pytest.mark.parametrize("unit_text", valid_text_elements_incl_none)
+    @pytest.mark.parametrize("unit_text", valid_text_elements_excl_none)
     def test_units_placement(self, unit_text, create_gptable_with_kwargs):
         """
         Test that units are placed correctly under column headers.
@@ -367,6 +367,22 @@ class TestAttrValidationGPTable:
         })
 
         assert gptable.table.columns == table_with_units.columns
+
+
+    def test_table_notes_placement(self, create_gptable_with_kwargs):
+        """
+        Test that units are placed correctly under column headers.
+        """
+        table_with_notes = pd.DataFrame(columns=[f"columnA\n$$note_reference$$"])
+
+        gptable = create_gptable_with_kwargs()
+
+        gptable.set_table(
+            new_table = pd.DataFrame(columns=["columnA"]),
+            new_table_notes = {"columnA": "$$note_reference$$"}
+        )
+
+        assert gptable.table.columns == table_with_notes.columns
 
 
     @pytest.mark.parametrize("column_names,expectation", [
