@@ -308,7 +308,7 @@ class GPTable:
         """    
         if isinstance(new_units, dict) and len(new_units) > 0:
             for value in new_units.values():
-                self._validate_text(value, "units", none_allowed=True)
+                self._validate_text(value, "units")
 
             # Convert numeric keys to column names
             new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_units.keys()] 
@@ -586,7 +586,7 @@ class GPTable:
         ]
 
     @staticmethod
-    def _validate_text(obj, attr, none_allowed = False):
+    def _validate_text(obj, attr):
         """
         Validate that an object contains valid text elements. These are either
         strings or list of strings and dictionaries. If optional = True, object
@@ -594,14 +594,6 @@ class GPTable:
         """
         if isinstance(obj, str):
             return None
-
-        if obj is None:
-            if none_allowed:
-                return None
-            else:
-                msg = (f"{attr} attribute cannot be None. Provide text as "
-                    f"string or list of strings and dictionaries (rich-text).")
-                raise TypeError(msg)
 
         if isinstance(obj, list):
             for element in obj:
