@@ -408,6 +408,26 @@ class TestAttrValidationGPTable:
         assert gptable.table.columns == table_with_units_and_notes.columns
 
 
+    def test_additional_formatting_with_units(self, create_gptable_with_kwargs):
+        """
+        Test that units are placed correctly under column headers.
+        """
+
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(columns=["columnA"]),
+            "units": {"columnA": "unit"},
+            "additional_formatting": [{"column": {
+                    "columns": ["columnA"],
+                    "format": {"bold": True}
+                    }}]
+        })
+
+        assert gptable.additional_formatting == [{"column": {
+            "columns": ["columnA\n(unit)"],
+            "format": {"bold": True}
+        }}]
+
+
     @pytest.mark.parametrize("column_names,expectation", [
         (["columnA", "columnB", "columnC"], does_not_raise()),
         (["columnA", "columnB", ""], pytest.raises(ValueError))
