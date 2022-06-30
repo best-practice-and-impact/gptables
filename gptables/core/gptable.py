@@ -325,7 +325,7 @@ class GPTable:
             self.table = self.table.rename(columns = new_headers)
 
             if len(self.additional_formatting) > 0:
-                self._add_units_to_additional_formatting(new_headers)
+                self._update_column_names_in_additional_formatting(new_headers)
 
         elif not new_units is None:
             msg = ("`units` attribute must be a dictionary or None"
@@ -335,14 +335,12 @@ class GPTable:
 
         self.units = new_units
 
-    def _add_units_to_additional_formatting(self, col_names):
+    def _update_column_names_in_additional_formatting(self, col_names):
         """
-        
         Parameters
         ----------
         col_names: dict
             with keys old names and values new names, where new names are old names plus units
-           
         Return
         ------
         None
@@ -351,7 +349,7 @@ class GPTable:
         for dictionary in formatting_list:
             if list(dictionary.keys()) == ["column"]:
                 format = list(dictionary.values())[0]
-                
+
                 # new_name if name==old_name else name for name in col_names
                 format["columns"] = [col_names[name] if name in list(col_names.keys()) else name for name in format["columns"]]
 
@@ -380,6 +378,9 @@ class GPTable:
             new_headers = dict(zip(new_headers_keys, new_headers_values))
 
             self.table = self.table.rename(columns = new_headers)
+
+            if len(self.additional_formatting) > 0:
+                self._update_column_names_in_additional_formatting(new_headers)
 
         elif not new_table_notes is None:
             msg = ("`table_notes` attribute must be a dictionary or None"
