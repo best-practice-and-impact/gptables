@@ -310,8 +310,15 @@ class GPTable:
             for value in new_units.values():
                 self._validate_text(value, "units")
 
+            headers = self.table.columns.values.tolist()
+            unmodified_headers = [header.split("\n")[0] for header in headers]
+
+            for n in range(len(unmodified_headers)):
+                if unmodified_headers[n] in list(new_units.keys()):
+                    new_units[n] = new_units.pop(unmodified_headers[n])
+
             # Convert numeric keys to column names
-            new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_units.keys()] 
+            new_headers_keys = [headers[key] if isinstance(key, int) else key for key in new_units.keys()]
             new_headers_values = [f"{key}\n({value})" for key, value in zip(new_headers_keys, new_units.values())]
             new_headers = dict(zip(new_headers_keys, new_headers_values))
 
@@ -360,8 +367,15 @@ class GPTable:
             for value in new_table_notes.values():
                 self._validate_text(value, "table_notes")
 
+            headers = self.table.columns.values.tolist()
+            unmodified_headers = [header.split("\n")[0] for header in headers]
+
+            for n in range(len(unmodified_headers)):
+                if unmodified_headers[n] in list(new_table_notes.keys()):
+                    new_table_notes[n] = new_table_notes.pop(unmodified_headers[n])
+
             # Convert numeric keys to column names
-            new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_table_notes.keys()]
+            new_headers_keys = [headers[key] if isinstance(key, int) else key for key in new_table_notes.keys()]
             new_headers_values = [f"{key}\n{value}" for key, value in zip(new_headers_keys, new_table_notes.values())]
             new_headers = dict(zip(new_headers_keys, new_headers_values))
 
