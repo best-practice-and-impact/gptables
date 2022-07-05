@@ -26,8 +26,15 @@ Unreleased
   ``legend`` lists is ``None``.
 * Restructure and rewording of changelog
 
+**Deprecated**
+
+* ``contentsheet`` parameter of ``write_workbook`` will be removed in v2 of
+  gptables. Please use ``contentsheet_label`` instead.
+
 **Fixed**
 
+* ``contentsheet_label`` parameter added to ``write_workbook``. Previously
+  parameter was included in documentation but not in function.
 * Rich text in ``instructions`` property will no longer raise an error.
 * Image alt text in user documentation
 * Deployment of docs in CI

@@ -53,7 +53,7 @@ def create_gpworkbook():
             filename=output_path/"actual_workbook.xlsx",
             sheets={"Label": gptable},
             cover=cover,
-            contentsheet="Table of contents",
+            contentsheet_label="Table of contents",
             contentsheet_options={"additional_elements": ["subtitles"]},
             notes_table=notes_table,
             notesheet_label="Notes table",
