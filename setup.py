@@ -19,7 +19,7 @@ docs_requires = [
 
 test_requires = [
     "coverage",
-    "pytest>=3.6,<4",
+    "pytest>=6.2.5",
     "pytest-cov"
 ] + docs_requires
 
