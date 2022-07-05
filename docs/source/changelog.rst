@@ -18,9 +18,12 @@ Unreleased
 **Added**
 
 * New tests for ``GPTable`` attributes.
+* New end-to-end test.
 
 **Changed**
 
+* Running package tests now requires pytest>=6.2.5, to support Python 3.10
+* CI now runs tests on both Linux and Windows with Python 3.6-3.10
 * Validation of GPTable text attributes. Error will be raised if ``title`` or
   ``instructions`` is ``None``, or if an entry in the ``subtitle`` or
   ``legend`` lists is ``None``.
@@ -33,6 +36,9 @@ Unreleased
 
 **Fixed**
 
+* ``auto_width`` now functions as expected for columns with links or rich text
+  columns using Python 3.6 and 3.7, as well as for numeric columns using
+  Python>=3.6
 * ``contentsheet_label`` parameter added to ``write_workbook``. Previously
   parameter was included in documentation but not in function.
 * Rich text in ``instructions`` property will no longer raise an error.
