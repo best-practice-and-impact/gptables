@@ -479,7 +479,7 @@ class GPWorksheet(Worksheet):
             new position to write next element from
         """
         # Raise error if any table element is null or whitespace
-        gptable.table.replace(regex=r'^\s*$', value=np.NaN, inplace=True)
+        gptable.table.replace(regex=r'^\s*$', value=None, inplace=True)
         if gptable.table.isna().values.any():
             msg = ("""
             Empty or null cell found in table, the reason for missingness should
