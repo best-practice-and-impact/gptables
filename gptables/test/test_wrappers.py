@@ -1,6 +1,7 @@
 from collections import namedtuple
 import pandas as pd
 from pandas.testing import assert_frame_equal, assert_series_equal
+import pytest
 
 import xlsxwriter
 
@@ -10,7 +11,7 @@ from gptables.core.wrappers import GPWorksheet
 from gptables.core.gptable import FormatList
 from gptables import Theme
 from gptables import gptheme
-import pytest
+from gptables.test.test_gptable import create_gptable_with_kwargs
 
 Tb = namedtuple("Testbook", "wb ws")
 
@@ -222,7 +223,7 @@ class TestGPWorksheetWriting:
         assert format_obj.font_color == "#0000FF" # aka Blue
 
 
-    def test__smart_write_empty_cell(self, testbook):
+    def test__smart_write_null_cell(self, testbook):
         testbook.ws._smart_write(0, 0, None, {})
         # Strings are stored in a lookup table for efficiency
         got_string = testbook.ws.str_table.string_table
@@ -233,6 +234,18 @@ class TestGPWorksheetWriting:
         # When cell has no content, tuple only contains Format
         cell = testbook.ws.table[0][0]
         assert len(cell) == 1
+
+
+    @pytest.mark.parametrize("cell_value", [None, "", " ", "    "])
+    def test__write_table_elements_warn_null_or_whitespace(
+        self, testbook, create_gptable_with_kwargs, cell_value,
+    ):
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame({"col": [cell_value]})
+        })
+
+        with pytest.warns():
+            testbook.ws._write_table_elements([0,0], gptable, auto_width=True)
 
 
 
