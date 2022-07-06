@@ -11,7 +11,7 @@ from gptables.core.wrappers import GPWorksheet
 from gptables.core.gptable import FormatList
 from gptables import Theme
 from gptables import gptheme
-from gptables.test.test_gptable import create_gptable_with_kwargs
+from gptables.test.test_gptable import create_gptable_with_kwargs, does_not_raise
 
 Tb = namedtuple("Testbook", "wb ws")
 
@@ -236,15 +236,23 @@ class TestGPWorksheetWriting:
         assert len(cell) == 1
 
 
-    @pytest.mark.parametrize("cell_value", [None, "", " ", "    "])
-    def test__write_table_elements_warn_null_or_whitespace(
-        self, testbook, create_gptable_with_kwargs, cell_value,
+    @pytest.mark.parametrize("cell_value,expectation", [
+        (None, pytest.warns()),
+        ("", pytest.warns()),
+        (" ", pytest.warns()),
+        ("    ", pytest.warns()),
+        (".", pytest.raises(ValueError)),
+        (" *", pytest.raises(ValueError)),
+        (" Hello_World! ", does_not_raise()),
+    ])
+    def test__write_table_elements_validation(
+        self, testbook, create_gptable_with_kwargs, cell_value, expectation
     ):
         gptable = create_gptable_with_kwargs({
             "table": pd.DataFrame({"col": [cell_value]})
         })
 
-        with pytest.warns():
+        with expectation:
             testbook.ws._write_table_elements([0,0], gptable, auto_width=True)
 
 
