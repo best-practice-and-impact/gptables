@@ -222,6 +222,19 @@ class TestGPWorksheetWriting:
         assert format_obj.font_color == "#0000FF" # aka Blue
 
 
+    def test__smart_write_empty_cell(self, testbook):
+        testbook.ws._smart_write(0, 0, None, {})
+        # Strings are stored in a lookup table for efficiency
+        got_string = testbook.ws.str_table.string_table
+        exp_string = {}
+        assert got_string == exp_string
+
+        # Strings referenced using a named tuple (string, Format)
+        # When cell has no content, tuple only contains Format
+        cell = testbook.ws.table[0][0]
+        assert len(cell) == 1
+
+
 
 class TestGPWorksheetFooterText:
     """
