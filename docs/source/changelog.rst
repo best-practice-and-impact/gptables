@@ -19,6 +19,7 @@ Unreleased
 
 * New tests for ``GPTable`` attributes.
 * New end-to-end test.
+* New tests for GPWorksheet writing.
 
 **Changed**
 

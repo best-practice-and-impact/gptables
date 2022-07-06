@@ -478,7 +478,7 @@ class GPWorksheet(Worksheet):
         pos : list
             new position to write next element from
         """
-        # Raise error if any table element is null or whitespace
+        # Raise warning if any table element is null or whitespace
         gptable.table.replace(regex=r'^\s*$', value=None, inplace=True)
         if gptable.table.isna().values.any():
             msg = ("""
