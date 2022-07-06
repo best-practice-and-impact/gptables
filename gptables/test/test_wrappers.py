@@ -1,5 +1,3 @@
-import unittest
-from io import StringIO
 from collections import namedtuple
 import pandas as pd
 from pandas.testing import assert_frame_equal, assert_series_equal
@@ -193,6 +191,35 @@ class TestGPWorksheetWriting:
         
         format_obj = cell[1]
         assert format_obj.bold
+
+
+    def test__smart_write_link(self, testbook):
+        testbook.wb.set_theme(Theme({}))
+
+        display_text = "gov.uk"
+        url = "https://www.gov.uk/"
+
+        testbook.ws._smart_write(0, 0, {display_text: url}, {})
+
+        got_string = testbook.ws.str_table.string_table
+        exp_string = {display_text: 0}
+        assert got_string == exp_string
+
+        got_hyperlink = testbook.ws.hyperlinks[0][0]["url"]
+        exp_hyperlink = url
+        assert got_hyperlink == exp_hyperlink
+
+        # String is referenced using a named tuple (string, Format)
+        # Here we get first element, which references string lookup location
+        cell = testbook.ws.table[0][0]
+
+        got_lookup = cell[0]
+        exp_lookup = 0
+        assert got_lookup == exp_lookup
+
+        format_obj = cell[1]
+        assert format_obj.underline == True
+        assert format_obj.font_color == "#0000FF" # aka Blue
 
 
 
