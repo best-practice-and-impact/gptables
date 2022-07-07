@@ -455,3 +455,22 @@ class TestGPWorkbook:
         """
         with pytest.raises(TypeError):
             testbook.wb.set_theme(not_a_theme)
+            
+    def test_make_notesheet(self, testbook):
+        """
+        Test that creating a notes table sheet using `make_notesheet` generates
+        the same gptables.GPTable object as expected.
+        """
+        dummy_table = pd.DataFrame(data={"x":[1, 2], "y":[3, 4]})
+        
+        notes_name = "Just a notesheet"
+        notes_title = "Are these the notes you're looking for?"
+        notes_instructions = "These are not the notes you're looking for"
+        
+        got_notesheet = testbook.wb.make_notesheet(notes_table=dummy_table,
+                                                   table_name=notes_name,
+                                                   title=notes_title,
+                                                   instructions=notes_instructions)
+        exp_notesheet = gptables.GPTable(table=dummy_table, title=notes_title, instructions=notes_instructions)
+        
+        assert got_notesheet == exp_notesheet
