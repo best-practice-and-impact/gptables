@@ -117,6 +117,9 @@ def write_workbook(
     information. It calls upon the package to write a formatted `.xlsx`
     file to the specified path.
 
+    .. note:: Deprecated in v1.1.0: `contentsheet` will be removed
+        in v2, it is replaced by `contentsheet_label`
+
     Parameters
     ----------
     filename : str
@@ -146,6 +149,8 @@ def write_workbook(
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True by
         default.
+    contentsheet : str
+        alias for contentsheet_label, deprecated in v1.1.0
 
     Returns
     -------
