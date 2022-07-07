@@ -276,11 +276,10 @@ class GPTable:
         """
         self._validate_text(new_instructions, "instructions")
 
-        if isinstance(new_instructions, list):
-            new_instructions = FormatList(new_instructions)
-
         if len(new_instructions) == 0:
             self.instructions = "This worksheet contains one table. Some cells may refer to notes, which can be found on the notes worksheet."
+        elif isinstance(new_instructions, list):
+            self.instructions = FormatList(new_instructions)
         else:
             self.instructions = new_instructions
 
@@ -309,7 +308,7 @@ class GPTable:
         """    
         if isinstance(new_units, dict) and len(new_units) > 0:
             for value in new_units.values():
-                self._validate_text(value, "units")
+                self._validate_text(value, "units", none_allowed=True)
 
             # Convert numeric keys to column names
             new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_units.keys()] 
@@ -587,17 +586,23 @@ class GPTable:
         ]
 
     @staticmethod
-    def _validate_text(obj, attr):
+    def _validate_text(obj, attr, none_allowed = False):
         """
         Validate that an object contains valid text elements. These are either
-        strings or list of strings and dictionaries.
+        strings or list of strings and dictionaries. If optional = True, object
+        can be None, otherwise an error will be raised if object is None.
         """
-        if isinstance(obj, str) or obj is None:
+        if isinstance(obj, str):
             return None
-        
-        msg = (f"{attr} text should be provided as strings or lists of"
-                   f" strings and dictionaries (rich-text). {type(obj)} are"
-                   " not valid text elements.")
+
+        if obj is None:
+            if none_allowed:
+                return None
+            else:
+                msg = (f"{attr} attribute cannot be None. Provide text as "
+                    f"string or list of strings and dictionaries (rich-text).")
+                raise TypeError(msg)
+
         if isinstance(obj, list):
             for element in obj:
                 if not isinstance(element, (str, dict)):

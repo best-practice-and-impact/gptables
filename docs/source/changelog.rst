@@ -15,12 +15,20 @@ and this project tries its very best to adhere to
 Unreleased
 ===================
 
+**Added**
+
+* New tests for ``GPTable`` attributes.
+
 **Changed**
 
+* Validation of GPTable text attributes. Error will be raised if ``title`` or
+  ``instructions`` is ``None``, or if an entry in the ``subtitle`` or
+  ``legend`` lists is ``None``.
 * Restructure and rewording of changelog
 
 **Fixed**
 
+* Rich text in ``instructions`` property will no longer raise an error.
 * Image alt text in user documentation
 * Deployment of docs in CI
 
