@@ -340,7 +340,7 @@ class TestGPWorksheetTable:
 
             got_heading_format = table["columns"][n]["name_format"]
             exp_heading_format = testbook.wb.add_format(column_heading_format)
-            assert got_heading_format.__dict__ != exp_heading_format.__dict__
+            assert got_heading_format.__dict__ == exp_heading_format.__dict__
 
 
 
