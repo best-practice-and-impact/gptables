@@ -311,8 +311,11 @@ class GPTable:
                 self._validate_text(value, "units")
 
             headers = self.table.columns.values.tolist()
+
+            # Check if notes have already been added to headers...
             unmodified_headers = [header.split("\n")[0] for header in headers]
 
+            # ...if so, apply any units applied to headers without notes, to headers with notes
             for n in range(len(unmodified_headers)):
                 if unmodified_headers[n] in list(new_units.keys()):
                     new_units[n] = new_units.pop(unmodified_headers[n])
@@ -366,8 +369,11 @@ class GPTable:
                 self._validate_text(value, "table_notes")
 
             headers = self.table.columns.values.tolist()
+
+            # Check if units have already been added to headers...
             unmodified_headers = [header.split("\n")[0] for header in headers]
 
+            # ...if so, apply any notes applied to headers without units, to headers with units
             for n in range(len(unmodified_headers)):
                 if unmodified_headers[n] in list(new_table_notes.keys()):
                     new_table_notes[n] = new_table_notes.pop(unmodified_headers[n])
