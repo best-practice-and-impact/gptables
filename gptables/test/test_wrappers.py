@@ -236,20 +236,20 @@ class TestGPWorksheetWriting:
         assert len(cell) == 1
 
 
-    @pytest.mark.parametrize("cell_value,expectation", [
-        (None, pytest.warns()),
-        ("", pytest.warns()),
-        (" ", pytest.warns()),
-        ("    ", pytest.warns()),
-        (".", pytest.raises(ValueError)),
-        (" *", pytest.raises(ValueError)),
-        (" Hello_World! ", does_not_raise()),
+    @pytest.mark.parametrize("cell_value1,cell_value2,expectation", [
+        (None, None, pytest.raises(ValueError)),
+        (None, "valid text", pytest.warns(UserWarning)),
+        ("", "valid text", pytest.warns(UserWarning)),
+        (" ", "valid text", pytest.warns(UserWarning)),
+        ("    ", "valid text", pytest.warns(UserWarning)),
+        ("_", "valid text", pytest.raises(ValueError)),
+        (" *", "valid text", pytest.raises(ValueError)),
+        (" Hello_World! ", "valid text", does_not_raise()),
     ])
-    def test__write_table_elements_validation(
-        self, testbook, create_gptable_with_kwargs, cell_value, expectation
-    ):
+    def test__write_table_elements_validation(self, testbook,
+        create_gptable_with_kwargs, cell_value1, cell_value2, expectation):
         gptable = create_gptable_with_kwargs({
-            "table": pd.DataFrame({"col": [cell_value]})
+            "table": pd.DataFrame({"col": [cell_value1, cell_value2]})
         })
 
         with expectation:

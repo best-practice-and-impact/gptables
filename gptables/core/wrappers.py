@@ -478,8 +478,16 @@ class GPWorksheet(Worksheet):
         pos : list
             new position to write next element from
         """
-        # Raise warning if any table element is null or whitespace
-        gptable.table.replace(regex=r'^\s*$', value=None, inplace=True)
+        # Convert whitespace only cells to None
+        gptable.table.replace({r'^\s*$': None}, inplace=True, regex=True)
+
+        if gptable.table.isna().values.all():
+            msg = ("""
+            Table found containing only null or whitespace cells.
+            Please provide alternative table containing data.
+            """)
+            raise ValueError(msg)
+
         if gptable.table.isna().values.any():
             msg = ("""
             Empty or null cell found in table, the reason for missingness should
