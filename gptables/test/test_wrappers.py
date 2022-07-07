@@ -1,5 +1,4 @@
-import unittest
-from io import StringIO
+import pytest
 from collections import namedtuple
 import pandas as pd
 from pandas.testing import assert_frame_equal, assert_series_equal
@@ -12,7 +11,7 @@ from gptables.core.wrappers import GPWorksheet
 from gptables.core.gptable import FormatList
 from gptables import Theme
 from gptables import gptheme
-import pytest
+from gptables.test.test_gptable import create_gptable_with_kwargs
 
 Tb = namedtuple("Testbook", "wb ws")
 
@@ -293,8 +292,58 @@ class TestGPWorksheetFormatUpdate:
         exp.iloc[0] = [{"bold": True} for n in range(3)]
         exp.iloc[1] = [{"bold": True} for n in range(3)]
         assert_frame_equal(test, exp)
-    
-        
+
+
+
+class TestGPWorksheetTable:
+    """
+    Test that the table property inherited from `xlsxwriter.Worksheet` is set correctly.
+    """
+    def test__mark_data_as_worksheet_table(
+        self, testbook, create_gptable_with_kwargs
+    ):
+        df = pd.DataFrame({"col1": ["x", "y"], "col2": [0, 1]})
+        table_name = "table_name"
+
+        gptable = create_gptable_with_kwargs({
+            "table": df,
+            "table_name": table_name
+        })
+        gptable._set_data_range()
+
+        table_format = pd.DataFrame({"col1": [{}, {}], "col2": [{}, {}]})
+
+        testbook.ws._write_array([0, 2], df, table_format) # First two rows reserved for title and instructions
+
+        column_heading_format = testbook.ws.theme.column_heading_format
+        testbook.ws._mark_data_as_worksheet_table(gptable, column_heading_format)
+
+        assert len(testbook.ws.tables) == 1
+
+        table = testbook.ws.tables[0]
+
+        got_table_range = table["a_range"]
+        exp_table_range = xlsxwriter.utility.xl_range(*gptable.data_range)
+
+        assert got_table_range == exp_table_range
+
+        assert table["name"] == table_name
+
+        got_number_of_columns = len(table["columns"])
+        exp_number_of_columns = df.shape[0]
+        assert got_number_of_columns == exp_number_of_columns
+
+        for n in range(got_number_of_columns):
+            got_column_name = table["columns"][n]["name"]
+            exp_column_name = df.columns[n]
+            assert got_column_name == exp_column_name
+
+            got_heading_format = table["columns"][n]["name_format"]
+            exp_heading_format = testbook.wb.add_format(column_heading_format)
+            assert got_heading_format.__dict__ != exp_heading_format.__dict__
+
+
+
 class TestGPWorkbook:
     """
     Test that GPWorkbook initialisation and methods work as expected.
