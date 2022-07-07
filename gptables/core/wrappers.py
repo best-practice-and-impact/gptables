@@ -499,7 +499,7 @@ class GPWorksheet(Worksheet):
             warnings.warn(msg)
 
         # Raise error if any table element is only special characters
-        if gptable.table.stack().str.contains('^[^a-zA-Z0-9_]*$').any():
+        if gptable.table.stack().str.contains('^[^a-zA-Z0-9]*$').any():
             msg = ("""
             Cell found containing only special characters, replace with
             alphanumeric characters before inputting to gptables.

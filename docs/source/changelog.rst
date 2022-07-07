@@ -38,6 +38,7 @@ Unreleased
 
 **Fixed**
 
+* Fix special character only cell validation to also include underscore ``_``
 * ``auto_width`` now functions as expected for columns with links or rich text
   columns using Python 3.6 and 3.7, as well as for numeric columns using
   Python>=3.6
