@@ -257,13 +257,11 @@ class TestGPWorksheetWriting:
 
 
 
-class TestGPWorksheetFooterText:
+class TestGPWorksheetReferences:
     """
-    Test that GPTable footer elements are modified correctly by GPWorksheet
+    Test that GPTable note references are modified correctly by GPWorksheet
     during write_gptable().
     """
-
-
     @pytest.mark.parametrize("text", test_text_list)
     def test__replace_reference(self, text, testbook):
         """
@@ -420,3 +418,36 @@ class TestGPWorkbook:
         """
         with pytest.raises(TypeError):
             testbook.wb.set_theme(not_a_theme)
+
+
+    def test__update_annotations(self, testbook, create_gptable_with_kwargs):
+        """
+        Test that _update_annotations produces a correctly ordered list of
+        note references used in sheets.
+        """
+        table = pd.DataFrame(columns=["col"])
+
+        kwargs1 = {
+            "title": "Title$$1$$",
+            "subtitles": ["Subtitle$$2$$"],
+            "units": {0: "Unit$$3$$"},
+            "table_notes": {0: "Note$$4$$"},
+            "table": table
+        }
+
+        kwargs2 = {
+            "title": "Title$$1$$",
+            "subtitles": ["Subtitle$$3$$"],
+            "units": {0: "Unit$$5$$"},
+            "table_notes": {0: "Note$4$$"},
+            "table": table
+        }
+
+        gptable1 = create_gptable_with_kwargs(kwargs1)
+        gptable2 = create_gptable_with_kwargs(kwargs2)
+        sheets = {"sheet1": gptable1, "sheet2": gptable2}
+
+        gpworkbook = testbook.wb
+        gpworkbook._update_annotations(sheets)
+
+        assert gpworkbook._annotations == ["1", "2", "3", "4", "5"]
