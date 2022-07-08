@@ -20,6 +20,8 @@ Unreleased
 * New tests for ``GPTable`` attributes.
 * New end-to-end test.
 * New test for marking table as Excel worksheet table.
+* New tests for GPWorksheet writing.
+* Validation for tables with only null or whitespace cells
 
 **Changed**
 
@@ -37,11 +39,14 @@ Unreleased
 
 **Fixed**
 
+* Fix special character only cell validation to also include underscore ``_``
 * ``auto_width`` now functions as expected for columns with links or rich text
   columns using Python 3.6 and 3.7, as well as for numeric columns using
   Python>=3.6
 * ``contentsheet_label`` parameter added to ``write_workbook``. Previously
   parameter was included in documentation but not in function.
+* Remove trailing whitespace when units or table notes added to column headers
+* Providing table notes will no longer break additional formatting
 * Rich text in ``instructions`` property will no longer raise an error.
 * Image alt text in user documentation
 * Deployment of docs in CI

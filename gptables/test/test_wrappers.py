@@ -11,7 +11,7 @@ from gptables.core.wrappers import GPWorksheet
 from gptables.core.gptable import FormatList
 from gptables import Theme
 from gptables import gptheme
-from gptables.test.test_gptable import create_gptable_with_kwargs
+from gptables.test.test_gptable import create_gptable_with_kwargs, does_not_raise
 
 Tb = namedtuple("Testbook", "wb ws")
 
@@ -192,6 +192,68 @@ class TestGPWorksheetWriting:
         
         format_obj = cell[1]
         assert format_obj.bold
+
+
+    def test__smart_write_link(self, testbook):
+        testbook.wb.set_theme(Theme({}))
+
+        display_text = "gov.uk"
+        url = "https://www.gov.uk/"
+
+        testbook.ws._smart_write(0, 0, {display_text: url}, {})
+
+        got_string = testbook.ws.str_table.string_table
+        exp_string = {display_text: 0}
+        assert got_string == exp_string
+
+        got_hyperlink = testbook.ws.hyperlinks[0][0]["url"]
+        exp_hyperlink = url
+        assert got_hyperlink == exp_hyperlink
+
+        # String is referenced using a named tuple (string, Format)
+        # Here we get first element, which references string lookup location
+        cell = testbook.ws.table[0][0]
+
+        got_lookup = cell[0]
+        exp_lookup = 0
+        assert got_lookup == exp_lookup
+
+        format_obj = cell[1]
+        assert format_obj.underline == True
+        assert format_obj.font_color == "#0000FF" # aka Blue
+
+
+    def test__smart_write_null_cell(self, testbook):
+        testbook.ws._smart_write(0, 0, None, {})
+        # Strings are stored in a lookup table for efficiency
+        got_string = testbook.ws.str_table.string_table
+        exp_string = {}
+        assert got_string == exp_string
+
+        # Strings referenced using a named tuple (string, Format)
+        # When cell has no content, tuple only contains Format
+        cell = testbook.ws.table[0][0]
+        assert len(cell) == 1
+
+
+    @pytest.mark.parametrize("cell_value1,cell_value2,expectation", [
+        (None, None, pytest.raises(ValueError)),
+        (None, "valid text", pytest.warns(UserWarning)),
+        ("", "valid text", pytest.warns(UserWarning)),
+        (" ", "valid text", pytest.warns(UserWarning)),
+        ("    ", "valid text", pytest.warns(UserWarning)),
+        ("_", "valid text", pytest.raises(ValueError)),
+        (" *", "valid text", pytest.raises(ValueError)),
+        (" Hello_World! ", "valid text", does_not_raise()),
+    ])
+    def test__write_table_elements_validation(self, testbook,
+        create_gptable_with_kwargs, cell_value1, cell_value2, expectation):
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame({"col": [cell_value1, cell_value2]})
+        })
+
+        with expectation:
+            testbook.ws._write_table_elements([0,0], gptable, auto_width=True)
 
 
 
