@@ -354,6 +354,121 @@ class TestAttrValidationGPTable:
         assert getattr(gptable, "additional_formatting") == additional_formatting
 
 
+    @pytest.mark.parametrize("unit_text", valid_text_elements_excl_none)
+    @pytest.mark.parametrize("column_id", ["columnA", 0])
+    def test_units_placement(self, unit_text, column_id, create_gptable_with_kwargs):
+        """
+        Test that units are placed correctly under column headers.
+        """
+        table_with_units = pd.DataFrame(columns=[f"columnA\n({unit_text})"])
+
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(columns=["columnA"]),
+        })
+
+        gptable.set_units(new_units = {column_id: unit_text})
+
+        assert gptable.table.columns == table_with_units.columns
+
+
+    @pytest.mark.parametrize("column_id", ["columnA", 0])
+    def test_table_notes_placement(self, column_id, create_gptable_with_kwargs):
+        """
+        Test that units are placed correctly under column headers.
+        """
+        table_with_notes = pd.DataFrame(columns=[f"columnA\n$$note_reference$$"])
+
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(columns=["columnA"])
+        })
+
+        gptable.set_table_notes(
+            new_table_notes = {column_id: "$$note_reference$$"}
+        )
+
+        assert gptable.table.columns == table_with_notes.columns
+
+
+    @pytest.mark.parametrize("column_id", ["columnA", 0])
+    def test_table_units_and_notes_placement(self, column_id, create_gptable_with_kwargs):
+        """
+        Test that units and notes are placed correctly under column headers.
+        """
+        table_with_units_and_notes = pd.DataFrame(
+            columns=[f"columnA\n(unit)\n$$note_reference$$"]
+        )
+
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(columns=["columnA"])
+        })
+
+        gptable.set_units(new_units = {column_id: "unit"})
+        gptable.set_table_notes(new_table_notes = {column_id: "$$note_reference$$"})
+
+        assert gptable.table.columns == table_with_units_and_notes.columns
+
+
+    def test_additional_formatting_with_units(self, create_gptable_with_kwargs):
+        """
+        Test that units are placed correctly under column headers.
+        """
+
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(columns=["columnA"]),
+            "units": {"columnA": "unit"},
+            "additional_formatting": [{"column": {
+                    "columns": ["columnA"],
+                    "format": {"bold": True}
+                    }}]
+        })
+
+        assert gptable.additional_formatting == [{"column": {
+            "columns": ["columnA\n(unit)"],
+            "format": {"bold": True}
+        }}]
+
+
+    def test_additional_formatting_with_table_notes(self, create_gptable_with_kwargs):
+        """
+        Test that units are placed correctly under column headers.
+        """
+
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(columns=["columnA"]),
+            "table_notes": {"columnA": "$$ref$$"},
+            "additional_formatting": [{"column": {
+                    "columns": ["columnA"],
+                    "format": {"bold": True}
+                    }}]
+        })
+
+        assert gptable.additional_formatting == [{"column": {
+            "columns": ["columnA\n$$ref$$"],
+            "format": {"bold": True}
+        }}]
+
+
+    def test_additional_formatting_with_units_and_table_notes(self, create_gptable_with_kwargs):
+        """
+        Test that units are placed correctly under column headers.
+        """
+
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame(columns=["columnA"]),
+            "units": {"columnA": "unit"},
+            "table_notes": {"columnA": "$$ref$$"},
+            "additional_formatting": [{"column": {
+                    "columns": ["columnA"],
+                    "format": {"bold": True}
+                    }}]
+        })
+
+        assert gptable.additional_formatting == [{"column": {
+            "columns": ["columnA\n(unit)\n$$ref$$"],
+            "format": {"bold": True}
+        }}]
+
+
     @pytest.mark.parametrize("column_names,expectation", [
         (["columnA", "columnB", "columnC"], does_not_raise()),
         (["columnA", "columnB", ""], pytest.raises(ValueError))

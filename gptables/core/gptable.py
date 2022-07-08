@@ -308,17 +308,27 @@ class GPTable:
         """    
         if isinstance(new_units, dict) and len(new_units) > 0:
             for value in new_units.values():
-                self._validate_text(value, "units", none_allowed=True)
+                self._validate_text(value, "units")
+
+            headers = self.table.columns.values.tolist()
+
+            # Check if notes have already been added to headers...
+            unmodified_headers = [header.split("\n")[0] for header in headers]
+
+            # ...if so, apply any units applied to headers without notes, to headers with notes
+            for n in range(len(unmodified_headers)):
+                if unmodified_headers[n] in list(new_units.keys()):
+                    new_units[n] = new_units.pop(unmodified_headers[n])
 
             # Convert numeric keys to column names
-            new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_units.keys()] 
-            new_headers_values = [f"{key} \n({value})" for key, value in zip(new_headers_keys, new_units.values())]
+            new_headers_keys = [headers[key] if isinstance(key, int) else key for key in new_units.keys()]
+            new_headers_values = [f"{key}\n({value})" for key, value in zip(new_headers_keys, new_units.values())]
             new_headers = dict(zip(new_headers_keys, new_headers_values))
 
             self.table = self.table.rename(columns = new_headers)
 
             if len(self.additional_formatting) > 0:
-                self._add_units_to_additional_formatting(new_headers)
+                self._update_column_names_in_additional_formatting(new_headers)
 
         elif not new_units is None:
             msg = ("`units` attribute must be a dictionary or None"
@@ -328,14 +338,12 @@ class GPTable:
 
         self.units = new_units
 
-    def _add_units_to_additional_formatting(self, col_names):
+    def _update_column_names_in_additional_formatting(self, col_names):
         """
-        
         Parameters
         ----------
         col_names: dict
             with keys old names and values new names, where new names are old names plus units
-           
         Return
         ------
         None
@@ -344,7 +352,7 @@ class GPTable:
         for dictionary in formatting_list:
             if list(dictionary.keys()) == ["column"]:
                 format = list(dictionary.values())[0]
-                
+
                 # new_name if name==old_name else name for name in col_names
                 format["columns"] = [col_names[name] if name in list(col_names.keys()) else name for name in format["columns"]]
 
@@ -360,12 +368,25 @@ class GPTable:
             for value in new_table_notes.values():
                 self._validate_text(value, "table_notes")
 
+            headers = self.table.columns.values.tolist()
+
+            # Check if units have already been added to headers...
+            unmodified_headers = [header.split("\n")[0] for header in headers]
+
+            # ...if so, apply any notes applied to headers without units, to headers with units
+            for n in range(len(unmodified_headers)):
+                if unmodified_headers[n] in list(new_table_notes.keys()):
+                    new_table_notes[n] = new_table_notes.pop(unmodified_headers[n])
+
             # Convert numeric keys to column names
-            new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_table_notes.keys()]
-            new_headers_values = [f"{key} \n{value}" for key, value in zip(new_headers_keys, new_table_notes.values())]
+            new_headers_keys = [headers[key] if isinstance(key, int) else key for key in new_table_notes.keys()]
+            new_headers_values = [f"{key}\n{value}" for key, value in zip(new_headers_keys, new_table_notes.values())]
             new_headers = dict(zip(new_headers_keys, new_headers_values))
 
             self.table = self.table.rename(columns = new_headers)
+
+            if len(self.additional_formatting) > 0:
+                self._update_column_names_in_additional_formatting(new_headers)
 
         elif not new_table_notes is None:
             msg = ("`table_notes` attribute must be a dictionary or None"
@@ -586,7 +607,7 @@ class GPTable:
         ]
 
     @staticmethod
-    def _validate_text(obj, attr, none_allowed = False):
+    def _validate_text(obj, attr):
         """
         Validate that an object contains valid text elements. These are either
         strings or list of strings and dictionaries. If optional = True, object
@@ -594,14 +615,6 @@ class GPTable:
         """
         if isinstance(obj, str):
             return None
-
-        if obj is None:
-            if none_allowed:
-                return None
-            else:
-                msg = (f"{attr} attribute cannot be None. Provide text as "
-                    f"string or list of strings and dictionaries (rich-text).")
-                raise TypeError(msg)
 
         if isinstance(obj, list):
             for element in obj:
