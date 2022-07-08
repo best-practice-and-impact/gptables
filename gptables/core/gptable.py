@@ -6,7 +6,11 @@ class GPTable:
     """
     A Good Practice Table. Stores a table and metadata for writing a table
     to excel.
-    
+
+    .. note:: Deprecated in v1.1.0: Ability to reference notes within
+        ``GPTable.table.columns`` will be removed in v2 of gptables. Please use
+        ``GPTable.table_notes`` to ensure references are correctly placed and ordered.
+
     Attributes
     ----------
     table : pandas.DataFrame
