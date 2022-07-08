@@ -23,13 +23,13 @@ valid_text_elements = [  # Not None
 test_text_list = [
     "This has a $$reference$$",
     "This one doesn't",
-    "Here's another $$one$$"
+    "Here's $$another$$one"
     ]
 
 exp_text_list = [
     "This has a [note 1]",
     "This one doesn't",
-    "Here's another [note 2]"
+    "Here's one[note 2]"
     ]
 
 
@@ -271,25 +271,25 @@ class TestGPWorksheetFooterText:
         [note n], in order of appearance. Also tests replacement in lists.
         """
         got_output = []
-        reference_order = ["reference", "one"]
+        reference_order = ["reference", "another"]
 
         got_output = [testbook.ws._replace_reference(text, reference_order) for text in test_text_list]
     
-        exp_refs = ["reference", "one"]
+        exp_refs = ["reference", "another"]
         assert reference_order == exp_refs
         assert got_output == exp_text_list
 
 
     @pytest.mark.parametrize("text,refs,output",
         zip(test_text_list,
-        [["reference"], [], ["one"]],
-        ["This has a [note 1]", "This one doesn't", "Here's another [note 2]"]
+        [["reference"], [], ["another"]],
+        ["This has a [note 1]", "This one doesn't", "Here's one[note 2]"]
         ))
     def test__replace_reference_in_attr_str(self, text, refs, output, testbook):
         """
         Test that references are replaced in a single string.
         """
-        reference_order = ["reference", "one"]
+        reference_order = ["reference", "another"]
         got_text = testbook.ws._replace_reference_in_attr(
                 text,
                 reference_order
@@ -302,11 +302,11 @@ class TestGPWorksheetFooterText:
         """
         Test that references are replaced in dictionary values, but not keys.
         """
-        reference_order = ["reference", "one"]
+        reference_order = ["reference", "another"]
         test_text_dict = {
                 "$$key$$": "This is a value with a $$reference$$",
-                "another_key": "Another value",
-                "third_key": "$$one$$more reference"
+                "second_key": "Second value",
+                "another_key": "$$another$$reference"
                 }
         got_text = testbook.ws._replace_reference_in_attr(
                 test_text_dict,
@@ -315,8 +315,8 @@ class TestGPWorksheetFooterText:
                 
         exp_text_dict = {
                 "$$key$$": "This is a value with a [note 1]",
-                "another_key": "Another value",
-                "third_key": "more reference[note 2]"
+                "second_key": "Second value",
+                "another_key": "reference[note 2]"
                 }
         
         assert got_text == exp_text_dict
