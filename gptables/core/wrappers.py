@@ -20,9 +20,6 @@ class GPWorksheet(Worksheet):
     Wrapper for an XlsxWriter Worksheet object. Provides a method for writing
     a good practice table (GPTable) to a Worksheet.
     """
-    def __init__(self):
-        Worksheet.__init__(self)
-
     def write_cover(self, cover):
         """
         Write a cover page to the Worksheet. Uses text from a Cover object and
