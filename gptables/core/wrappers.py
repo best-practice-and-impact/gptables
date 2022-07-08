@@ -478,8 +478,16 @@ class GPWorksheet(Worksheet):
         pos : list
             new position to write next element from
         """
-        # Raise error if any table element is null or whitespace
-        gptable.table.replace(regex=r'^\s*$', value=np.NaN, inplace=True)
+        # Convert whitespace only cells to None
+        gptable.table.replace({r'^\s*$': None}, inplace=True, regex=True)
+
+        if gptable.table.isna().values.all():
+            msg = ("""
+            Table found containing only null or whitespace cells.
+            Please provide alternative table containing data.
+            """)
+            raise ValueError(msg)
+
         if gptable.table.isna().values.any():
             msg = ("""
             Empty or null cell found in table, the reason for missingness should
@@ -491,7 +499,7 @@ class GPWorksheet(Worksheet):
             warnings.warn(msg)
 
         # Raise error if any table element is only special characters
-        if gptable.table.stack().str.contains('^[^a-zA-Z0-9_]*$').any():
+        if gptable.table.stack().str.contains('^[^a-zA-Z0-9]*$').any():
             msg = ("""
             Cell found containing only special characters, replace with
             alphanumeric characters before inputting to gptables.
