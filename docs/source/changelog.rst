@@ -19,6 +19,7 @@ Unreleased
 
 * New tests for ``GPTable`` attributes.
 * New end-to-end test.
+* New test for marking table as Excel worksheet table.
 * New tests for GPWorksheet writing.
 * Validation for tables with only null or whitespace cells
 
