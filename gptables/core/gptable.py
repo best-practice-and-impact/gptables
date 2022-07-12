@@ -182,13 +182,16 @@ class GPTable:
         """
         index_cols = set(self.index_columns.values())
         self._column_headings = {x for x in range(self.table.shape[1])} - index_cols
-    
-    
+
+
     def _validate_all_column_names_have_text(self):
         """
         Validate that all column names in header row have text.
         """
         for column_name in self.table.columns:
+            if pd.isna(column_name):
+                msg = ("Null column name found in table data - column names must all have text")
+                raise ValueError(msg)
             if len(column_name) > 0:
                 continue
             else:
