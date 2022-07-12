@@ -405,6 +405,23 @@ class TestGPWorksheetTable:
             assert got_heading_format.__dict__ == exp_heading_format.__dict__
 
 
+    @pytest.mark.parametrize("cell_val,exp_length",[
+        ("string", 6),
+        (42, 2),
+        (3.14, 4),
+        ({"gov.uk": "https://www.gov.uk"}, 6),
+        (FormatList(["Partially ", {"bold": True}, "bold", " string"]), 21),
+        (["string", "another string"], 14),
+        ("string\nwith\nnewlines", 8),
+        (FormatList(["string\r\n", {"bold": True}, "bold string"]), 11),
+        (set(), 0)
+    ])
+    def test__longest_line_length(self, testbook, cell_val, exp_length):
+        got_length = testbook.ws._longest_line_length(cell_val)
+
+        assert got_length == exp_length
+
+
 
 class TestGPWorkbook:
     """
