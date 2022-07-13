@@ -422,6 +422,22 @@ class TestGPWorksheetTable:
         assert got_length == exp_length
 
 
+    @pytest.mark.parametrize("data", [
+        ["string", "longer string"],
+        ["longer string", "longer string"]])
+    @pytest.mark.parametrize("format", [
+        [{"font_size": 12}, {"font_size": 12}],
+        [{"font_size": 10}, {"font_size": 12}]])
+    def test__calculate_column_widths(self, testbook, data, format):
+        table = pd.DataFrame({"col": data})
+        table_format = pd.DataFrame({"col": format})
+
+        got_width = testbook.ws._calculate_column_widths(table, table_format)
+        exp_width = testbook.ws._excel_string_width(string_len=11, font_size=12)
+
+        assert got_width == exp_width
+
+
 
 class TestGPWorkbook:
     """
