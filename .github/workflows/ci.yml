@@ -31,12 +31,12 @@ jobs:
         
     - name: Run pytest
       run: |
-        pytest --cov=gptables --cov-report=xml --cov-report=term-missing
+        pytest --cov-config=.coveragerc --cov=gptables --cov-report=xml --cov-report=term-missing
         coverage xml
 
     - name: Upload to Codecov
       if: github.repository == 'best-practice-impact/gptables'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         name: gptables-pytests-py3.8
         flags: pytests
