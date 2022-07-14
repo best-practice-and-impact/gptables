@@ -424,7 +424,8 @@ class TestGPWorksheetTable:
 
     @pytest.mark.parametrize("data", [
         ["string", "longer string"],
-        ["longer string", "longer string"]])
+        ["longer string", "longer string"],
+        ["string\nstring\nstring", "longer string"]])
     @pytest.mark.parametrize("format", [
         [{"font_size": 12}, {"font_size": 12}],
         [{"font_size": 10}, {"font_size": 12}]])
