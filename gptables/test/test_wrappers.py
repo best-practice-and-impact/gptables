@@ -433,7 +433,7 @@ class TestGPWorksheetTable:
         table_format = pd.DataFrame({"col": format})
 
         got_width = testbook.ws._calculate_column_widths(table, table_format)
-        exp_width = testbook.ws._excel_string_width(string_len=11, font_size=12)
+        exp_width = [testbook.ws._excel_string_width(string_len=13, font_size=12)]
 
         assert got_width == exp_width
 
