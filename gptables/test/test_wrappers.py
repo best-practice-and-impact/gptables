@@ -495,19 +495,11 @@ class TestGPWorkbook:
         gp_workbook._annotations = [1, 2]
         dummy_table = pd.DataFrame(data={"Note number":[1, 2], "Note text":[3, 4]})
         
-        notes_name = "Just_a_notesheet"
-        notes_title = "Are these the notes you're looking for?"
-        notes_instructions = "These are not the notes you're looking for"
+        notes_name = "notes_table"
+        notes_title = "Notes"
         
-        got_notesheet = gp_workbook.make_notesheet(notes_table=dummy_table,
-                                                   table_name=notes_name,
-                                                   title=notes_title,
-                                                   instructions=notes_instructions)
-        exp_notesheet = gptables.GPTable(table=dummy_table,
-                                         table_name=notes_name,
-                                         title=notes_title,
-                                         instructions=notes_instructions,
-                                         index_columns={})
+        got_notesheet = gp_workbook.make_notesheet(notes_table=dummy_table)
+        exp_notesheet = gptables.GPTable(table=dummy_table, table_name=notes_name, title=notes_title)
         
         assert_frame_equal(got_notesheet.table, exp_notesheet.table)
         
