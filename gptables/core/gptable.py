@@ -119,6 +119,7 @@ class GPTable:
 
         self._validate_all_column_names_have_text()
         self._validate_no_duplicate_column_names()
+        self._validate_no_all_null_rows()
 
         if new_index_columns is None:
             new_index_columns = self.index_columns
@@ -196,7 +197,7 @@ class GPTable:
             if pd.isna(column_name):
                 msg = ("Null column name found in table data - column names must all have text")
                 raise ValueError(msg)
-            if len(column_name) > 0:
+            elif len(column_name) > 0:
                 continue
             else:
                 msg = ("Empty column name found in table data - column names must all have text")
@@ -209,6 +210,15 @@ class GPTable:
         """
         if len(self.table.columns) != len(set(self.table.columns)):
             msg = ("Duplicate column names found in table data - column names must be unique")
+            raise ValueError(msg)
+
+
+    def _validate_no_all_null_rows(self):
+        """
+        Validate that there are no rows in table data where all values are null.
+        """
+        if self.table.isna().all(axis=1).any():
+            msg = ("Null row found in table data - remove blank rows before inputting to GPTable")
             raise ValueError(msg)
 
 
