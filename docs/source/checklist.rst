@@ -38,8 +38,9 @@ Table
       - Merged cell, split cells and nested tables are not supported by gptables.
     * - Remove blank rows and columns within tables
       - Essential
-      - Implemented
-      - Blank rows or columns in a column will raise an error #TODO: check this
+      - Partially implemented
+      - Blank rows or columns in a column will raise an error. User should
+        remove them and any apply any desired additional formatting.
     * - All tables should have one tagged header row
       - Essential
       - Implemented

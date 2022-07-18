@@ -22,7 +22,7 @@ Unreleased
 * New test for marking table as Excel worksheet table.
 * New tests for GPWorksheet writing.
 * New tests for note referencing.
-* Validation for tables with only null or whitespace cells
+* Validation for tables with only null or whitespace rows or cells
 * Support note references in instructions
 
 **Changed**
