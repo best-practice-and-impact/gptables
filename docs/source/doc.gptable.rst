@@ -30,6 +30,9 @@ left corner of the first sheet containing a data table.
 
 See this in practice under :ref:`Example Usage`.
 
+.. note:: Deprecated in v1.1.0: Ability to reference notes within
+      ``GPTable.table.columns`` will be removed in v2 of gptables. Please use
+      ``GPTable.table_notes`` to ensure references are correctly placed and ordered.
 
 Links
 -----
