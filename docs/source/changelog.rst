@@ -21,7 +21,9 @@ Unreleased
 * New end-to-end test.
 * New test for marking table as Excel worksheet table.
 * New tests for GPWorksheet writing.
+* New tests for note referencing.
 * Validation for tables with only null or whitespace cells
+* Support note references in instructions
 
 **Changed**
 
@@ -36,9 +38,13 @@ Unreleased
 
 * ``contentsheet`` parameter of ``write_workbook`` will be removed in v2 of
   gptables. Please use ``contentsheet_label`` instead.
+* Ability to reference notes within ``GPTable.table.columns`` will be removed
+  in v2 of gptables. Please use ``GPTable.table_notes`` to ensure references
+  are correctly placed and ordered.
 
 **Fixed**
 
+* Fix note order when customising ``description_order`` in ``Theme``
 * Fix special character only cell validation to also include underscore ``_``
 * ``auto_width`` now functions as expected for columns with links or rich text
   columns using Python 3.6 and 3.7, as well as for numeric columns using
