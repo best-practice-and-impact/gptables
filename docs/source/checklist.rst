@@ -188,7 +188,7 @@ Structure
       - Essential
       - Implemented
       - Worksheet names come from the ``sheets = {"label": gptable}`` property.
-        If names are duplicated, the final ``label: gptable`` pair will be used. #TODO: raise an error?
+        If names are duplicated, the final ``label: gptable`` pair will be used.
     * - Remove blank worksheets
       - Essential
       - Implemented
