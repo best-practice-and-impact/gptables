@@ -538,7 +538,7 @@ class TestGPWorkbook:
                 "sheet": create_gptable_with_kwargs({
                     "title": "Sheet title", **kwargs
                 })
-            }, additional_elements=kwargs
+            }, additional_elements=list(kwargs.keys())
         )
 
         assert_frame_equal(got_contentsheet.table, exp_contentsheet.table)
