@@ -497,9 +497,11 @@ class TestGPWorkbook:
         
         notes_name = "notes_table"
         notes_title = "Notes"
+        notes_instructions = "This worksheet contains one table."
+        
         
         got_notesheet = gp_workbook.make_notesheet(notes_table=dummy_table)
-        exp_notesheet = gptables.GPTable(table=dummy_table, table_name=notes_name, title=notes_title)
+        exp_notesheet = gptables.GPTable(table=dummy_table, table_name=notes_name, title=notes_title, index_columns={}, instructions=notes_instructions)
         
         assert_frame_equal(got_notesheet.table, exp_notesheet.table)
         
