@@ -23,13 +23,13 @@ valid_text_elements = [  # Not None
 test_text_list = [
     "This has a $$reference$$",
     "This one doesn't",
-    "Here's another $$one$$"
+    "Here's $$another$$one"
     ]
 
 exp_text_list = [
     "This has a [note 1]",
     "This one doesn't",
-    "Here's another [note 2]"
+    "Here's one[note 2]"
     ]
 
 
@@ -257,13 +257,11 @@ class TestGPWorksheetWriting:
 
 
 
-class TestGPWorksheetFooterText:
+class TestGPWorksheetReferences:
     """
-    Test that GPTable footer elements are modified correctly by GPWorksheet
+    Test that GPTable note references are modified correctly by GPWorksheet
     during write_gptable().
     """
-
-
     @pytest.mark.parametrize("text", test_text_list)
     def test__replace_reference(self, text, testbook):
         """
@@ -271,25 +269,25 @@ class TestGPWorksheetFooterText:
         [note n], in order of appearance. Also tests replacement in lists.
         """
         got_output = []
-        reference_order = ["reference", "one"]
+        reference_order = ["reference", "another"]
 
         got_output = [testbook.ws._replace_reference(text, reference_order) for text in test_text_list]
     
-        exp_refs = ["reference", "one"]
+        exp_refs = ["reference", "another"]
         assert reference_order == exp_refs
         assert got_output == exp_text_list
 
 
     @pytest.mark.parametrize("text,refs,output",
         zip(test_text_list,
-        [["reference"], [], ["one"]],
-        ["This has a [note 1]", "This one doesn't", "Here's another [note 2]"]
+        [["reference"], [], ["another"]],
+        ["This has a [note 1]", "This one doesn't", "Here's one[note 2]"]
         ))
     def test__replace_reference_in_attr_str(self, text, refs, output, testbook):
         """
         Test that references are replaced in a single string.
         """
-        reference_order = ["reference", "one"]
+        reference_order = ["reference", "another"]
         got_text = testbook.ws._replace_reference_in_attr(
                 text,
                 reference_order
@@ -302,11 +300,11 @@ class TestGPWorksheetFooterText:
         """
         Test that references are replaced in dictionary values, but not keys.
         """
-        reference_order = ["reference", "one"]
+        reference_order = ["reference", "another"]
         test_text_dict = {
                 "$$key$$": "This is a value with a $$reference$$",
-                "another_key": "Another value",
-                "third_key": "$$one$$more reference"
+                "second_key": "Second value",
+                "another_key": "$$another$$reference"
                 }
         got_text = testbook.ws._replace_reference_in_attr(
                 test_text_dict,
@@ -315,8 +313,8 @@ class TestGPWorksheetFooterText:
                 
         exp_text_dict = {
                 "$$key$$": "This is a value with a [note 1]",
-                "another_key": "Another value",
-                "third_key": "more reference[note 2]"
+                "second_key": "Second value",
+                "another_key": "reference[note 2]"
                 }
         
         assert got_text == exp_text_dict
@@ -406,6 +404,22 @@ class TestGPWorksheetTable:
 
 
 
+class TestGPWorkbookStatic:
+    """
+    Test that the GPWorkbook static methods work as expected.
+    """
+    @pytest.mark.parametrize("input, expected", [
+        ("no references", "no references"),
+        ("ref at end$$1$$", "ref at end"),
+        ("$$1$$ref at start", "ref at start"),
+        ("two$$1$$ refs$$2$$", "two refs"),
+        ("three$$1$$ refs$$2$$, wow$$3$$", "three refs, wow")
+    ])
+    def test__strip_annotation_references(self, input, expected):
+        assert GPWorkbook._strip_annotation_references(input) == expected
+
+
+
 class TestGPWorkbook:
     """
     Test that GPWorkbook initialisation and methods work as expected.
@@ -455,7 +469,84 @@ class TestGPWorkbook:
         """
         with pytest.raises(TypeError):
             testbook.wb.set_theme(not_a_theme)
-            
+
+    def test__update_annotations(self, testbook, create_gptable_with_kwargs):
+        """
+        Test that _update_annotations produces a correctly ordered list of
+        note references used in sheets.
+        """
+        table = pd.DataFrame(columns=["col"])
+
+        kwargs1 = {
+            "title": "Title$$1$$",
+            "subtitles": ["Subtitle$$2$$"],
+            "units": {0: "Unit$$3$$"},
+            "table_notes": {0: "Note$$4$$"},
+            "table": table
+        }
+
+        kwargs2 = {
+            "title": "Title$$1$$",
+            "subtitles": ["Subtitle$$3$$"],
+            "units": {0: "Unit$$5$$"},
+            "table_notes": {0: "Note$4$$"},
+            "table": table
+        }
+
+        gptable1 = create_gptable_with_kwargs(kwargs1)
+        gptable2 = create_gptable_with_kwargs(kwargs2)
+        sheets = {"sheet1": gptable1, "sheet2": gptable2}
+
+        gpworkbook = testbook.wb
+        gpworkbook._update_annotations(sheets)
+
+        assert gpworkbook._annotations == ["1", "2", "3", "4", "5"]
+
+
+    @pytest.mark.parametrize("additional_elements,values", [
+        (None, None),
+        (["scope"], ["scope"]),
+        (
+            ["subtitles", "instructions", "scope", "source"],
+            [["subtitles"], "instructions", "scope", "source"]
+        )
+    ])
+    def test_make_table_of_contents(self, testbook, create_gptable_with_kwargs,
+        additional_elements, values):
+        """
+        Test that attributes are set as expected when contentsheet is created.
+        """
+        kwargs = {}
+        if additional_elements:
+            kwargs.update(dict(zip(additional_elements, values)))
+
+        exp_toc = pd.DataFrame({
+            "Sheet name": [{"sheet": "internal:'sheet'!A1"}],
+            "Table description": [["Sheet title", *kwargs.keys()]]
+        })
+        exp_contentsheet = create_gptable_with_kwargs({
+            "table_name": "contents_table",
+            "title": "Table of contents",
+            "instructions": "This worksheet contains one table.",
+            "table": exp_toc,
+            "index_columns": {2: 0}
+        })
+
+        got_contentsheet = testbook.wb.make_table_of_contents(
+            sheets={
+                "sheet": create_gptable_with_kwargs({
+                    "title": "Sheet title", **kwargs
+                })
+            }, additional_elements=list(kwargs.keys())
+        )
+
+        assert_frame_equal(got_contentsheet.table, exp_contentsheet.table)
+
+        got_contentsheet.table = None
+        exp_contentsheet.table = None
+
+        assert got_contentsheet.__dict__ == exp_contentsheet.__dict__
+
     def test_make_notesheet(self, testbook):
         """
         Test that creating a notes table sheet using `make_notesheet` generates

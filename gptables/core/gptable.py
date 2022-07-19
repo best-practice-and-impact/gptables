@@ -6,7 +6,11 @@ class GPTable:
     """
     A Good Practice Table. Stores a table and metadata for writing a table
     to excel.
-    
+
+    .. note:: Deprecated in v1.1.0: Ability to reference notes within
+        ``GPTable.table.columns`` will be removed in v2 of gptables. Please use
+        ``GPTable.table_notes`` to ensure references are correctly placed and ordered.
+
     Attributes
     ----------
     table : pandas.DataFrame
@@ -446,26 +450,26 @@ class GPTable:
         else:
             self.legend += new_legend
 
-    def _set_annotations(self):
+    def _set_annotations(self, description_order):
         """
         Set a list of note references to the `_annotations` attribute.
         """
         elements = [
                 "title",
                 "subtitles",
-                "legend",
-                "source",
-                "scope",
+                *description_order,
                 "units",
+                "table_notes",
                 ]
-        
+
         ordered_refs = []
-        
+
         for attr in elements:
             attr_current = getattr(self, attr)
             references = self._get_references_from_attr(attr_current)
             ordered_refs.extend(references)
 
+        # Deprecated as of v1.1.0 - instead use `table_notes` to add references to column headers
         table_refs = self._get_references_from_table()
         ordered_refs.extend(table_refs)
 
@@ -504,8 +508,8 @@ class GPTable:
                     ordered_refs.extend(self._get_references(data_list[n]))
 
         return ordered_refs
-        
 
+    # Deprecated as of v1.1.0 - instead use `table_notes` to add references to column headers
     def _get_references_from_table(self):
         """
         Get note references in the table column headings and index columns.

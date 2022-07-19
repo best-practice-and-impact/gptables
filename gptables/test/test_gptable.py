@@ -269,20 +269,14 @@ class TestAttrValidationGPTable:
         Test that setting list of valid text elements to GPTable list
         parameters works as expected.
         """
-        if text is not None:
-            text_list = [text, text]
-        else:
-            text_list = []
-
+        text_list = [text, text]
         gptable = create_gptable_with_kwargs({attr: text_list})
 
-        if isinstance(text, str):
-            assert getattr(gptable, attr) == text_list
-        elif isinstance(text, list):
+        if isinstance(text, list):
             assert all([element.list == text for element in getattr(gptable, attr)])
         else:
-            assert getattr(gptable, attr) == []
-        
+            assert getattr(gptable, attr) == text_list
+
 
     @pytest.mark.parametrize("key", invalid_text_elements_incl_none[2:] + ["invalid_key"])
     def test_invalid_additional_format_keys(self, key, create_gptable_with_kwargs):
@@ -498,11 +492,11 @@ class TestAttrValidationGPTable:
 
 
 
-@pytest.mark.parametrize("index_cols", valid_index_columns)
 class TestIndirectAttrs:
     """
     Test that non-formatting create_gptable_with_kwargs attributes are indirectly set correctly.
     """
+    @pytest.mark.parametrize("index_cols", valid_index_columns)
     def test_index_levels_set(self, index_cols, create_gptable_with_kwargs):
         """
         Test that number of index levels are set, when one, two or three
@@ -519,8 +513,9 @@ class TestIndirectAttrs:
             "index_columns": index_cols
             })
         assert getattr(gptable, "index_levels") == len(index_cols)
-        
 
+
+    @pytest.mark.parametrize("index_cols", valid_index_columns)
     def test_column_headings_set(self, index_cols, create_gptable_with_kwargs):
         """
         Test that non-index columns are set as column headings.
@@ -540,3 +535,30 @@ class TestIndirectAttrs:
         exp = set(range(4)) - set(range(len(index_cols)))
         
         assert getattr(gptable, "_column_headings") == exp
+
+
+    def test__annotations_set(self, create_gptable_with_kwargs):
+        """
+        Test that annotation references in `gptable` attributes are found and
+        added to `_annotations` as expected.
+        """
+        table = pd.DataFrame(columns=["col"])
+
+        kwargs = {
+            "title": "Title$$1$$",
+            "subtitles": ["Subtitle$$2$$"],
+            "instructions": "Instructions$$3$$",
+            "source": "Source$$4$$",
+            "scope": "Scope$$5$$",
+            "legend": ["Legend$$6$$"],
+            "units": {0: "Unit$$7$$"},
+            "table_notes": {0: "Note$$8$$"},
+            "table": table
+        }
+
+        gptable = create_gptable_with_kwargs(kwargs)
+
+        description_order = ["instructions", "source", "scope", "legend"]
+        gptable._set_annotations(description_order)
+
+        assert gptable._annotations == ["1", "2", "3", "4", "5", "6", "7", "8"]
