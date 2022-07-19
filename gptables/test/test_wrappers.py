@@ -452,7 +452,8 @@ class TestGPWorkbook:
         testbook.wb.set_theme(theme)
         
         assert testbook.wb.theme == gptables.Theme(theme_config)
-    
+
+
     @pytest.mark.parametrize("not_a_theme", [
         dict(),
         set(),
@@ -547,3 +548,66 @@ class TestGPWorkbook:
         exp_contentsheet.table = None
 
         assert got_contentsheet.__dict__ == exp_contentsheet.__dict__
+
+
+    def test_make_notesheet(self, testbook, create_gptable_with_kwargs):
+        """
+        Test that creating a notes table sheet using `make_notesheet` generates
+        the same gptables.GPTable object as expected.
+        """
+        gpworkbook = testbook.wb
+        gpworkbook._annotations = [1, 2]
+        dummy_table = pd.DataFrame(data={"Note number":[1, 2], "Note text":["text", "more text"]})
+
+        notes_name = "Just_a_notesheet"
+        notes_title = "Are these the notes you're looking for?"
+        notes_instructions = "These are not the notes you're looking for"
+
+        got_notesheet = gpworkbook.make_notesheet(
+            notes_table=dummy_table,
+            table_name=notes_name,
+            title=notes_title,
+            instructions=notes_instructions
+        )
+        exp_notesheet = create_gptable_with_kwargs({
+            "table": dummy_table,
+            "table_name": notes_name,
+            "title": notes_title,
+            "instructions": notes_instructions
+        })
+
+        assert_frame_equal(got_notesheet.table, exp_notesheet.table)
+
+        got_notesheet.table = None
+        exp_notesheet.table = None
+
+        assert got_notesheet.__dict__ == exp_notesheet.__dict__
+
+
+    def test_notesheet_defaults(self, testbook, create_gptable_with_kwargs):
+        """
+        Test that creating a notes table sheet with arguments set to defaults generates
+        the same gptables.GPTable object as expected.
+        """
+        gpworkbook = testbook.wb
+        gpworkbook._annotations = [1, 2]
+        dummy_table = pd.DataFrame(data={"Note number":[1, 2], "Note text":["text", "more text"]})
+
+        notes_name = "notes_table"
+        notes_title = "Notes"
+        notes_instructions = "This worksheet contains one table."
+
+        got_notesheet = gpworkbook.make_notesheet(notes_table=dummy_table)
+        exp_notesheet = create_gptable_with_kwargs({
+            "table": dummy_table,
+            "table_name": notes_name,
+            "title": notes_title,
+            "instructions": notes_instructions
+        })
+
+        assert_frame_equal(got_notesheet.table, exp_notesheet.table)
+
+        got_notesheet.table = None
+        exp_notesheet.table = None
+
+        assert got_notesheet.__dict__ == exp_notesheet.__dict__
