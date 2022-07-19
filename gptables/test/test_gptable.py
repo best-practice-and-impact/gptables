@@ -269,19 +269,13 @@ class TestAttrValidationGPTable:
         Test that setting list of valid text elements to GPTable list
         parameters works as expected.
         """
-        if text is not None:
-            text_list = [text, text]
-        else:
-            text_list = []
-
+        text_list = [text, text]
         gptable = create_gptable_with_kwargs({attr: text_list})
 
-        if isinstance(text, str):
-            assert getattr(gptable, attr) == text_list
-        elif isinstance(text, list):
+        if isinstance(text, list):
             assert all([element.list == text for element in getattr(gptable, attr)])
         else:
-            assert getattr(gptable, attr) == []
+            assert getattr(gptable, attr) == text_list
 
 
     @pytest.mark.parametrize("key", invalid_text_elements_incl_none[2:] + ["invalid_key"])
