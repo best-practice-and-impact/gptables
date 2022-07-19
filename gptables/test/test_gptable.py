@@ -492,11 +492,11 @@ class TestAttrValidationGPTable:
 
 
 
-@pytest.mark.parametrize("index_cols", valid_index_columns)
 class TestIndirectAttrs:
     """
     Test that non-formatting create_gptable_with_kwargs attributes are indirectly set correctly.
     """
+    @pytest.mark.parametrize("index_cols", valid_index_columns)
     def test_index_levels_set(self, index_cols, create_gptable_with_kwargs):
         """
         Test that number of index levels are set, when one, two or three
@@ -513,8 +513,9 @@ class TestIndirectAttrs:
             "index_columns": index_cols
             })
         assert getattr(gptable, "index_levels") == len(index_cols)
-        
 
+
+    @pytest.mark.parametrize("index_cols", valid_index_columns)
     def test_column_headings_set(self, index_cols, create_gptable_with_kwargs):
         """
         Test that non-index columns are set as column headings.
@@ -534,3 +535,30 @@ class TestIndirectAttrs:
         exp = set(range(4)) - set(range(len(index_cols)))
         
         assert getattr(gptable, "_column_headings") == exp
+
+
+    def test__annotations_set(self, create_gptable_with_kwargs):
+        """
+        Test that annotation references in `gptable` attributes are found and
+        added to `_annotations` as expected.
+        """
+        table = pd.DataFrame(columns=["col"])
+
+        kwargs = {
+            "title": "Title$$1$$",
+            "subtitles": ["Subtitle$$2$$"],
+            "instructions": "Instructions$$3$$",
+            "source": "Source$$4$$",
+            "scope": "Scope$$5$$",
+            "legend": ["Legend$$6$$"],
+            "units": {0: "Unit$$7$$"},
+            "table_notes": {0: "Note$$8$$"},
+            "table": table
+        }
+
+        gptable = create_gptable_with_kwargs(kwargs)
+
+        description_order = ["instructions", "source", "scope", "legend"]
+        gptable._set_annotations(description_order)
+
+        assert gptable._annotations == ["1", "2", "3", "4", "5", "6", "7", "8"]

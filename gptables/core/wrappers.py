@@ -130,15 +130,14 @@ class GPWorksheet(Worksheet):
         -------
         None
         """
+        description_order = self.theme.description_order
+
         elements = [
                 "title",
                 "subtitles",
-                "legend",
-                "source",
-                "scope",
-                "units",
+                *description_order,
                 ]
-        
+
         # Loop through elements, replacing references in strings
         for attr in elements:
             attr_current = getattr(gptable, attr)
@@ -151,9 +150,9 @@ class GPWorksheet(Worksheet):
                             )
                     )
         self._reference_table_annotations(gptable, reference_order)
-        
 
-    def _reference_table_annotations(self, gptable, reference_order): # TODO: properly integrate this with table_notes parameter
+
+    def _reference_table_annotations(self, gptable, reference_order):
         """
         Reference annotations in the table column headings and index columns.
         """
@@ -1026,7 +1025,7 @@ class GPWorkbook(Workbook):
     def _update_annotations(self, sheets):
         ordered_refs = []
         for gptable in sheets.values():
-            gptable._set_annotations()
+            gptable._set_annotations(self.theme.description_order)
             ordered_refs.extend(gptable._annotations)
 
         # remove duplicates from ordered_refs and assign to self._annotations
