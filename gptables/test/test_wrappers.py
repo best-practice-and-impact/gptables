@@ -502,3 +502,48 @@ class TestGPWorkbook:
         gpworkbook._update_annotations(sheets)
 
         assert gpworkbook._annotations == ["1", "2", "3", "4", "5"]
+
+
+    @pytest.mark.parametrize("additional_elements,values", [
+        (None, None),
+        (["scope"], ["scope"]),
+        (
+            ["subtitles", "instructions", "scope", "source"],
+            [["subtitles"], "instructions", "scope", "source"]
+        )
+    ])
+    def test_make_table_of_contents(self, testbook, create_gptable_with_kwargs,
+        additional_elements, values):
+        """
+        Test that attributes are set as expected when contentsheet is created.
+        """
+        kwargs = {}
+        if additional_elements:
+            kwargs.update(dict(zip(additional_elements, values)))
+
+        exp_toc = pd.DataFrame({
+            "Sheet name": [{"sheet": "internal:'sheet'!A1"}],
+            "Table description": [["Sheet title", *kwargs.keys()]]
+        })
+        exp_contentsheet = create_gptable_with_kwargs({
+            "table_name": "contents_table",
+            "title": "Table of contents",
+            "instructions": "This worksheet contains one table.",
+            "table": exp_toc,
+            "index_columns": {2: 0}
+        })
+
+        got_contentsheet = testbook.wb.make_table_of_contents(
+            sheets={
+                "sheet": create_gptable_with_kwargs({
+                    "title": "Sheet title", **kwargs
+                })
+            }, additional_elements=list(kwargs.keys())
+        )
+
+        assert_frame_equal(got_contentsheet.table, exp_contentsheet.table)
+
+        got_contentsheet.table = None
+        exp_contentsheet.table = None
+
+        assert got_contentsheet.__dict__ == exp_contentsheet.__dict__
