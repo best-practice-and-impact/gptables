@@ -236,8 +236,15 @@ class TestGPWorksheetWriting:
         assert len(cell) == 1
 
 
+    def test__write_empty_table(self, testbook, create_gptable_with_kwargs):
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame({"col": [None]})
+        })
+        with pytest.raises(ValueError):
+            testbook.ws._write_table_elements([0,0], gptable, auto_width=True)
+
+
     @pytest.mark.parametrize("cell_value1,cell_value2,expectation", [
-        (None, None, pytest.raises(ValueError)),
         (None, "valid text", pytest.warns(UserWarning)),
         ("", "valid text", pytest.warns(UserWarning)),
         (" ", "valid text", pytest.warns(UserWarning)),
@@ -246,12 +253,14 @@ class TestGPWorksheetWriting:
         (" *", "valid text", pytest.raises(ValueError)),
         (" Hello_World! ", "valid text", does_not_raise()),
     ])
-    def test__write_table_elements_validation(self, testbook,
+    def test__write_table_elements_cell_validation(self, testbook,
         create_gptable_with_kwargs, cell_value1, cell_value2, expectation):
         gptable = create_gptable_with_kwargs({
-            "table": pd.DataFrame({"col": [cell_value1, cell_value2]})
+            "table": pd.DataFrame({
+                "colA": [cell_value1, cell_value2],
+                "colB": ["valid text", "valid text"]
+            })
         })
-
         with expectation:
             testbook.ws._write_table_elements([0,0], gptable, auto_width=True)
 

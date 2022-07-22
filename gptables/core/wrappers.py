@@ -471,7 +471,6 @@ class GPWorksheet(Worksheet):
             select if column widths should be determined automatically using
             length of text in index and columns
 
-
         Returns
         -------
         pos : list
@@ -481,17 +480,25 @@ class GPWorksheet(Worksheet):
         gptable.table.replace({r'^\s*$': None}, inplace=True, regex=True)
 
         if gptable.table.isna().values.all():
-            msg = ("""
-            Table found containing only null or whitespace cells.
+            msg = (f"""
+            {gptable.table_name} contains only null or whitespace cells.
             Please provide alternative table containing data.
             """)
             raise ValueError(msg)
 
+        if gptable.table.isna().all(axis=1).any():
+            msg = (f"""
+            Empty or null row found in {gptable.table_name}.
+            Please remove blank rows before passing data to GPTable.
+            """)
+            raise ValueError(msg)
+
         if gptable.table.isna().values.any():
-            msg = ("""
-            Empty or null cell found in table, the reason for missingness should
-            be included above the table before inputting to gptables.
-            There should only be one reason otherwise a shorthand should be provided.
+            msg = (f"""
+            Empty or null cell found in {gptable.table_name}. The reason for
+            missingness should be included in the `GPTable.instructions` attribute.
+            There should only be one reason otherwise a shorthand should be
+            provided in the `instructions` or `legend` attribute.
             Guidance on shorthand can be found at:
             https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
             """)
@@ -499,9 +506,9 @@ class GPWorksheet(Worksheet):
 
         # Raise error if any table element is only special characters
         if gptable.table.stack().str.contains('^[^a-zA-Z0-9]*$').any():
-            msg = ("""
-            Cell found containing only special characters, replace with
-            alphanumeric characters before inputting to gptables.
+            msg = (f"""
+            Cell found in {gptable.table_name} containing only special characters,
+            replace with alphanumeric characters before inputting to GPTable.
             Guidance on symbols in tables can be found at:
             https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
             """)

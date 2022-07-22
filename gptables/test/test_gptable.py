@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal
@@ -464,12 +465,13 @@ class TestAttrValidationGPTable:
 
 
     @pytest.mark.parametrize("column_names,expectation", [
-        (["columnA", "columnB", "columnC"], does_not_raise()),
-        (["columnA", "columnB", ""], pytest.raises(ValueError))
+        (["columnA", "columnB"], does_not_raise()),
+        (["columnA", ""], pytest.raises(ValueError)),
+        ([None, "columnB"], pytest.raises(ValueError))
     ])
-    def test_validate_all_column_names_have_text(self, column_names, expectation, create_gptable_with_kwargs):
+    def test__validate_all_column_names_have_text(self, column_names, expectation, create_gptable_with_kwargs):
         """
-        Test that GPTable raises error when there are empty strings for column names.
+        Test that GPTable raises error when there are null values or empty strings for column names.
         """
         with expectation:
             create_gptable_with_kwargs({
@@ -481,7 +483,7 @@ class TestAttrValidationGPTable:
         (["columnA", "columnB", "columnC"], does_not_raise()),
         (["columnA", "columnB", "columnB"], pytest.raises(ValueError))
     ])
-    def test_validate_no_duplicate_column_names(self, column_names, expectation, create_gptable_with_kwargs):
+    def test__validate_no_duplicate_column_names(self, column_names, expectation, create_gptable_with_kwargs):
         """
         Test that GPTable raises error when there are duplicate column names in table data.
         """
