@@ -29,7 +29,7 @@ Table
       - Tables in a ``GPWorkbook``, including notes table and table of contents
         are marked as tables by default.
     * - Give tables meaningful names
-      - Recommended
+      - Desirable
       - Partially implemented
       - Pass a meaningful name to the ``GPTable.table_name`` property.
     * - Remove merged cells, split cells and nested tables
@@ -52,7 +52,7 @@ Table
         visible. This feature is experimental and some customisation may be
         desired.
     * - Avoid adding filters and freeze panes
-      - Recommended
+      - Desirable
       - Implemented
       - Filters and freeze panes are not supported by gptables.
     * - Only leave cells with no data empty in certain circumstances
@@ -63,7 +63,7 @@ Table
         for missingness, use the `appropriate shorthand`_ and explain in the
         ``GPTables.legend`` property.
     * - Avoid hiding rows or columns
-      - Recommended
+      - Desirable
       - Implemented
       - Hiding rows or columns is not supported by gptables.
 
@@ -87,17 +87,17 @@ Footnotes
       - Notes marked with ``$$note_ref$$`` will be formatted as ``[note n]``,
         where ``n`` is the order the note appears in the workbook.
     * - Use the word 'note' when referring to footnotes
-      - Recommended
+      - Desirable
       - Implemented
       - As mentioned above, notes are formatted as ``[note n]``.
     * - Avoid putting note markers in specific cells
-      - Recommended
+      - Desirable
       - Partially implemented
       - The ``$$note_ref$$`` functionality is not supported within data cells
         in tables. It is the user's responsibility to not add notes manually to
         data cells.
     * - Put note text in a notes table on a notes worksheet
-      - Recommended
+      - Desirable
       - Implemented
       - If users provide a ``notes_table`` when producing or writing a workbook,
         a notes worksheet will be created.
@@ -125,7 +125,7 @@ Formatting
       - Users should provide descriptive hyperlink text using the
         ``(display text)[link]`` syntax.
     * - Format text to make it accessible
-      - Recommended
+      - Desirable
       - Implemented
       - The default theme meets the accessibility guidance on formatting text.
     * - All worksheets should have descriptive titles which are properly tagged
@@ -136,7 +136,7 @@ Formatting
         properties. Note: heading tagging in Excel does not meet the standard
         required of webpage heading tagging.
     * - Avoid using symbols in general
-      - Recommended
+      - Desirable
       - Partially implemented
       - An error will be raised if table cells only contain symbols. It is the
         user's responsibility to make sure symbol use within text is appropriate.
@@ -145,11 +145,11 @@ Formatting
       - Implemented
       - These components are not supported by gptables.
     * - Do not use visual devices to divide data regions
-      - Recommended
+      - Desirable
       - Implemented
       - Using gptables without additional formatting does not use such visual devices.
     * - Do not use a background fill
-      - Recommended
+      - Desirable
       - Implemented
       - The gptables default theme does not apply a background fill.
     * - Do not use colour as the only way to convey a message 
@@ -162,11 +162,11 @@ Formatting
       - If using colour via additional formatting or a custom theme, it is the
         user's responsibility to check the colour contrast.
     * - Avoid images in spreadsheets
-      - Recommended
+      - Desirable
       - Implemented
       - Adding images is not supported by gptables.
     * - Remove macros
-      - Recommended
+      - Desirable
       - Implemented
       - Macros are not supported by gptables.
 
@@ -204,11 +204,11 @@ Structure
       - Implemented
       - gptables writes tables starting in column A.
     * - Avoid putting content below a table
-      - Recommended
+      - Desirable
       - Implemented
       - Writing content below a table is not supported in gptables>=1.0.0.
     * - Avoid worksheets with multiple tables
-      - Recommended
+      - Desirable
       - Implemented
       - Writing multiple tables per sheet is not supported in gptables.
 
@@ -230,7 +230,7 @@ Before publishing
       - gptables does not check spelling and grammar, this is the user's
         responsibility.
     * - Use the accessibility checker
-      - Recommended
+      - Desirable
       - Not implemented
       - gptables does not have a built-in accessibility checker. Whilst all
         efforts have been taken to make outputs accessible, the final
