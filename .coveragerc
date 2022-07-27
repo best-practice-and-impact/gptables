@@ -1,0 +1,4 @@
+[run]
+omit = 
+    gptables/test/*
+    gptables/examples/*
