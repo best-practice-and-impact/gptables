@@ -617,8 +617,7 @@ class GPTable:
     def _validate_text(obj, attr):
         """
         Validate that an object contains valid text elements. These are either
-        strings or list of strings and dictionaries. If optional = True, object
-        can be None, otherwise an error will be raised if object is None.
+        strings or list of strings and dictionaries.
         """
         if isinstance(obj, str):
             return None

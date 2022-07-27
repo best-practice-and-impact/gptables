@@ -15,23 +15,32 @@ and this project tries its very best to adhere to
 Unreleased
 ===================
 
+
+Released (PyPI)
+===============
+
+v1.1.0
+------
+:Date: 2022-07-27
+
 **Added**
 
-* New tests for ``GPTable`` attributes.
-* New end-to-end test.
-* New test for marking table as Excel worksheet table.
-* New tests for GPWorksheet writing.
-* New tests for note referencing.
-* Validation for tables with only null or whitespace rows or cells
-* Support note references in instructions
+* New tests for ``gptables``
+* Validation for tables with null or whitespace rows, cells or column names
+* Support for note references in ``GPTable.instructions`` attribute
+* Accessibility checklist based on `Analysis Function guidance`_ and `a11ytables documentation`_
+
+.. _`Analysis Function guidance`: https://analysisfunction.civilservice.gov.uk/policy-store/making-spreadsheets-accessible-a-brief-checklist-of-the-basics/
+.. _`a11ytables documentation`: https://co-analysis.github.io/a11ytables/articles/checklist.html
 
 **Changed**
 
-* Running package tests now requires pytest>=6.2.5, to support Python 3.10
-* CI now runs tests on both Linux and Windows with Python 3.6-3.10
 * Validation of GPTable text attributes. Error will be raised if ``title`` or
   ``instructions`` is ``None``, or if an entry in the ``subtitle`` or
   ``legend`` lists is ``None``.
+* Running package tests now requires pytest 6.2.5+, to support Python 3.10
+* CI configuration to run tests on both Linux and Windows with Python 3.6-3.10
+  and calculate coverage based on core functionality and utilites
 * Restructure and rewording of changelog
 
 **Deprecated**
@@ -44,22 +53,20 @@ Unreleased
 
 **Fixed**
 
-* Fix note order when customising ``description_order`` in ``Theme``
-* Fix special character only cell validation to also include underscore ``_``
+* ``contentsheet_label`` parameter added to ``write_workbook``. Previously
+  parameter was included in documentation but was misnamed in function.
 * ``auto_width`` now functions as expected for columns with links or rich text
   columns using Python 3.6 and 3.7, as well as for numeric columns using
-  Python>=3.6
-* ``contentsheet_label`` parameter added to ``write_workbook``. Previously
-  parameter was included in documentation but not in function.
-* Remove trailing whitespace when units or table notes added to column headers
-* Providing table notes will no longer break additional formatting
-* Rich text in ``instructions`` property will no longer raise an error.
-* Image alt text in user documentation
-* Deployment of docs in CI
+  Python 3.6+
+* Trailing whitespace is no longer added when ``units`` or ``table_notes`` are
+  added to column headers
+* Providing ``table_notes`` will no longer break additional formatting
+* Rich text in ``instructions`` property will no longer raise an error
+* Note order now takes into account custom ``description_order`` in ``Theme``
+* Special character only cell validation now includes underscores
+* Image alt text appears when building user documentation
+* CI deploys documentation in full
 
-
-Released (PyPI)
-===============
 
 v1.0.0
 ------

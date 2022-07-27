@@ -4,9 +4,10 @@ Accessibility checklist
 
 The tables below indicate your accessibility responsibilities when publishing
 statistics in spreadsheets. It is based on the Analysis Function `checklist of
-the basics`_.
+the basics`_ and heavily inspired by the `a11ytables documentation`_.
 
 .. _`checklist of the basics`: https://analysisfunction.civilservice.gov.uk/policy-store/making-spreadsheets-accessible-a-brief-checklist-of-the-basics/
+.. _`a11ytables documentation`: https://co-analysis.github.io/a11ytables/articles/checklist.html
 
 .. note:: The tables show which checklist items are automatically met by
     gptables. This applies to workbooks created using the default ``gptheme``

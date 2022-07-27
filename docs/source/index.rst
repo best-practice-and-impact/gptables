@@ -28,11 +28,17 @@ It advocates a strong adherence to the guidance by restricting the range of poss
 The default formatting theme ``gptheme`` accommodates many use cases.
 However, the :class:`~.core.theme.Theme` Class allows development of custom themes, where alternative formatting is required.
 
-``gptables`` is developed and maintained by the `Analysis Function`_.
+``gptables`` is developed and maintained by the `Analysis Function`_. It is
+available from `PyPI`_ or `GitHub`_. Users may also be interested in `a11ytables`_,
+an R native equivalent to ``gptables``, and `csvcubed`_, a package for turning
+data and metadata into machine-readable CSV-W files.
 
 .. _`guidance on good practice spreadsheets`: https://analysisfunction.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/
-
 .. _`Analysis Function`: https://analysisfunction.civilservice.gov.uk/
+.. _`PyPI`: https://pypi.org/project/gptables/
+.. _`GitHub`: https://github.com/best-practice-and-impact/gptables
+.. _`a11ytables`: https://co-analysis.github.io/a11ytables/index.html
+.. _`csvcubed`: https://gss-cogs.github.io/csvcubed-docs/external/
 
 
 5 Simple Steps
