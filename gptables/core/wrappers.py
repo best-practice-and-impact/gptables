@@ -965,7 +965,7 @@ class GPWorksheet(Worksheet):
         elif isinstance(cell_val, dict):
             max_length = self._longest_line_length(list(cell_val)[0])
         elif isinstance(cell_val, FormatList):
-            max_length = self._longest_line_length(cell_val.sting)
+            max_length = self._longest_line_length(cell_val.string)
         elif isinstance(cell_val, list):
             if isinstance(cell_val[0], (dict, FormatList)):
                 max_length = self._longest_line_length(cell_val[0])

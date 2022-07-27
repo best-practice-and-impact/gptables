@@ -412,6 +412,40 @@ class TestGPWorksheetTable:
             assert got_heading_format.__dict__ == exp_heading_format.__dict__
 
 
+    @pytest.mark.parametrize("cell_val,exp_length",[
+        ("string", 6),
+        (42, 2),
+        (3.14, 4),
+        ({"gov.uk": "https://www.gov.uk"}, 6),
+        (FormatList(["Partially ", {"bold": True}, "bold", " string"]), 21),
+        (["string", "another string"], 14),
+        ("string\nwith\nnewlines", 8),
+        (FormatList(["string\r\n", {"bold": True}, "bold string"]), 11),
+        (set(), 0)
+    ])
+    def test__longest_line_length(self, testbook, cell_val, exp_length):
+        got_length = testbook.ws._longest_line_length(cell_val)
+
+        assert got_length == exp_length
+
+
+    @pytest.mark.parametrize("data", [
+        ["string", "longer string"],
+        ["longer string", "longer string"],
+        ["string\nstring\nstring", "longer string"]])
+    @pytest.mark.parametrize("format", [
+        [{"font_size": 12}, {"font_size": 12}],
+        [{"font_size": 10}, {"font_size": 12}]])
+    def test__calculate_column_widths(self, testbook, data, format):
+        table = pd.DataFrame({"col": data})
+        table_format = pd.DataFrame({"col": format})
+
+        got_width = testbook.ws._calculate_column_widths(table, table_format)
+        exp_width = [testbook.ws._excel_string_width(string_len=13, font_size=12)]
+
+        assert got_width == exp_width
+
+
 
 class TestGPWorkbookStatic:
     """
