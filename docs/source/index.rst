@@ -68,4 +68,5 @@ machine-readable CSV-W files.
    doc.wrappers.rst
    checklist.rst
    changelog.rst
+   contributers.rst
    
