@@ -25,8 +25,8 @@ The default theme ``gptheme`` should accommodate most use cases.
 However, the ``Theme`` object allows development of custom themes, where other formatting is required.
 
 ``gptables`` is developed and maintained by the `Analysis Function`_. It can be
-installed from PyPI or GitHub. The source code is maintained on GitHub. Users
-may also be interested in `a11ytables`_, an R native equivalent to
+installed from `PyPI`_ or `GitHub`_. The source code is maintained on GitHub.
+Users may also be interested in `a11ytables`_, an R native equivalent to
 ``gptables``, and `csvcubed`_, a package for turning data and metadata into
 machine-readable CSV-W files.
 
