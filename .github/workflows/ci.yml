@@ -31,12 +31,12 @@ jobs:
         
     - name: Run pytest
       run: |
-        pytest --cov=gptables --cov-report=xml --cov-report=term-missing
+        pytest --cov-config=.coveragerc --cov=gptables --cov-report=xml --cov-report=term-missing
         coverage xml
 
     - name: Upload to Codecov
       if: github.repository == 'best-practice-impact/gptables'
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         name: gptables-pytests-py3.8
         flags: pytests
@@ -45,10 +45,11 @@ jobs:
 
   linux:
 
+    name: Tests on Linux
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.6, 3.7, 3.8, 3.9, '3.10']
         
     steps:
     - uses: actions/checkout@v2
@@ -68,13 +69,16 @@ jobs:
 
     name: Tests on Windows
     runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9, '3.10']
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.7
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8
+        python-version: ${{ matrix.python-version }}
     - uses: actions/cache@v2
       with:
         path: ~\AppData\Local\pip\Cache

@@ -130,15 +130,14 @@ class GPWorksheet(Worksheet):
         -------
         None
         """
+        description_order = self.theme.description_order
+
         elements = [
                 "title",
                 "subtitles",
-                "legend",
-                "source",
-                "scope",
-                "units",
+                *description_order,
                 ]
-        
+
         # Loop through elements, replacing references in strings
         for attr in elements:
             attr_current = getattr(gptable, attr)
@@ -151,9 +150,9 @@ class GPWorksheet(Worksheet):
                             )
                     )
         self._reference_table_annotations(gptable, reference_order)
-        
 
-    def _reference_table_annotations(self, gptable, reference_order): # TODO: properly integrate this with table_notes parameter
+
+    def _reference_table_annotations(self, gptable, reference_order):
         """
         Reference annotations in the table column headings and index columns.
         """
@@ -472,29 +471,44 @@ class GPWorksheet(Worksheet):
             select if column widths should be determined automatically using
             length of text in index and columns
 
-
         Returns
         -------
         pos : list
             new position to write next element from
         """
-        # Raise error if any table element is null or whitespace
-        gptable.table.replace(regex=r'^\s*$', value=np.NaN, inplace=True)
+        # Convert whitespace only cells to None
+        gptable.table.replace({r'^\s*$': None}, inplace=True, regex=True)
+
+        if gptable.table.isna().values.all():
+            msg = (f"""
+            {gptable.table_name} contains only null or whitespace cells.
+            Please provide alternative table containing data.
+            """)
+            raise ValueError(msg)
+
+        if gptable.table.isna().all(axis=1).any():
+            msg = (f"""
+            Empty or null row found in {gptable.table_name}.
+            Please remove blank rows before passing data to GPTable.
+            """)
+            raise ValueError(msg)
+
         if gptable.table.isna().values.any():
-            msg = ("""
-            Empty or null cell found in table, the reason for missingness should
-            be included above the table before inputting to gptables.
-            There should only be one reason otherwise a shorthand should be provided.
+            msg = (f"""
+            Empty or null cell found in {gptable.table_name}. The reason for
+            missingness should be included in the `GPTable.instructions` attribute.
+            There should only be one reason otherwise a shorthand should be
+            provided in the `instructions` or `legend` attribute.
             Guidance on shorthand can be found at:
             https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
             """)
             warnings.warn(msg)
 
         # Raise error if any table element is only special characters
-        if gptable.table.stack().str.contains('^[^a-zA-Z0-9_]*$').any():
-            msg = ("""
-            Cell found containing only special characters, replace with
-            alphanumeric characters before inputting to gptables.
+        if gptable.table.stack().str.contains('^[^a-zA-Z0-9]*$').any():
+            msg = (f"""
+            Cell found in {gptable.table_name} containing only special characters,
+            replace with alphanumeric characters before inputting to GPTable.
             Guidance on symbols in tables can be found at:
             https://analysisfunction.civilservice.gov.uk/policy-store/symbols-in-tables-definitions-and-help/
             """)
@@ -921,12 +935,13 @@ class GPWorksheet(Worksheet):
         
         return excel_width
 
-    @staticmethod
-    def _longest_line_length(cell_val):
+
+    def _longest_line_length(self, cell_val):
         """
         Calculate the length of the longest line within a cell.
         If the cell contains a string, the longest length between line breaks is returned.
-        If the cell contains a link formatted as [{display_text: link}], the longest length is calculated from the display text.
+        If the cell contains a float or integer, the longest length is calculated from the cell_value cast to a string.
+        If the cell contains a link formatted as {display_text: link}, the longest length is calculated from the display text.
         If the cell contains a list of strings, the length of the longest string in the list is returned.
         Expects new lines to be marked with "\n", "\r\n" or new lines in multiline strings.
 
@@ -944,19 +959,22 @@ class GPWorksheet(Worksheet):
 |\r\n|\n"""
 
         if isinstance(cell_val, str):
-            return(max([len(line) for line in re.split(split_strings, cell_val)]))
+            max_length = max([len(line) for line in re.split(split_strings, cell_val)])
+        elif isinstance(cell_val, (float, int)):
+            max_length = self._longest_line_length(str(cell_val))
+        elif isinstance(cell_val, dict):
+            max_length = self._longest_line_length(list(cell_val)[0])
+        elif isinstance(cell_val, FormatList):
+            max_length = self._longest_line_length(cell_val.string)
         elif isinstance(cell_val, list):
-            if isinstance(cell_val[0], dict):
-                # text with links are stored as {text: link}, extract key to calculate text length
-                return(max([len(line) for line in re.split(split_strings, list(cell_val[0])[0])]))
-            elif isinstance(cell_val[0], FormatList):
-                string = cell_val[0].string
-                return(max([len(line) for line in re.split(split_strings, string)]))
+            if isinstance(cell_val[0], (dict, FormatList)):
+                max_length = self._longest_line_length(cell_val[0])
             else:
-                return(max([len(line) for line in cell_val]))
+                max_length = max([len(line) for line in cell_val])
         else:
-            return(0)
-        
+            max_length = 0
+
+        return max_length
 
 
 class GPWorkbook(Workbook):
@@ -1014,7 +1032,7 @@ class GPWorkbook(Workbook):
     def _update_annotations(self, sheets):
         ordered_refs = []
         for gptable in sheets.values():
-            gptable._set_annotations()
+            gptable._set_annotations(self.theme.description_order)
             ordered_refs.extend(gptable._annotations)
 
         # remove duplicates from ordered_refs and assign to self._annotations

@@ -6,7 +6,11 @@ class GPTable:
     """
     A Good Practice Table. Stores a table and metadata for writing a table
     to excel.
-    
+
+    .. note:: Deprecated in v1.1.0: Ability to reference notes within
+        ``GPTable.table.columns`` will be removed in v2 of gptables. Please use
+        ``GPTable.table_notes`` to ensure references are correctly placed and ordered.
+
     Attributes
     ----------
     table : pandas.DataFrame
@@ -182,14 +186,17 @@ class GPTable:
         """
         index_cols = set(self.index_columns.values())
         self._column_headings = {x for x in range(self.table.shape[1])} - index_cols
-    
-    
+
+
     def _validate_all_column_names_have_text(self):
         """
         Validate that all column names in header row have text.
         """
         for column_name in self.table.columns:
-            if len(column_name) > 0:
+            if pd.isna(column_name):
+                msg = ("Null column name found in table data - column names must all have text")
+                raise ValueError(msg)
+            elif len(column_name) > 0:
                 continue
             else:
                 msg = ("Empty column name found in table data - column names must all have text")
@@ -276,11 +283,10 @@ class GPTable:
         """
         self._validate_text(new_instructions, "instructions")
 
-        if isinstance(new_instructions, list):
-            new_instructions = FormatList(new_instructions)
-
         if len(new_instructions) == 0:
             self.instructions = "This worksheet contains one table. Some cells may refer to notes, which can be found on the notes worksheet."
+        elif isinstance(new_instructions, list):
+            self.instructions = FormatList(new_instructions)
         else:
             self.instructions = new_instructions
 
@@ -311,15 +317,25 @@ class GPTable:
             for value in new_units.values():
                 self._validate_text(value, "units")
 
+            headers = self.table.columns.values.tolist()
+
+            # Check if notes have already been added to headers...
+            unmodified_headers = [header.split("\n")[0] for header in headers]
+
+            # ...if so, apply any units applied to headers without notes, to headers with notes
+            for n in range(len(unmodified_headers)):
+                if unmodified_headers[n] in list(new_units.keys()):
+                    new_units[n] = new_units.pop(unmodified_headers[n])
+
             # Convert numeric keys to column names
-            new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_units.keys()] 
-            new_headers_values = [f"{key} \n({value})" for key, value in zip(new_headers_keys, new_units.values())]
+            new_headers_keys = [headers[key] if isinstance(key, int) else key for key in new_units.keys()]
+            new_headers_values = [f"{key}\n({value})" for key, value in zip(new_headers_keys, new_units.values())]
             new_headers = dict(zip(new_headers_keys, new_headers_values))
 
             self.table = self.table.rename(columns = new_headers)
 
             if len(self.additional_formatting) > 0:
-                self._add_units_to_additional_formatting(new_headers)
+                self._update_column_names_in_additional_formatting(new_headers)
 
         elif not new_units is None:
             msg = ("`units` attribute must be a dictionary or None"
@@ -329,14 +345,12 @@ class GPTable:
 
         self.units = new_units
 
-    def _add_units_to_additional_formatting(self, col_names):
+    def _update_column_names_in_additional_formatting(self, col_names):
         """
-        
         Parameters
         ----------
         col_names: dict
             with keys old names and values new names, where new names are old names plus units
-           
         Return
         ------
         None
@@ -345,7 +359,7 @@ class GPTable:
         for dictionary in formatting_list:
             if list(dictionary.keys()) == ["column"]:
                 format = list(dictionary.values())[0]
-                
+
                 # new_name if name==old_name else name for name in col_names
                 format["columns"] = [col_names[name] if name in list(col_names.keys()) else name for name in format["columns"]]
 
@@ -361,12 +375,25 @@ class GPTable:
             for value in new_table_notes.values():
                 self._validate_text(value, "table_notes")
 
+            headers = self.table.columns.values.tolist()
+
+            # Check if units have already been added to headers...
+            unmodified_headers = [header.split("\n")[0] for header in headers]
+
+            # ...if so, apply any notes applied to headers without units, to headers with units
+            for n in range(len(unmodified_headers)):
+                if unmodified_headers[n] in list(new_table_notes.keys()):
+                    new_table_notes[n] = new_table_notes.pop(unmodified_headers[n])
+
             # Convert numeric keys to column names
-            new_headers_keys = [self.table.columns.values.tolist()[key] if isinstance(key, int) else key for key in new_table_notes.keys()]
-            new_headers_values = [f"{key} \n{value}" for key, value in zip(new_headers_keys, new_table_notes.values())]
+            new_headers_keys = [headers[key] if isinstance(key, int) else key for key in new_table_notes.keys()]
+            new_headers_values = [f"{key}\n{value}" for key, value in zip(new_headers_keys, new_table_notes.values())]
             new_headers = dict(zip(new_headers_keys, new_headers_values))
 
             self.table = self.table.rename(columns = new_headers)
+
+            if len(self.additional_formatting) > 0:
+                self._update_column_names_in_additional_formatting(new_headers)
 
         elif not new_table_notes is None:
             msg = ("`table_notes` attribute must be a dictionary or None"
@@ -426,26 +453,26 @@ class GPTable:
         else:
             self.legend += new_legend
 
-    def _set_annotations(self):
+    def _set_annotations(self, description_order):
         """
         Set a list of note references to the `_annotations` attribute.
         """
         elements = [
                 "title",
                 "subtitles",
-                "legend",
-                "source",
-                "scope",
+                *description_order,
                 "units",
+                "table_notes",
                 ]
-        
+
         ordered_refs = []
-        
+
         for attr in elements:
             attr_current = getattr(self, attr)
             references = self._get_references_from_attr(attr_current)
             ordered_refs.extend(references)
 
+        # Deprecated as of v1.1.0 - instead use `table_notes` to add references to column headers
         table_refs = self._get_references_from_table()
         ordered_refs.extend(table_refs)
 
@@ -484,8 +511,8 @@ class GPTable:
                     ordered_refs.extend(self._get_references(data_list[n]))
 
         return ordered_refs
-        
 
+    # Deprecated as of v1.1.0 - instead use `table_notes` to add references to column headers
     def _get_references_from_table(self):
         """
         Get note references in the table column headings and index columns.
@@ -592,12 +619,9 @@ class GPTable:
         Validate that an object contains valid text elements. These are either
         strings or list of strings and dictionaries.
         """
-        if isinstance(obj, str) or obj is None:
+        if isinstance(obj, str):
             return None
-        
-        msg = (f"{attr} text should be provided as strings or lists of"
-                   f" strings and dictionaries (rich-text). {type(obj)} are"
-                   " not valid text elements.")
+
         if isinstance(obj, list):
             for element in obj:
                 if not isinstance(element, (str, dict)):

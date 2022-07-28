@@ -1,5 +1,4 @@
-import unittest
-from io import StringIO
+import pytest
 from collections import namedtuple
 import pandas as pd
 from pandas.testing import assert_frame_equal, assert_series_equal
@@ -12,7 +11,7 @@ from gptables.core.wrappers import GPWorksheet
 from gptables.core.gptable import FormatList
 from gptables import Theme
 from gptables import gptheme
-import pytest
+from gptables.test.test_gptable import create_gptable_with_kwargs, does_not_raise
 
 Tb = namedtuple("Testbook", "wb ws")
 
@@ -24,13 +23,13 @@ valid_text_elements = [  # Not None
 test_text_list = [
     "This has a $$reference$$",
     "This one doesn't",
-    "Here's another $$one$$"
+    "Here's $$another$$one"
     ]
 
 exp_text_list = [
     "This has a [note 1]",
     "This one doesn't",
-    "Here's another [note 2]"
+    "Here's one[note 2]"
     ]
 
 
@@ -195,14 +194,83 @@ class TestGPWorksheetWriting:
         assert format_obj.bold
 
 
+    def test__smart_write_link(self, testbook):
+        testbook.wb.set_theme(Theme({}))
 
-class TestGPWorksheetFooterText:
+        display_text = "gov.uk"
+        url = "https://www.gov.uk/"
+
+        testbook.ws._smart_write(0, 0, {display_text: url}, {})
+
+        got_string = testbook.ws.str_table.string_table
+        exp_string = {display_text: 0}
+        assert got_string == exp_string
+
+        got_hyperlink = testbook.ws.hyperlinks[0][0]["url"]
+        exp_hyperlink = url
+        assert got_hyperlink == exp_hyperlink
+
+        # String is referenced using a named tuple (string, Format)
+        # Here we get first element, which references string lookup location
+        cell = testbook.ws.table[0][0]
+
+        got_lookup = cell[0]
+        exp_lookup = 0
+        assert got_lookup == exp_lookup
+
+        format_obj = cell[1]
+        assert format_obj.underline == True
+        assert format_obj.font_color == "#0000FF" # aka Blue
+
+
+    def test__smart_write_null_cell(self, testbook):
+        testbook.ws._smart_write(0, 0, None, {})
+        # Strings are stored in a lookup table for efficiency
+        got_string = testbook.ws.str_table.string_table
+        exp_string = {}
+        assert got_string == exp_string
+
+        # Strings referenced using a named tuple (string, Format)
+        # When cell has no content, tuple only contains Format
+        cell = testbook.ws.table[0][0]
+        assert len(cell) == 1
+
+
+    def test__write_empty_table(self, testbook, create_gptable_with_kwargs):
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame({"col": [None]})
+        })
+        with pytest.raises(ValueError):
+            testbook.ws._write_table_elements([0,0], gptable, auto_width=True)
+
+
+    @pytest.mark.parametrize("cell_value1,cell_value2,expectation", [
+        (None, "valid text", pytest.warns(UserWarning)),
+        ("", "valid text", pytest.warns(UserWarning)),
+        (" ", "valid text", pytest.warns(UserWarning)),
+        ("    ", "valid text", pytest.warns(UserWarning)),
+        ("_", "valid text", pytest.raises(ValueError)),
+        (" *", "valid text", pytest.raises(ValueError)),
+        (" Hello_World! ", "valid text", does_not_raise()),
+    ])
+    def test__write_table_elements_cell_validation(self, testbook,
+        create_gptable_with_kwargs, cell_value1, cell_value2, expectation):
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame({
+                "colA": [cell_value1, cell_value2],
+                "colB": ["valid text", "valid text"]
+            })
+        })
+        with expectation:
+            testbook.ws._write_table_elements([0,0], gptable, auto_width=True)
+
+
+
+class TestGPWorksheetReferences:
     """
-    Test that GPTable footer elements are modified correctly by GPWorksheet
+    Test that GPTable note references are modified correctly by GPWorksheet
     during write_gptable().
     """
-
-
     @pytest.mark.parametrize("text", test_text_list)
     def test__replace_reference(self, text, testbook):
         """
@@ -210,25 +278,25 @@ class TestGPWorksheetFooterText:
         [note n], in order of appearance. Also tests replacement in lists.
         """
         got_output = []
-        reference_order = ["reference", "one"]
+        reference_order = ["reference", "another"]
 
         got_output = [testbook.ws._replace_reference(text, reference_order) for text in test_text_list]
     
-        exp_refs = ["reference", "one"]
+        exp_refs = ["reference", "another"]
         assert reference_order == exp_refs
         assert got_output == exp_text_list
 
 
     @pytest.mark.parametrize("text,refs,output",
         zip(test_text_list,
-        [["reference"], [], ["one"]],
-        ["This has a [note 1]", "This one doesn't", "Here's another [note 2]"]
+        [["reference"], [], ["another"]],
+        ["This has a [note 1]", "This one doesn't", "Here's one[note 2]"]
         ))
     def test__replace_reference_in_attr_str(self, text, refs, output, testbook):
         """
         Test that references are replaced in a single string.
         """
-        reference_order = ["reference", "one"]
+        reference_order = ["reference", "another"]
         got_text = testbook.ws._replace_reference_in_attr(
                 text,
                 reference_order
@@ -241,11 +309,11 @@ class TestGPWorksheetFooterText:
         """
         Test that references are replaced in dictionary values, but not keys.
         """
-        reference_order = ["reference", "one"]
+        reference_order = ["reference", "another"]
         test_text_dict = {
                 "$$key$$": "This is a value with a $$reference$$",
-                "another_key": "Another value",
-                "third_key": "$$one$$more reference"
+                "second_key": "Second value",
+                "another_key": "$$another$$reference"
                 }
         got_text = testbook.ws._replace_reference_in_attr(
                 test_text_dict,
@@ -254,8 +322,8 @@ class TestGPWorksheetFooterText:
                 
         exp_text_dict = {
                 "$$key$$": "This is a value with a [note 1]",
-                "another_key": "Another value",
-                "third_key": "more reference[note 2]"
+                "second_key": "Second value",
+                "another_key": "reference[note 2]"
                 }
         
         assert got_text == exp_text_dict
@@ -293,8 +361,108 @@ class TestGPWorksheetFormatUpdate:
         exp.iloc[0] = [{"bold": True} for n in range(3)]
         exp.iloc[1] = [{"bold": True} for n in range(3)]
         assert_frame_equal(test, exp)
-    
-        
+
+
+
+class TestGPWorksheetTable:
+    """
+    Test that the table property inherited from `xlsxwriter.Worksheet` is set correctly.
+    """
+    def test__mark_data_as_worksheet_table(
+        self, testbook, create_gptable_with_kwargs
+    ):
+        df = pd.DataFrame({"col1": ["x", "y"], "col2": [0, 1]})
+        table_name = "table_name"
+
+        gptable = create_gptable_with_kwargs({
+            "table": df,
+            "table_name": table_name
+        })
+        gptable._set_data_range()
+
+        table_format = pd.DataFrame({"col1": [{}, {}], "col2": [{}, {}]})
+
+        testbook.ws._write_array([0, 2], df, table_format) # First two rows reserved for title and instructions
+
+        column_heading_format = testbook.ws.theme.column_heading_format
+        testbook.ws._mark_data_as_worksheet_table(gptable, column_heading_format)
+
+        assert len(testbook.ws.tables) == 1
+
+        table = testbook.ws.tables[0]
+
+        got_table_range = table["a_range"]
+        exp_table_range = xlsxwriter.utility.xl_range(*gptable.data_range)
+
+        assert got_table_range == exp_table_range
+
+        assert table["name"] == table_name
+
+        got_number_of_columns = len(table["columns"])
+        exp_number_of_columns = df.shape[0]
+        assert got_number_of_columns == exp_number_of_columns
+
+        for n in range(got_number_of_columns):
+            got_column_name = table["columns"][n]["name"]
+            exp_column_name = df.columns[n]
+            assert got_column_name == exp_column_name
+
+            got_heading_format = table["columns"][n]["name_format"]
+            exp_heading_format = testbook.wb.add_format(column_heading_format)
+            assert got_heading_format.__dict__ == exp_heading_format.__dict__
+
+
+    @pytest.mark.parametrize("cell_val,exp_length",[
+        ("string", 6),
+        (42, 2),
+        (3.14, 4),
+        ({"gov.uk": "https://www.gov.uk"}, 6),
+        (FormatList(["Partially ", {"bold": True}, "bold", " string"]), 21),
+        (["string", "another string"], 14),
+        ("string\nwith\nnewlines", 8),
+        (FormatList(["string\r\n", {"bold": True}, "bold string"]), 11),
+        (set(), 0)
+    ])
+    def test__longest_line_length(self, testbook, cell_val, exp_length):
+        got_length = testbook.ws._longest_line_length(cell_val)
+
+        assert got_length == exp_length
+
+
+    @pytest.mark.parametrize("data", [
+        ["string", "longer string"],
+        ["longer string", "longer string"],
+        ["string\nstring\nstring", "longer string"]])
+    @pytest.mark.parametrize("format", [
+        [{"font_size": 12}, {"font_size": 12}],
+        [{"font_size": 10}, {"font_size": 12}]])
+    def test__calculate_column_widths(self, testbook, data, format):
+        table = pd.DataFrame({"col": data})
+        table_format = pd.DataFrame({"col": format})
+
+        got_width = testbook.ws._calculate_column_widths(table, table_format)
+        exp_width = [testbook.ws._excel_string_width(string_len=13, font_size=12)]
+
+        assert got_width == exp_width
+
+
+
+class TestGPWorkbookStatic:
+    """
+    Test that the GPWorkbook static methods work as expected.
+    """
+    @pytest.mark.parametrize("input, expected", [
+        ("no references", "no references"),
+        ("ref at end$$1$$", "ref at end"),
+        ("$$1$$ref at start", "ref at start"),
+        ("two$$1$$ refs$$2$$", "two refs"),
+        ("three$$1$$ refs$$2$$, wow$$3$$", "three refs, wow")
+    ])
+    def test__strip_annotation_references(self, input, expected):
+        assert GPWorkbook._strip_annotation_references(input) == expected
+
+
+
 class TestGPWorkbook:
     """
     Test that GPWorkbook initialisation and methods work as expected.
@@ -327,7 +495,8 @@ class TestGPWorkbook:
         testbook.wb.set_theme(theme)
         
         assert testbook.wb.theme == gptables.Theme(theme_config)
-    
+
+
     @pytest.mark.parametrize("not_a_theme", [
         dict(),
         set(),
@@ -344,3 +513,144 @@ class TestGPWorkbook:
         """
         with pytest.raises(TypeError):
             testbook.wb.set_theme(not_a_theme)
+
+
+    def test__update_annotations(self, testbook, create_gptable_with_kwargs):
+        """
+        Test that _update_annotations produces a correctly ordered list of
+        note references used in sheets.
+        """
+        table = pd.DataFrame(columns=["col"])
+
+        kwargs1 = {
+            "title": "Title$$1$$",
+            "subtitles": ["Subtitle$$2$$"],
+            "units": {0: "Unit$$3$$"},
+            "table_notes": {0: "Note$$4$$"},
+            "table": table
+        }
+
+        kwargs2 = {
+            "title": "Title$$1$$",
+            "subtitles": ["Subtitle$$3$$"],
+            "units": {0: "Unit$$5$$"},
+            "table_notes": {0: "Note$4$$"},
+            "table": table
+        }
+
+        gptable1 = create_gptable_with_kwargs(kwargs1)
+        gptable2 = create_gptable_with_kwargs(kwargs2)
+        sheets = {"sheet1": gptable1, "sheet2": gptable2}
+
+        gpworkbook = testbook.wb
+        gpworkbook._update_annotations(sheets)
+
+        assert gpworkbook._annotations == ["1", "2", "3", "4", "5"]
+
+
+    @pytest.mark.parametrize("additional_elements,values", [
+        (None, None),
+        (["scope"], ["scope"]),
+        (
+            ["subtitles", "instructions", "scope", "source"],
+            [["subtitles"], "instructions", "scope", "source"]
+        )
+    ])
+    def test_make_table_of_contents(self, testbook, create_gptable_with_kwargs,
+        additional_elements, values):
+        """
+        Test that attributes are set as expected when contentsheet is created.
+        """
+        kwargs = {}
+        if additional_elements:
+            kwargs.update(dict(zip(additional_elements, values)))
+
+        exp_toc = pd.DataFrame({
+            "Sheet name": [{"sheet": "internal:'sheet'!A1"}],
+            "Table description": [["Sheet title", *kwargs.keys()]]
+        })
+        exp_contentsheet = create_gptable_with_kwargs({
+            "table_name": "contents_table",
+            "title": "Table of contents",
+            "instructions": "This worksheet contains one table.",
+            "table": exp_toc,
+            "index_columns": {2: 0}
+        })
+
+        got_contentsheet = testbook.wb.make_table_of_contents(
+            sheets={
+                "sheet": create_gptable_with_kwargs({
+                    "title": "Sheet title", **kwargs
+                })
+            }, additional_elements=list(kwargs.keys())
+        )
+
+        assert_frame_equal(got_contentsheet.table, exp_contentsheet.table)
+
+        got_contentsheet.table = None
+        exp_contentsheet.table = None
+
+        assert got_contentsheet.__dict__ == exp_contentsheet.__dict__
+
+
+    def test_make_notesheet(self, testbook, create_gptable_with_kwargs):
+        """
+        Test that creating a notes table sheet using `make_notesheet` generates
+        the same gptables.GPTable object as expected.
+        """
+        gpworkbook = testbook.wb
+        gpworkbook._annotations = [1, 2]
+        dummy_table = pd.DataFrame(data={"Note number":[1, 2], "Note text":["text", "more text"]})
+
+        notes_name = "Just_a_notesheet"
+        notes_title = "Are these the notes you're looking for?"
+        notes_instructions = "These are not the notes you're looking for"
+
+        got_notesheet = gpworkbook.make_notesheet(
+            notes_table=dummy_table,
+            table_name=notes_name,
+            title=notes_title,
+            instructions=notes_instructions
+        )
+        exp_notesheet = create_gptable_with_kwargs({
+            "table": dummy_table,
+            "table_name": notes_name,
+            "title": notes_title,
+            "instructions": notes_instructions
+        })
+
+        assert_frame_equal(got_notesheet.table, exp_notesheet.table)
+
+        got_notesheet.table = None
+        exp_notesheet.table = None
+
+        assert got_notesheet.__dict__ == exp_notesheet.__dict__
+
+
+    def test_notesheet_defaults(self, testbook, create_gptable_with_kwargs):
+        """
+        Test that creating a notes table sheet with arguments set to defaults generates
+        the same gptables.GPTable object as expected.
+        """
+        gpworkbook = testbook.wb
+        gpworkbook._annotations = [1, 2]
+        dummy_table = pd.DataFrame(data={"Note number":[1, 2], "Note text":["text", "more text"]})
+
+        notes_name = "notes_table"
+        notes_title = "Notes"
+        notes_instructions = "This worksheet contains one table."
+
+        got_notesheet = gpworkbook.make_notesheet(notes_table=dummy_table)
+        exp_notesheet = create_gptable_with_kwargs({
+            "table": dummy_table,
+            "table_name": notes_name,
+            "title": notes_title,
+            "instructions": notes_instructions
+        })
+
+        assert_frame_equal(got_notesheet.table, exp_notesheet.table)
+
+        got_notesheet.table = None
+        exp_notesheet.table = None
+
+        assert got_notesheet.__dict__ == exp_notesheet.__dict__

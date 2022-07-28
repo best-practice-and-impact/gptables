@@ -19,15 +19,17 @@ docs_requires = [
 
 test_requires = [
     "coverage",
-    "pytest>=3.6,<4",
+    "pytest>=6.2.5",
     "pytest-cov"
 ] + docs_requires
 
 setup(
     name = 'gptables',
     version = version,
-    author = 'David Foster',
-    author_email = 'david.foster@ons.gov.uk',
+    author = 'David Foster, Rowan Hemsi',
+    author_email = 'david.foster@ons.gov.uk, rowan.hemsi@ons.gov.uk',
+    maintainer = 'Rowan Hemsi',
+    maintainer_email = 'rowan.hemsi@ons.gov.uk',
     url = 'https://gptables.readthedocs.io/en/latest/',
     keywords="reproducible tables excel xlsxwriter reproducible-analytical-pipelines",
     description = 'Simplifying good practice in statistical tables.',
