@@ -29,6 +29,7 @@ v1.1.0
 * Validation for tables with null or whitespace rows, cells or column names
 * Support for note references in ``GPTable.instructions`` attribute
 * Accessibility checklist based on `Analysis Function guidance`_ and `a11ytables documentation`_
+* Contributers page in documentation
 
 .. _`Analysis Function guidance`: https://analysisfunction.civilservice.gov.uk/policy-store/making-spreadsheets-accessible-a-brief-checklist-of-the-basics/
 .. _`a11ytables documentation`: https://co-analysis.github.io/a11ytables/articles/checklist.html
@@ -42,6 +43,7 @@ v1.1.0
 * CI configuration to run tests on both Linux and Windows with Python 3.6-3.10
   and calculate coverage based on core functionality and utilites
 * Restructure and rewording of changelog
+* Package author and maintainer information
 
 **Deprecated**
 
