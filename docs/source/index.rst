@@ -55,6 +55,9 @@ machine-readable CSV-W files.
 
 5. You :func:`~.core.api.write_workbook` to win.
 
+**Disclaimer**
+This package is not intending to create perfectly accessible spreadsheets but will help with the bulk of the work needed. Users of this packages should refer back to the main spreadsheet guidance or the spreadsheet accessibility checklist after using it to make sure nothing has been missed. Please email Analysis.Function@ons.gov.uk if you use the package so we can monitor use and the outputs produced.
+
 
 .. toctree::
    :maxdepth: 2

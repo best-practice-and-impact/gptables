@@ -15,6 +15,13 @@ and this project tries its very best to adhere to
 Unreleased
 ===================
 
+v1.2.0
+------
+
+**Added**
+
+* gptables now supports python 3.11
+* Official disclaimer included at the bottom of the README and PyPI index
 
 Released (PyPI)
 ===============
