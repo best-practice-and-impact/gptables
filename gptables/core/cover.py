@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import List
 
+from gptables.core.gptable import FormatList
+
 @dataclass
 class Cover():
     """
@@ -10,11 +12,11 @@ class Cover():
     ----------
     title : str
         cover page title
-    intro : List[str, dict], optional
+    intro : List[str, list], optional
         introductory text
-    about : List[str, dict], optional
+    about : List[str, list], optional
         about/notes text
-    contact : List[str, dict], optional
+    contact : List[str, list], optional
         contact details text
     cover_label : str 
         cover page tab label, defaults to Cover
@@ -24,3 +26,15 @@ class Cover():
     about: List = None
     contact: List = None
     cover_label: str = "Cover"
+    
+    
+    def parse_formatting(self, attribute):
+        """Check attribute for a list. If there is a list then cast the list to a FormatList in attribute.
+
+        Parameters
+        ----------
+        attribute : List[str, list]
+        """
+
+        new_attribute = [FormatList(text) if isinstance(text, list) else text for text in attribute]
+        return new_attribute
