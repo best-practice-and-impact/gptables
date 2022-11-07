@@ -38,17 +38,14 @@ class GPWorksheet(Worksheet):
         pos = self._write_element(pos, cover.title, theme.cover_title_format)
 
         if cover.intro is not None:
-            cover.intro = cover.parse_formatting(cover.intro)
             pos = self._write_element(pos, "Introductory information", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.intro, theme.cover_text_format)
 
         if cover.about is not None:
-            cover.about = cover.parse_formatting(cover.about)
             pos = self._write_element(pos, "About these data", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.about, theme.cover_text_format)
 
         if cover.contact is not None:
-            cover.about = cover.parse_formatting(cover.about)
             pos = self._write_element(pos, "Contact", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
     

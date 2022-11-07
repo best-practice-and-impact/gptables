@@ -21,11 +21,14 @@ class Cover():
     cover_label : str 
         cover page tab label, defaults to Cover
     """
-    title: str
-    intro: List = None
-    about: List = None
-    contact: List = None
-    cover_label: str = "Cover"
+    
+    def __init__(self, title: str, intro: List = None, about: List = None, contact: List = None, cover_label: str = "Cover"):
+    
+        self.title = title
+        self.intro = self.parse_formatting(intro)
+        self.about = self.parse_formatting(about)
+        self.contact = self.parse_formatting(contact)
+        self.cover_label = cover_label
     
     
     def parse_formatting(self, attribute):
@@ -34,7 +37,12 @@ class Cover():
         Parameters
         ----------
         attribute : List[str, list]
+        
+        Returns
+        -------
+        List[str, FormatList]
         """
 
-        new_attribute = [FormatList(text) if isinstance(text, list) else text for text in attribute]
-        return new_attribute
+        if attribute is not None:
+            attribute = [FormatList(text) if isinstance(text, list) else text for text in attribute]
+        return attribute
