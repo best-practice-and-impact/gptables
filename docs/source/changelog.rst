@@ -21,6 +21,7 @@ v1.2.0
 **Added**
 
 * Incorporated rich text functionaliy into the cover page by using List[dict, str] to format text in the intro, about, and contact sections.
+* Rich text format lists can now be of length 2.
 
 Released (PyPI)
 ===============

@@ -8,6 +8,7 @@ class TestCover:
     @pytest.mark.parametrize("input_data", [
         None,
         ["text"],
+        [[{"bold":True}, "richtext"]],
         [[{"bold":True}, "richtext", " "]],
         [[{"bold":True}, "richtext", " "], "text"],
         "text",
