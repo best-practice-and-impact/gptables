@@ -25,6 +25,11 @@ v1.2.0
 * gptables now supports python 3.11
 * Official disclaimer included at the bottom of the README and PyPI index
 
+**Removed**
+
+* CI for Python 3.6 on Linux, as no longer supported by GitHub action ``setup-python``
+
+
 Released (PyPI)
 ===============
 
