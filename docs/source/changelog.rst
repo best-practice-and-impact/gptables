@@ -15,11 +15,11 @@ and this project tries its very best to adhere to
 Unreleased
 ===================
 
-:Date 2023-02-17
-
 **Added**
 
 * Column width customisation to cover sheet
+* gptables now supports python 3.11
+* Official disclaimer included at the bottom of the README and PyPI index
 
 **Changed**
 
