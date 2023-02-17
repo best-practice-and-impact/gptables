@@ -735,7 +735,13 @@ class GPWorksheet(Worksheet):
                 self._write_with_newlines(wb, row, col, data, format_dict, *args)
 
         elif isinstance(data, FormatList):
-            self._write_with_custom_formats(wb, row, col, data, format_dict, *args)
+            if len(data.list) == 2:
+                text_format = format_dict.copy()
+                text_format.update(data.list[0])
+                text_data = data.list[1]
+                self._smart_write(row, col, text_data, text_format, *args)
+            else:
+                self._write_with_custom_formats(wb, row, col, data, format_dict, *args)
 
         elif isinstance(data, dict):
             self._write_dict_as_url(wb, row, col, data, format_dict, *args)
