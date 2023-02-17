@@ -15,6 +15,15 @@ and this project tries its very best to adhere to
 Unreleased
 ===================
 
+:Date 2023-02-17
+
+**Added**
+
+* Column width customisation to cover sheet
+
+**Changed**
+
+* Default theme now includes cover sheet text wrapping set to True
 
 Released (PyPI)
 ===============

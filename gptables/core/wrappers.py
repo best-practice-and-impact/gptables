@@ -48,7 +48,8 @@ class GPWorksheet(Worksheet):
         if cover.contact is not None:
             pos = self._write_element(pos, "Contact", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
-    
+                  
+        self.set_column(0, 0, cover.width)
 
     def write_gptable(self, gptable, auto_width, reference_order=[]):
         """

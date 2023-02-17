@@ -18,9 +18,12 @@ class Cover():
         contact details text
     cover_label : str 
         cover page tab label, defaults to Cover
+    width: int
+        width of the column, defaults to 85
     """
     title: str
     intro: List = None
     about: List = None
     contact: List = None
     cover_label: str = "Cover"
+    width: int = 85
