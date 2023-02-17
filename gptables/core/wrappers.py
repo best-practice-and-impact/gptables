@@ -110,8 +110,6 @@ class GPWorksheet(Worksheet):
                 auto_width,
                 )
 
-        self._mark_data_as_worksheet_table(gptable, theme.column_heading_format)
-
 
     def _reference_annotations(self, gptable, reference_order):
         """
@@ -575,6 +573,8 @@ class GPWorksheet(Worksheet):
         if auto_width:
             widths = self._calculate_column_widths(data, formats)
             self._set_column_widths(widths)
+
+        self._mark_data_as_worksheet_table(gptable, formats)
         
         return pos
 
@@ -674,18 +674,32 @@ class GPWorksheet(Worksheet):
         pos = [pos[0] + rows, 0]
         
         return pos
-        
-    def _mark_data_as_worksheet_table(self, gptable, column_header_format_dict):
+
+
+    def _mark_data_as_worksheet_table(self, gptable, formats_dataframe):
         """
         Marks the data to be recognised as a Worksheet Table in Excel.
+
+        Parameters
+        ----------
+        gptable : gptables.GPTable
+            object containing the table
+        formats_dataframe : DataFrame
+            DataFrame with same dimensions as gptable.table, containing
+            formatting dictionaries
         """
         data_range = gptable.data_range
 
-        column_header_format = self._workbook.add_format(column_header_format_dict)
-        
         column_list = gptable.table.columns.tolist()
-        
-        column_headers = [{'header': column, 'header_format': column_header_format} for column in column_list]
+        formats_list = [
+            self._workbook.add_format(format_dict)
+            for format_dict in formats_dataframe.iloc[0, :].tolist()
+        ]
+
+        column_headers = [
+            {'header': header, 'header_format': header_format}
+            for header, header_format in zip(column_list, formats_list)
+        ]
 
         self.add_table(*data_range,
                        {'header_row': True,
@@ -694,6 +708,7 @@ class GPWorksheet(Worksheet):
                         'style': None,
                         'name': gptable.table_name
                         })
+
 
     def _smart_write(self, row, col, data, format_dict, *args):
         """

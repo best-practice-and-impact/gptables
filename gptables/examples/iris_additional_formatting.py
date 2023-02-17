@@ -81,9 +81,10 @@ additional_formatting = [
         "column": {
             "columns": ["Setosa", "Versicolor"],  # str, int or list of either
             "format": {"align": "center"},
+            "include_names": False, # Whether to include column headings (optional)
         }
     },
-    {"column": {"columns": [3], "format": {"left": 1}}},
+    {"column": {"columns": [2], "format": {"align": "left"}, "include_names": True}},
     {
         "row": {
             "rows": -1,  # Numbers only, but can refer to last row using -1
