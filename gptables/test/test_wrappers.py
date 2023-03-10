@@ -372,11 +372,8 @@ class TestGPWorksheetTable:
         self, testbook, create_gptable_with_kwargs
     ):
         df = pd.DataFrame({"col1": ["x", "y"], "col2": [0, 1]})
-        table_name = "table_name"
-
         gptable = create_gptable_with_kwargs({
             "table": df,
-            "table_name": table_name
         })
         gptable._set_data_range()
 
@@ -384,8 +381,7 @@ class TestGPWorksheetTable:
 
         testbook.ws._write_array([0, 2], df, table_format) # First two rows reserved for title and instructions
 
-        column_heading_format = testbook.ws.theme.column_heading_format
-        testbook.ws._mark_data_as_worksheet_table(gptable, column_heading_format)
+        testbook.ws._mark_data_as_worksheet_table(gptable, table_format)
 
         assert len(testbook.ws.tables) == 1
 
@@ -396,7 +392,7 @@ class TestGPWorksheetTable:
 
         assert got_table_range == exp_table_range
 
-        assert table["name"] == table_name
+        assert table["name"] == gptable.table_name
 
         got_number_of_columns = len(table["columns"])
         exp_number_of_columns = df.shape[0]
@@ -408,7 +404,7 @@ class TestGPWorksheetTable:
             assert got_column_name == exp_column_name
 
             got_heading_format = table["columns"][n]["name_format"]
-            exp_heading_format = testbook.wb.add_format(column_heading_format)
+            exp_heading_format = testbook.wb.add_format(table_format.iloc[0, n])
             assert got_heading_format.__dict__ == exp_heading_format.__dict__
 
 
