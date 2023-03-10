@@ -15,11 +15,9 @@ and this project tries its very best to adhere to
 Unreleased
 ===================
 
-v1.2.0
-------
-
 **Added**
 
+* Column width customisation to cover sheet
 * Incorporated rich text functionaliy into the cover page by using List[dict, str] to format text in the intro, about, and contact sections.
 * Rich text format lists can now be of length 2.
 * gptables now supports python 3.11
@@ -28,6 +26,10 @@ v1.2.0
 **Removed**
 
 * CI for Python 3.6 on Linux, as no longer supported by GitHub action ``setup-python``
+
+**Changed**
+
+* Default theme now includes cover sheet text wrapping set to True
 
 
 Released (PyPI)

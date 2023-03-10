@@ -20,15 +20,19 @@ class Cover():
         contact details text
     cover_label : str 
         cover page tab label, defaults to Cover
+    width: int
+        width of the column, defaults to 85
     """
     
-    def __init__(self, title: str, intro: List = None, about: List = None, contact: List = None, cover_label: str = "Cover"):
+    def __init__(self, title: str, intro: List = None, about: List = None,
+        contact: List = None, cover_label: str = "Cover", width: int = 85):
     
         self.title = title
         self.intro = self._parse_formatting(intro)
         self.about = self._parse_formatting(about)
         self.contact = self._parse_formatting(contact)
         self.cover_label = cover_label
+        self.width = width
 
         # TODO: Add input validation (e.g. empty list)
     
