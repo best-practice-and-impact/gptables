@@ -84,16 +84,21 @@ class TestConfigInitTheme:
             "cover_title":
                 {
                     'font_size': 16,
-                    'bold': True
+                    'bold': True,
+                    'text_wrap': True,
                 },
             
             "cover_subtitle":
                 {
                     'font_size': 14,
-                    'bold': True
+                    'bold': True,
+                    'text_wrap': True,
                 },
 
-            "cover_text": None,
+            "cover_text":
+                {
+                    'text_wrap': True,
+                },
 
             "title":
                 {
