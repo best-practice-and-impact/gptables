@@ -558,6 +558,8 @@ class GPWorksheet(Worksheet):
                 formats.iloc[1:, col],
                 index_level_formats[level - 1]  # Account for 0-indexing
                 )
+
+        self._apply_column_alignments(data, formats)
         
         ## Add additional table-specific formatting from GPTable
         self._apply_additional_formatting(
@@ -578,7 +580,35 @@ class GPWorksheet(Worksheet):
         
         return pos
 
-    
+
+    def _apply_column_alignments(self, data_table, formats_table):
+        """
+        Add column alignment to format based on datatype
+
+        Parameters
+        ----------
+        data_table : pandas.DataFrame
+            table to be written to an Excel workbook
+        formats_table : pandas.DataFrame
+            table with same dimensions as `data_table`,
+            containing formating dictionaries
+
+        """
+        column_types = data_table.dtypes
+
+        for column in data_table.columns:
+            if column_types[column] == "object":
+                alignment_dict = {"align" : "left"}
+
+            else:
+                alignment_dict = {"align": "right"}
+            
+            self._apply_format(formats_table[column], alignment_dict)
+
+
+
+
+
     def _apply_additional_formatting(
             self,
             formats_table,

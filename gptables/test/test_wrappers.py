@@ -266,6 +266,28 @@ class TestGPWorksheetWriting:
 
 
 
+    def test__apply_column_alignments(self, testbook):
+        data_table = pd.DataFrame({
+            "integer_column": [1, 2],
+            "string_column": ["A", "B"]
+        })
+
+        format_table = pd.DataFrame({
+            "integer_column": [{}, {}],
+            "string_column": [{}, {}]
+        })
+
+        testbook.ws._apply_column_alignments(data_table, format_table,)
+
+        exp_format_table = pd.DataFrame({
+            "integer_column": [{"align": "right"}, {"align": "right"}],
+            "string_column": [{"align": "left"}, {"align": "left"}]
+        })
+
+        assert_frame_equal(format_table, exp_format_table)
+
+
+
 class TestGPWorksheetReferences:
     """
     Test that GPTable note references are modified correctly by GPWorksheet
