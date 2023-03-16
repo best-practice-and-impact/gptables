@@ -269,19 +269,28 @@ class TestGPWorksheetWriting:
     def test__apply_column_alignments(self, testbook):
         data_table = pd.DataFrame({
             "integer_column": [1, 2],
-            "string_column": ["A", "B"]
+            "float_column": [1.1, 2.2],
+            "string_column": ["A", "B"],
+            "integer_with_shorthand": [1, "[x]"],
+            # "url_column": [{"display_text": "link"}, {"display_text": "link"}]
         })
 
         format_table = pd.DataFrame({
             "integer_column": [{}, {}],
-            "string_column": [{}, {}]
+            "float_column": [{}, {}],
+            "string_column": [{}, {}],
+            "integer_with_shorthand": [{}, {}],
+            # "url_column": [{}, {}],
         })
 
         testbook.ws._apply_column_alignments(data_table, format_table,)
 
         exp_format_table = pd.DataFrame({
             "integer_column": [{"align": "right"}, {"align": "right"}],
-            "string_column": [{"align": "left"}, {"align": "left"}]
+            "float_column": [{"align": "right"}, {"align": "right"}],
+            "string_column": [{"align": "left"}, {"align": "left"}],
+            "integer_with_shorthand": [{"align": "right"}, {"align": "right"}],
+            # "url_column": [{"align": "left"}, {"align": "left"}],
         })
 
         assert_frame_equal(format_table, exp_format_table)

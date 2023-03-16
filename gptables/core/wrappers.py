@@ -560,7 +560,7 @@ class GPWorksheet(Worksheet):
                 )
 
         self._apply_column_alignments(data, formats)
-        
+
         ## Add additional table-specific formatting from GPTable
         self._apply_additional_formatting(
                 formats,
@@ -594,15 +594,17 @@ class GPWorksheet(Worksheet):
             containing formating dictionaries
 
         """
+        data_table = data_table.convert_dtypes()
+
         column_types = data_table.dtypes
 
         for column in data_table.columns:
-            if column_types[column] == "object":
-                alignment_dict = {"align" : "left"}
+            if pd.api.types.is_numeric_dtype(column_types[column]):
+                alignment_dict = {"align" : "right"}
 
             else:
-                alignment_dict = {"align": "right"}
-            
+                alignment_dict = {"align": "left"}
+
             self._apply_format(formats_table[column], alignment_dict)
 
 
