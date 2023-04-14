@@ -271,16 +271,18 @@ class TestGPWorksheetWriting:
             "integer_column": [1, 2],
             "float_column": [1.1, 2.2],
             "string_column": ["A", "B"],
-            "integer_with_shorthand": [1, "[x]"],
-            # "url_column": [{"display_text": "link"}, {"display_text": "link"}]
+            "url_column": [{"display_text": "link"}, {"display_text": "link"}],
+            "integer_with_confidential_shorthand": [1, "[c]"],
+            "float_with_significant_shorthand": ["1.1[sss]", 2],
         })
 
         format_table = pd.DataFrame({
             "integer_column": [{}, {}],
             "float_column": [{}, {}],
             "string_column": [{}, {}],
-            "integer_with_shorthand": [{}, {}],
-            # "url_column": [{}, {}],
+            "url_column": [{}, {}],
+            "integer_with_confidential_shorthand": [{}, {}],
+            "float_with_significant_shorthand": [{}, {}],
         })
 
         testbook.ws._apply_column_alignments(data_table, format_table,)
@@ -289,8 +291,9 @@ class TestGPWorksheetWriting:
             "integer_column": [{"align": "right"}, {"align": "right"}],
             "float_column": [{"align": "right"}, {"align": "right"}],
             "string_column": [{"align": "left"}, {"align": "left"}],
-            "integer_with_shorthand": [{"align": "right"}, {"align": "right"}],
-            # "url_column": [{"align": "left"}, {"align": "left"}],
+            "url_column": [{"align": "left"}, {"align": "left"}],
+            "integer_with_confidential_shorthand": [{"align": "right"}, {"align": "right"}],
+            "float_with_significant_shorthand": [{"align": "right"}, {"align": "right"}],
         })
 
         assert_frame_equal(format_table, exp_format_table)

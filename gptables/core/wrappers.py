@@ -594,9 +594,16 @@ class GPWorksheet(Worksheet):
             containing formating dictionaries
 
         """
-        data_table = data_table.convert_dtypes()
+        # look for shorthand notation, usually a few letters in square brackets
+        # will also find note markers eg [Note 1]
+        data_table_copy = data_table.replace(
+            regex=r"\[[\w\s]+\]",
+            value = None,
+        )
 
-        column_types = data_table.dtypes
+        data_table_copy = data_table_copy.convert_dtypes()
+
+        column_types = data_table_copy.dtypes
 
         for column in data_table.columns:
             if pd.api.types.is_numeric_dtype(column_types[column]):
@@ -606,9 +613,6 @@ class GPWorksheet(Worksheet):
                 alignment_dict = {"align": "left"}
 
             self._apply_format(formats_table[column], alignment_dict)
-
-
-
 
 
     def _apply_additional_formatting(
