@@ -268,6 +268,7 @@ class TestGPWorksheetWriting:
 
     def test__apply_column_alignments(self, testbook):
         data_table = pd.DataFrame({
+            "index_column": [1, 2],
             "integer_column": [1, 2],
             "float_column": [1.1, 2.2],
             "string_column": ["A", "B"],
@@ -277,6 +278,7 @@ class TestGPWorksheetWriting:
         })
 
         format_table = pd.DataFrame({
+            "index_column": [{}, {}],
             "integer_column": [{}, {}],
             "float_column": [{}, {}],
             "string_column": [{}, {}],
@@ -285,9 +287,10 @@ class TestGPWorksheetWriting:
             "float_with_significant_shorthand": [{}, {}],
         })
 
-        testbook.ws._apply_column_alignments(data_table, format_table,)
+        testbook.ws._apply_column_alignments(data_table, format_table, index_columns=[0])
 
         exp_format_table = pd.DataFrame({
+            "index_column": [{"align": "left"}, {"align": "left"}],
             "integer_column": [{"align": "right"}, {"align": "right"}],
             "float_column": [{"align": "right"}, {"align": "right"}],
             "string_column": [{"align": "left"}, {"align": "left"}],
