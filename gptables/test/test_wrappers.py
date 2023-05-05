@@ -17,7 +17,8 @@ Tb = namedtuple("Testbook", "wb ws")
 
 valid_text_elements = [  # Not None
     "This is a string",
-    FormatList(["More than ", {"italic": True}, "just ", "a string"])
+    FormatList(["More than ", {"italic": True}, "just ", "a string"]),
+    FormatList([{"bold":True}, "text"])
 ]
 
 test_text_list = [
@@ -171,13 +172,13 @@ class TestGPWorksheetWriting:
     def test__smart_write_formatted_rich_text(self, testbook):
         testbook.wb.set_theme(Theme({}))
         
-        testbook.ws._smart_write(1, 2, valid_text_elements[1], {"bold": True})
+        testbook.ws._smart_write(1, 2, valid_text_elements[1], {})
         # Strings are stored in a lookup table for efficiency
         got_string = testbook.ws.str_table.string_table
-        exp_string = {'<r><t xml:space="preserve">More than </t></r><r><rPr><b'
-                      '/><i/><sz val="11"/><color theme="1"/><rFont val="Calib'
+        exp_string = {'<r><t xml:space="preserve">More than </t></r><r><rPr>'
+                      '<i/><sz val="11"/><color theme="1"/><rFont val="Calib'
                       'ri"/><family val="2"/><scheme val="minor"/></rPr><t xml'
-                      ':space="preserve">just </t></r><r><rPr><b/><sz val="11"'
+                      ':space="preserve">just </t></r><r><rPr><sz val="11"'
                       '/><color theme="1"/><rFont val="Calibri"/><family val="'
                       '2"/><scheme val="minor"/></rPr><t>a string</t></r>': 0}
 
@@ -189,9 +190,6 @@ class TestGPWorksheetWriting:
         got_lookup = cell[0]
         exp_lookup = 0
         assert got_lookup == exp_lookup
-        
-        format_obj = cell[1]
-        assert format_obj.bold
 
 
     def test__smart_write_link(self, testbook):

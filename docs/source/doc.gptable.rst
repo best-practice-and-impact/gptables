@@ -69,7 +69,7 @@ formatting of that element specified in the :class:`~.core.theme.Theme`.
 
 .. _`XlsxWriter format properties`: https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties
 
-``["It is ", {"bold": True}, "inevitable"]`` would give you "It is *inevitable*".
+``["It is ", {"bold": True}, "inevitable"]`` would give you "It is **inevitable**".
 
 See this in practice under :ref:`Example Usage`.
 
