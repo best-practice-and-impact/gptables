@@ -599,7 +599,7 @@ class GPWorksheet(Worksheet):
         # will also find note markers eg [Note 1]
         data_table_copy = data_table.replace(
             regex=r"\[[\w\s]+\]",
-            value = None,
+            value = np.nan,
         )
 
         data_table_copy = data_table_copy.convert_dtypes()

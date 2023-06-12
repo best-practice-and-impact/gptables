@@ -272,7 +272,7 @@ class TestGPWorksheetWriting:
             "string_column": ["A", "B"],
             "url_column": [{"display_text": "link"}, {"display_text": "link"}],
             "integer_with_confidential_shorthand": [1, "[c]"],
-            "float_with_significant_shorthand": ["1.1[sss]", 2],
+            "float_with_significant_shorthand": ["1.1[sss]", 2.2],
         })
 
         format_table = pd.DataFrame({
