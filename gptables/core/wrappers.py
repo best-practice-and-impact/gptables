@@ -597,6 +597,7 @@ class GPWorksheet(Worksheet):
         """
         # look for shorthand notation, usually a few letters in square brackets
         # will also find note markers eg [Note 1]
+        # Using np.nan instead on None for backwards compatibility with pandas <=1.4
         data_table_copy = data_table.replace(
             regex=r"\[[\w\s]+\]",
             value = np.nan,
