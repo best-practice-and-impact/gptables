@@ -264,6 +264,43 @@ class TestGPWorksheetWriting:
 
 
 
+    def test__apply_column_alignments(self, testbook):
+        data_table = pd.DataFrame({
+            "index_column": [1, 2],
+            "integer_column": [1, 2],
+            "float_column": [1.1, 2.2],
+            "string_column": ["A", "B"],
+            "url_column": [{"display_text": "link"}, {"display_text": "link"}],
+            "integer_with_confidential_shorthand": [1, "[c]"],
+            "float_with_significant_shorthand": ["1.1[sss]", 2.2],
+        })
+
+        format_table = pd.DataFrame({
+            "index_column": [{}, {}],
+            "integer_column": [{}, {}],
+            "float_column": [{}, {}],
+            "string_column": [{}, {}],
+            "url_column": [{}, {}],
+            "integer_with_confidential_shorthand": [{}, {}],
+            "float_with_significant_shorthand": [{}, {}],
+        })
+
+        testbook.ws._apply_column_alignments(data_table, format_table, index_columns=[0])
+
+        exp_format_table = pd.DataFrame({
+            "index_column": [{"align": "left"}, {"align": "left"}],
+            "integer_column": [{"align": "right"}, {"align": "right"}],
+            "float_column": [{"align": "right"}, {"align": "right"}],
+            "string_column": [{"align": "left"}, {"align": "left"}],
+            "url_column": [{"align": "left"}, {"align": "left"}],
+            "integer_with_confidential_shorthand": [{"align": "right"}, {"align": "right"}],
+            "float_with_significant_shorthand": [{"align": "right"}, {"align": "right"}],
+        })
+
+        assert_frame_equal(format_table, exp_format_table)
+
+
+
 class TestGPWorksheetReferences:
     """
     Test that GPTable note references are modified correctly by GPWorksheet
@@ -370,11 +407,8 @@ class TestGPWorksheetTable:
         self, testbook, create_gptable_with_kwargs
     ):
         df = pd.DataFrame({"col1": ["x", "y"], "col2": [0, 1]})
-        table_name = "table_name"
-
         gptable = create_gptable_with_kwargs({
             "table": df,
-            "table_name": table_name
         })
         gptable._set_data_range()
 
@@ -382,8 +416,7 @@ class TestGPWorksheetTable:
 
         testbook.ws._write_array([0, 2], df, table_format) # First two rows reserved for title and instructions
 
-        column_heading_format = testbook.ws.theme.column_heading_format
-        testbook.ws._mark_data_as_worksheet_table(gptable, column_heading_format)
+        testbook.ws._mark_data_as_worksheet_table(gptable, table_format)
 
         assert len(testbook.ws.tables) == 1
 
@@ -394,7 +427,7 @@ class TestGPWorksheetTable:
 
         assert got_table_range == exp_table_range
 
-        assert table["name"] == table_name
+        assert table["name"] == gptable.table_name
 
         got_number_of_columns = len(table["columns"])
         exp_number_of_columns = df.shape[0]
@@ -406,7 +439,7 @@ class TestGPWorksheetTable:
             assert got_column_name == exp_column_name
 
             got_heading_format = table["columns"][n]["name_format"]
-            exp_heading_format = testbook.wb.add_format(column_heading_format)
+            exp_heading_format = testbook.wb.add_format(table_format.iloc[0, n])
             assert got_heading_format.__dict__ == exp_heading_format.__dict__
 
 
