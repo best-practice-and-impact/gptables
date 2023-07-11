@@ -990,7 +990,7 @@ class GPWorkbook(Workbook):
         # Set default theme
         self.set_theme(gptheme)
 
-    def add_worksheet(self, name=None):
+    def add_worksheet(self, name=None, gridlines=2):
         """
         Overwrite add_worksheet() to create a GPWorksheet object.
         
@@ -1007,7 +1007,7 @@ class GPWorkbook(Workbook):
         worksheet = super(GPWorkbook, self).add_worksheet(name, GPWorksheet)
         worksheet.theme = self.theme
         worksheet._workbook = self  # Create reference to wb, for formatting
-        worksheet.hide_gridlines(2)
+        worksheet.hide_gridlines(gridlines)
         return worksheet
 
 

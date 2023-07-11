@@ -64,7 +64,7 @@ def produce_workbook(
         wb.set_theme(theme)
 
     if cover is not None:
-        ws = wb.add_worksheet(cover.cover_label)
+        ws = wb.add_worksheet(cover.cover_label, gridlines=2)
         ws.write_cover(cover)
 
     contentsheet = {}
@@ -90,7 +90,7 @@ def produce_workbook(
 
     sheets = {**contentsheet, **notesheet, **sheets}
     for label, gptable in sheets.items():
-        ws = wb.add_worksheet(label)
+        ws = wb.add_worksheet(label, gridlines=0)
         ws.write_gptable(gptable, auto_width, wb._annotations)
     
     return wb
