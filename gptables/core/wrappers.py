@@ -866,7 +866,7 @@ class GPWorksheet(Worksheet):
         Set the column widths using a list of widths.
         """
         for col_number in range(len(widths)):
-            self.set_column(
+            self.set_column_pixels(
                 col_number,
                 col_number,
                 widths[col_number]
@@ -875,7 +875,7 @@ class GPWorksheet(Worksheet):
 
     def _calculate_column_widths(self, table, formats_table):
         """
-        Calculate Excel column widths using maximum length of strings
+        Calculate Excel column widths using maximum pixel width of strings
         and the maximum font size in each column of the data table.
 
         Parameters
@@ -891,58 +891,150 @@ class GPWorksheet(Worksheet):
             width to apply to Excel columns
         """
         cols = table.shape[1]
-        max_lengths = [
-            table.iloc[:, col].apply(self._longest_line_length).max()
-            for col in range(cols)
-            ]
-
+        
         max_font_sizes = [
             formats_table.iloc[:, col]
             .apply(lambda x: x.get("font_size") or 10).max()
             for col in range(cols)
             ]
-
-        col_widths = [
-            self._excel_string_width(l, f)
-            for l, f in zip(max_lengths, max_font_sizes)
+        
+        max_widths = [
+            table.iloc[:, col].apply(self._longest_line_width).max()
+            for col in range(cols)
             ]
-        return col_widths
 
+        return max_widths
         
     @staticmethod
-    def _excel_string_width(string_len, font_size):
+    def _excel_string_width(string, font_size=12):
         """
-        Calculate the rough length of a string in Excel character units.
-        This crude estimate does not account for font name or other font format
-        (e.g. wrapping).
-        
+        Calculate the pixel width of a string in Bold Arial format.
+
         Parameters
         ----------
-        string_len : int
-            length of string to calculate width in Excel for
-        font_size : int
-            size of font
-        
-        Returns 
+        string : _type_
+            string to calculate the pixel width of
+        font_size : int, optional
+            font size, by default 12
+
+        Returns
         -------
-        excel_width : float
-            width of equivalent string in Excel
-        """    
-        if string_len == 0:
-            excel_width = 0
-        else:
-            excel_width = string_len * ((font_size * 0.12) - 0.09)
-        
-        return excel_width
-
-
-    def _longest_line_length(self, cell_val):
+        int
+            pixel width of string
         """
-        Calculate the length of the longest line within a cell.
-        If the cell contains a string, the longest length between line breaks is returned.
-        If the cell contains a float or integer, the longest length is calculated from the cell_value cast to a string.
-        If the cell contains a link formatted as {display_text: link}, the longest length is calculated from the display text.
-        If the cell contains a list of strings, the length of the longest string in the list is returned.
+        
+        char_widths = {
+            "0": 8.9,
+            "1": 8.9,
+            "2": 8.9,
+            "3": 8.9,
+            "4": 8.9,
+            "5": 8.9,
+            "6": 8.9,
+            "7": 8.9,
+            "8": 8.9,
+            "9": 8.9,
+            "a": 8.9,
+            "b": 9.77,
+            "c": 8.9,
+            "d": 9.77,
+            "e": 8.9,
+            "f": 5.33,
+            "g": 9.77,
+            "h": 9.77,
+            "i": 4.45,
+            "j": 4.45,
+            "k": 8.9,
+            "l": 4.45,
+            "m": 14.23,
+            "n": 9.77,
+            "o": 9.77,
+            "p": 9.77,
+            "q": 9.77,
+            "r": 6.23,
+            "s": 8.9,
+            "t": 5.33,
+            "u": 9.77,
+            "v": 8.9,
+            "w": 12.45,
+            "x": 8.9,
+            "y": 8.9,
+            "z": 8,
+            "A": 11.55,
+            "B": 11.55,
+            "C": 11.55,
+            "D": 11.55,
+            "E": 10.67,
+            "F": 9.77,
+            "G": 12.45,
+            "H": 11.55,
+            "I": 4.45,
+            "J": 8.9,
+            "K": 11.55,
+            "L": 9.77,
+            "M": 13.33,
+            "N": 11.55,
+            "O": 12.45,
+            "P": 10.67,
+            "Q": 12.45,
+            "R": 11.55,
+            "S": 10.67,
+            "T": 9.77,
+            "U": 11.55,
+            "V": 10.67,
+            "W": 15.1,
+            "X": 10.67,
+            "Y": 10.67,
+            "Z": 9.77,
+            " ": 4.45,
+            "\\": 4.45,
+            "!": 5.33,
+            '"': 7.59,
+            "#": 8.9,
+            "$": 8.9,
+            "%": 14.23,
+            "&": 11.55,
+            "'": 3.8,
+            "(": 5.33,
+            ")": 5.33,
+            "*": 6.23,
+            "+": 9.34,
+            ",": 4.45,
+            "-": 5.33,
+            ".": 4.45,
+            "/": 4.45,
+            ":": 5.33,
+            ";": 5.33,
+            "<": 9.34,
+            "=": 9.34,
+            ">": 9.34,
+            "?": 9.77,
+            "@": 15.6,
+            "[": 5.33,
+            "]": 5.33,
+            "^": 9.34,
+            "_": 8.9,
+            "`": 5.33,
+            "{": 6.23,
+            "|": 4.48,
+            "}": 6.23,
+            "~": 9.34,
+            "AVERAGE": 8.86643949468085,
+        }
+        
+        string_len = 0
+        for char in string:
+            string_len += char_widths[char] * font_size/12
+        
+        return string_len
+
+    def _longest_line_width(self, cell_val):
+        """
+        Calculate the pixel width of the longest line within a cell.
+        If the cell contains a string, the longest pixel width between line breaks is returned.
+        If the cell contains a float or integer, the longest pixel width is calculated from the cell_value cast to a string.
+        If the cell contains a link formatted as {display_text: link}, the longest pixel width is calculated from the display text.
+        If the cell contains a list of strings, the pixel width of the longest string in the list is returned.
         Expects new lines to be marked with "\n", "\r\n" or new lines in multiline strings.
 
         Parameters
@@ -952,29 +1044,29 @@ class GPWorksheet(Worksheet):
 
         Returns
         -------
-        max_length: int
-            the length of the longest line within the string
+        max_width: int
+            the pixel width of the longest line within the string
         """
         split_strings = """
 |\r\n|\n"""
 
         if isinstance(cell_val, str):
-            max_length = max([len(line) for line in re.split(split_strings, cell_val)])
+            max_width = max([self._excel_string_width(line) for line in re.split(split_strings, cell_val)])
         elif isinstance(cell_val, (float, int)):
-            max_length = self._longest_line_length(str(cell_val))
+            max_width = self._longest_line_width(str(cell_val))
         elif isinstance(cell_val, dict):
-            max_length = self._longest_line_length(list(cell_val)[0])
+            max_width = self._longest_line_width(list(cell_val)[0])
         elif isinstance(cell_val, FormatList):
-            max_length = self._longest_line_length(cell_val.string)
+            max_width = self._longest_line_width(cell_val.string)
         elif isinstance(cell_val, list):
             if isinstance(cell_val[0], (dict, FormatList)):
-                max_length = self._longest_line_length(cell_val[0])
+                max_width = self._longest_line_width(cell_val[0])
             else:
-                max_length = max([len(line) for line in cell_val])
+                max_width = max([self._excel_string_width(line) for line in cell_val])
         else:
-            max_length = 0
+            max_width = 0
 
-        return max_length
+        return max_width
 
 
 class GPWorkbook(Workbook):
