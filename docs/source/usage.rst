@@ -13,26 +13,29 @@ examples_ directory of the package.
 .. todo:: Replace datasets in examples with open online datasets
 
 
-.. automodule:: gptables.examples.iris
+.. automodule:: gptables.examples.penguins_minimal
 
-.. literalinclude:: ../../gptables/examples/iris.py
+.. literalinclude:: ../../gptables/examples/penguins_minimal.py
     :language: python
     :lines: 15-
 
+.. automodule:: gptables.examples.penguins_cover
 
-.. automodule:: gptables.examples.iris_cover
-
-.. literalinclude:: ../../gptables/examples/iris_cover.py
+.. literalinclude:: ../../gptables/examples/penguins_cover.py
     :language: python
     :lines: 12-
 
+.. automodule:: gptables.examples.penguins_notes
 
-.. automodule:: gptables.examples.iris_additional_formatting
-
-.. literalinclude:: ../../gptables/examples/iris_additional_formatting.py
+.. literalinclude:: ../../gptables/examples/penguins_notes.py
     :language: python
     :lines: 24-
 
+.. automodule:: gptables.examples.penguins_additional_formatting
+
+.. literalinclude:: ../../gptables/examples/penguins_additional_formatting.py
+    :language: python
+    :lines: 24-
 
 .. .. automodule:: gptables.examples.cor_multiple_sheets
 
