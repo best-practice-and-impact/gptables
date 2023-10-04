@@ -119,7 +119,7 @@ def write_workbook(
         notesheet_label = "Notes",
         notesheet_options = {},
         auto_width = True,
-        gridlines = 0,
+        gridlines = 2,
         cover_gridlines = False
         ):
 
