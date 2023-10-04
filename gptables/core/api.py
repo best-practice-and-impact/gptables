@@ -16,6 +16,8 @@ def produce_workbook(
         notesheet_label = "Notes",
         notesheet_options = {},
         auto_width = True,
+        gridlines = 2,
+        cover_gridlines = False
         ):
     """
     Produces a GPWorkbook, ready to be written to the specified `.xlsx` file
@@ -50,6 +52,12 @@ def produce_workbook(
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True
         by default.
+    gridlines : int, optional
+        option to hide or show gridlines on worksheets. 0 - don't hide gridlines, 
+        1 - hide printed gridlines only, or 2 - hide screen and printed gridlines.
+    cover_gridlines : bool, optional
+        indication if gridlines should apply to the cover worksheet. False 
+        by default.
         
     Returns
     -------
@@ -64,7 +72,10 @@ def produce_workbook(
         wb.set_theme(theme)
 
     if cover is not None:
-        ws = wb.add_worksheet(cover.cover_label, gridlines=2)
+        if cover_gridlines:
+            ws = wb.add_worksheet(cover.cover_label, gridlines=gridlines)
+        else:
+            ws = wb.add_worksheet(cover.cover_label, gridlines=2)
         ws.write_cover(cover)
 
     contentsheet = {}
@@ -90,7 +101,7 @@ def produce_workbook(
 
     sheets = {**contentsheet, **notesheet, **sheets}
     for label, gptable in sheets.items():
-        ws = wb.add_worksheet(label, gridlines=0)
+        ws = wb.add_worksheet(label, gridlines=gridlines)
         ws.write_gptable(gptable, auto_width, wb._annotations)
     
     return wb
@@ -108,6 +119,8 @@ def write_workbook(
         notesheet_label = "Notes",
         notesheet_options = {},
         auto_width = True,
+        gridlines = 0,
+        cover_gridlines = False
         ):
 
     """
@@ -149,6 +162,12 @@ def write_workbook(
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True by
         default.
+    gridlines : int, optional
+        option to hide or show gridlines on worksheets. 0 - don't hide gridlines, 
+        1 - hide printed gridlines only, or 2 - hide screen and printed gridlines.
+    cover_gridlines : bool, optional
+        indication if gridlines should apply to the cover worksheet. False 
+        by default.
     contentsheet : str
         alias for contentsheet_label, deprecated in v1.1.0
 
@@ -169,6 +188,8 @@ def write_workbook(
         notes_table,
         notesheet_label,
         notesheet_options,
-        auto_width
+        auto_width,
+        gridlines,
+        cover_gridlines
         )
     wb.close()
