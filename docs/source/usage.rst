@@ -34,11 +34,11 @@ examples_ directory of the package.
     :lines: 24-
 
 
-.. automodule:: gptables.examples.cor_multiple_sheets
+.. .. automodule:: gptables.examples.cor_multiple_sheets
 
-.. literalinclude:: ../../gptables/examples/cor_multiple_sheets.py
-    :language: python
-    :lines: 16-
+.. .. literalinclude:: ../../gptables/examples/cor_multiple_sheets.py
+..     :language: python
+..     :lines: 16-
 
 
 R Usage
