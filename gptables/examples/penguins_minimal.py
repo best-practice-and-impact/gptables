@@ -1,5 +1,5 @@
 """
-Iris - Minimal Example
+Penguins - Minimal Example
 ----------------------
 
 This example demonstrates use of the ``gptables.write_workbook`` function.

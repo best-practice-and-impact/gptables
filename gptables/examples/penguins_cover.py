@@ -1,5 +1,5 @@
 """
-Iris - Cover Page
+Penguins - Cover Page
 -----------------
 
 This example demonstrates use of the ``gptables.Cover`` class to create a cover page. This example also 

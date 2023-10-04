@@ -1,5 +1,5 @@
 """
-Iris - Additional Formatting Example
+Penguins - Additional Formatting Example
 ------------------------------------
 
 This example demonstrates additional formatting that is not supported in
