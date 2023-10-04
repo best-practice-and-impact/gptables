@@ -8,8 +8,8 @@ Summary statistics from the penguins dataset are used to build a ``gptables.GPTa
 object. Elements of metadata are provided to the corresponding parameters of the class.
 Where you wish to provide no metadata in required parameters, use ``None``.
 
-Table formatting can be defined as a ``gptable.Theme``, which is passed to the API functions
- using the ``theme`` parameter. Or you can reply on our default - gptheme.
+- The theme parameter must take either a directory or a yaml file in the ``gptables.write_workbook`` function. The yaml file used in this example can be found in the themes folder as ''penguins_test_theme.yaml''.
+- The personalised theme removes any bold or italics from the table.
 """
 import gptables as gpt
 import pandas as pd
