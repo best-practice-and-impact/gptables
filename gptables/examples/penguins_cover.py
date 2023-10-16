@@ -5,7 +5,7 @@ Penguins - Cover Page
 This example demonstrates use of the ``gptables.Cover`` class to create a cover page. This example also 
 demonstrates how to create a workbook with multiple sheets.
 
-A gptables cover pages contain a range of custom text elements, along with a hyperlinked table of contents.
+A gptables cover page contains a range of custom text elements, along with a hyperlinked table of contents.
 Text elements are defined as a ``gptables.Cover`` instance, which is passed to the ``cover`` parameter of ``gptables.write_worbook()`` or ``gptables.produce_worbook()``.
 In this example, we have also set ``auto_width`` to ``True``.
 This automatically determines the width of the first column on the cover sheet, as well as all columns of the tables of the workbook.
@@ -64,7 +64,7 @@ penguins_cover = gpt.Cover(
 
 ## Use write_workbook to win!
 if __name__ == "__main__":
-    output_path = parent_dir / "python_iris_cover_gptable.xlsx"
+    output_path = parent_dir / "python_penguins_cover_gptable.xlsx"
     gpt.write_workbook(
         filename=output_path,
         sheets=penguins_sheets,
