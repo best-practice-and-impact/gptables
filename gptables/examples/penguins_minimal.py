@@ -10,7 +10,7 @@ object. Elements of metadata are provided to the corresponding parameters of the
 Where you wish to provide no metadata in required parameters, use ``None``.
 
 Table formatting can be defined as a ``gptable.Theme``, which is passed to the API functions
- using the ``theme`` parameter. Or you can reply on our default - gptheme.
+using the ``theme`` parameter. Or you can rely on our default - gptheme.
 """
 import gptables as gpt
 import pandas as pd
