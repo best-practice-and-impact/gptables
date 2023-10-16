@@ -2,15 +2,14 @@
 Penguins - Notes Example
 ----------------------
 
-This example demonstrates use of the ``gptables.write_workbook`` function.
-This API function is designed for production of consistently structured and formatted tables.
+This example demonstrates how to include notes in a GPTable. Notes cannot 
+be included in data cells but may appear either in column headers or in text such 
+as titles, subtitles, etc.
 
-Summary statistics from the penguins dataset are used to build a ``gptables.GPTable``
-object. Elements of metadata are provided to the corresponding parameters of the class.
-Where you wish to provide no metadata in required parameters, use ``None``.
-
-Table formatting can be defined as a ``gptable.Theme``, which is passed to the API functions
- using the ``theme`` parameter. Or you can reply on our default - gptheme.
+Placeholders for notes are put in using the notation, $$note$$. The actual note text 
+must be provided as a Pandas dataframe to the notes_table argument of the ``gptables.write_workbook`` function.
+This dataframe should contain the text of the placeholder, the actual text you want in the note and (optionally)
+any hyperlinks you want in the note.
 """
 import gptables as gpt
 import pandas as pd

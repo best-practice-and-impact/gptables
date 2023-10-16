@@ -33,7 +33,6 @@ penguins_subtitles = [
 penguins_scope = "Penguins"
 penguins_source = "Source: Office for Penguin Statistics"
 
-# or use kwargs to pass these to the appropriate parameters
 kwargs = {
     "table_name": penguins_table_name,
     "title": penguins_title,
