@@ -3,10 +3,10 @@ Penguins - Cover Page
 -----------------
 
 This example demonstrates use of the ``gptables.Cover`` class to create a cover page. This example also 
-demonstrates how to create a workbook with multiple sheets.
+demonstrates the usage of the ``index_columns`` argument and how to create a workbook with multiple sheets.
 
 A gptables cover page contains a range of custom text elements, along with a hyperlinked table of contents.
-Text elements are defined as a ``gptables.Cover`` instance, which is passed to the ``cover`` parameter of ``gptables.write_worbook()`` or ``gptables.produce_worbook()``.
+Text elements are defined as a ``gptables.Cover`` instance, which is passed to the ``cover`` parameter of ``gptables.write_workbook()`` or ``gptables.produce_workbook()``.
 In this example, we have also set ``auto_width`` to ``True``.
 This automatically determines the width of the first column on the cover sheet, as well as all columns of the tables of the workbook.
 """
@@ -40,6 +40,7 @@ kwargs = {
     "subtitles": penguins_subtitles,
     "scope": penguins_scope,
     "source": penguins_source,
+    "index_columns": {2: 0}  # The level 2 index from our Pandas dataframe is put in the first (zeroth with Python indexing) column of the spreadsheet
     }
 
 ## Define our GPTable
