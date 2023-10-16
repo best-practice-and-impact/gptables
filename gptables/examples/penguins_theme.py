@@ -12,6 +12,7 @@ The theme parameter must take either a directory or a yaml file in the ``gptable
 The yaml file used in this example can be found in the themes folder as ''penguins_test_theme.yaml''.
 The personalised theme removes any bold or italics from the table.
 """
+
 import gptables as gpt
 import pandas as pd
 import numpy as np

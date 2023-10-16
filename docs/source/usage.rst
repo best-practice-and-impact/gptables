@@ -17,25 +17,31 @@ examples_ directory of the package.
 
 .. literalinclude:: ../../gptables/examples/penguins_minimal.py
     :language: python
-    :lines: 15-
+    :lines: 16-
+
+.. automodule:: gptables.examples.penguins_theme
+
+.. literalinclude:: ../../gptables/examples/penguins_theme.py
+    :language: python
+    :lines: 16-
 
 .. automodule:: gptables.examples.penguins_cover
 
 .. literalinclude:: ../../gptables/examples/penguins_cover.py
     :language: python
-    :lines: 12-
+    :lines: 14-
 
 .. automodule:: gptables.examples.penguins_notes
 
 .. literalinclude:: ../../gptables/examples/penguins_notes.py
     :language: python
-    :lines: 24-
+    :lines: 15-
 
 .. automodule:: gptables.examples.penguins_additional_formatting
 
 .. literalinclude:: ../../gptables/examples/penguins_additional_formatting.py
     :language: python
-    :lines: 24-
+    :lines: 25-
 
 .. .. automodule:: gptables.examples.cor_multiple_sheets
 

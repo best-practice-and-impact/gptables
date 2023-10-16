@@ -10,6 +10,7 @@ Text elements are defined as a ``gptables.Cover`` instance, which is passed to t
 In this example, we have also set ``auto_width`` to ``True``.
 This automatically determines the width of the first column on the cover sheet, as well as all columns of the tables of the workbook.
 """
+
 import gptables as gpt
 import pandas as pd
 import numpy as np

@@ -11,6 +11,7 @@ must be provided as a Pandas dataframe to the notes_table argument of the ``gpta
 This dataframe should contain the text of the placeholder, the actual text you want in the note and (optionally)
 any hyperlinks you want in the note.
 """
+
 import gptables as gpt
 import pandas as pd
 import numpy as np
