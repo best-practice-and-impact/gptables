@@ -32,17 +32,19 @@ parent_dir = Path(__file__).parent
 
 penguins_data = pd.read_csv(parent_dir / "penguins.csv")
 
+#Any data processing could go here as long as you end with a Pandas dataframe that you want to write in a spreadsheet
+
 ## Define table elements
 penguins_table_name = "penguins_statistics"
 penguins_title = "Penguins"
 
 #Individual words/phrases can have formatting applied without the use of the additional_formatting argument
 penguins_subtitles = [
-    "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems",
+    "The first subtitle",
     [{"bold": True}, "Just", " another subtitle"]
     ]
-penguins_units = {key: "cm" for key in range(2,6)}
-penguins_scope = "Iris"
+penguins_units = {key: "mm" for key in range(2,5)}
+penguins_scope = "Penguins"
 
 ## Define additional formatting
 # Columns can be referenced by name or number
@@ -52,7 +54,7 @@ penguins_additional_formatting = [
     {
         "column": {
             "columns": ["Species", "Island"],  # str, int or list of either
-            "format": {"align": "center","italic":True}, #The "Species" and "Island" columns are centre-alinged and made italic
+            "format": {"align": "center","italic":True}, #The "Species" and "Island" columns are centre-aligned and made italic
         }
     },
     {"column": {"columns": [3], "format": {"left": 1}}}, #Gives the fourth column a left border
@@ -64,7 +66,6 @@ penguins_additional_formatting = [
     },
     ]
 
-# or just use kwargs
 kwargs = {
     "table_name": penguins_table_name,
     "title": penguins_title,
@@ -90,14 +91,14 @@ if __name__ == "__main__":
     ws = wb.worksheets()[0]
     ws.set_row(0, 30)  # Set the height of the first row
 
-    # Finally use the close method to save the output
-
-    #To format cells using the set_row function we must use a workbook to create a format object
+    #To format cells using the set_row or set_column functions we must use a workbook to create a format object
     italic_format=wb.add_format({"italic":True})
     ws.set_column(2,3,10,italic_format) #Sets the width of the third and fourth column and makes them italic
     
     #Note that the first two arguments of set_column are the first and last columns (inclusive) you want to format as opposed
     #to set_row which only affects a single row at a time (the first argument).
+
+    # Finally use the close method to save the output
     
     wb.close()
     print("Output written at: ", output_path)
