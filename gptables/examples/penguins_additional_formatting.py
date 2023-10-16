@@ -1,5 +1,5 @@
 """
-Iris - Additional Formatting Example
+Penguins - Additional Formatting Example
 ------------------------------------
 
 This example demonstrates additional formatting that is not supported in
@@ -13,7 +13,7 @@ or cells as you like.
 As with all formatting, supported arguments are desribed in the
 `XlsxWriter documentation <https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties>`_.
 
-Any formatting not possibly through this means can be achieved using
+Any formatting not possible through this means can be achieved using
 ``XlsxWriter`` `Workbook <https://xlsxwriter.readthedocs.io/workbook.html>`_
 and `Worksheet <https://xlsxwriter.readthedocs.io/worksheet.html>`_ functionality.
 A ``gptable.GPWorkbook`` object is returned when using the
@@ -30,88 +30,60 @@ from pathlib import Path
 ## Read data and arrange
 parent_dir = Path(__file__).parent
 
-iris_data = pd.read_csv(parent_dir / "iris.csv")
+penguins_data = pd.read_csv(parent_dir / "penguins.csv")
 
-iris_data.rename(
-    columns={
-        "class": "class",
-        "sepal_length": "Sepal Length",
-        "petal_length": "Petal Length",
-        "petal_width": "Petal Width",
-        "sepal_width": "Sepal Width",
-    },
-    inplace=True,
-    )
-
-iris_data["class"] = iris_data.apply(lambda row: row["class"][5:].capitalize(), axis=1)
-
-# Calculate summaries
-subtables = []
-funcs = [np.mean, np.median]
-for func in funcs:
-    subtables.append(iris_data.groupby("class").agg(func))
-    subtables.append(pd.DataFrame(iris_data.iloc[:,0:4].agg(func).rename("All")).T)
-iris_summary = pd.concat(subtables)
-iris_summary["Average"] = ["Mean"] * 4 + ["Median"] * 4
-
-# Reshape
-iris_summary = iris_summary.reset_index()
-iris_summary = iris_summary.melt(["index", "Average"], var_name="Iris feature")
-iris_summary = iris_summary.pivot_table(
-    index=["Iris feature", "Average"], columns="index", values="value"
-    ).reset_index()
+#Any data processing could go here as long as you end with a Pandas dataframe that you want to write in a spreadsheet
 
 ## Define table elements
-table_name = "iris_statistics"
-title = "Iris flower dimensions"
-subtitles = [
-    "1936 Fisher, R.A; The use of multiple measurements in taxonomic problems",
+penguins_table_name = "penguins_statistics"
+penguins_title = "Penguins"
+
+#Individual words/phrases can have formatting applied without the use of the additional_formatting argument
+penguins_subtitles = [
+    "The first subtitle",
     [{"bold": True}, "Just", " another subtitle"]
     ]
-units = {key: "cm" for key in range(2,6)}
-scope = "Iris"
-index = {1: 0, 2: 1}
+penguins_units = {key: "mm" for key in range(2,5)}
+penguins_scope = "Penguins"
 
 ## Define additional formatting
-# Columns can be references by name or number
+# Columns can be referenced by name or number
 # Rows may only be referenced by number
 # Column and row numbers refer to the table elements, including indexes and column headings
-additional_formatting = [
+penguins_additional_formatting = [
     {
         "column": {
-            "columns": ["Setosa", "Versicolor"],  # str, int or list of either
-            "format": {"align": "center"},
+            "columns": ["Species", "Island"],  # str, int or list of either
+            "format": {"align": "center","italic":True}, #The "Species" and "Island" columns are centre-aligned and made italic
         }
     },
-    {"column": {"columns": [3], "format": {"left": 1}}},
+    {"column": {"columns": [3], "format": {"left": 1}}}, #Gives the fourth column a left border
     {
         "row": {
             "rows": -1,  # Numbers only, but can refer to last row using -1
-            "format": {"bottom": 1},  # Underline row
+            "format": {"bottom": 1, "indentation":2},  # Give the last row a border at the bottom of each cell and indents two levels
         }
     },
     ]
 
-# or just use kwargs
 kwargs = {
-    "table_name": table_name,
-    "title": title,
-    "subtitles": subtitles,
-    "units": units,
-    "scope": scope,
+    "table_name": penguins_table_name,
+    "title": penguins_title,
+    "subtitles": penguins_subtitles,
+    "units": penguins_units,
+    "scope": penguins_scope,
     "source": None,
-    "index_columns": index,
-    "additional_formatting": additional_formatting,
+    "additional_formatting": penguins_additional_formatting,
     }
 
 ## Define our GPTable
-iris_table = gpt.GPTable(table=iris_summary, **kwargs)
+penguins_table = gpt.GPTable(table=penguins_data, **kwargs)
 
 ## Use produce workbook to return GPWorkbook
 if __name__ == "__main__":
-    output_path = parent_dir / "python_iris_additional_formatting_gptable.xlsx"
+    output_path = parent_dir / "python_penguins_additional_formatting_gptable.xlsx"
     wb = gpt.produce_workbook(
-        filename=output_path, sheets={"Iris Flower Dimensions": iris_table}
+        filename=output_path, sheets={"Penguins": penguins_table}
         )
 
     # Carry out additional modifications on the GPWorkbook or GPWorksheets
@@ -119,7 +91,15 @@ if __name__ == "__main__":
     ws = wb.worksheets()[0]
     ws.set_row(0, 30)  # Set the height of the first row
 
+    #To format cells using the set_row or set_column functions we must use a workbook to create a format object
+    italic_format=wb.add_format({"italic":True})
+    ws.set_column(2,3,10,italic_format) #Sets the width of the third and fourth column and makes them italic
+    
+    #Note that the first two arguments of set_column are the first and last columns (inclusive) you want to format as opposed
+    #to set_row which only affects a single row at a time (the first argument).
+
     # Finally use the close method to save the output
+    
     wb.close()
     print("Output written at: ", output_path)
 

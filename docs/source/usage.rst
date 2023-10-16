@@ -13,32 +13,41 @@ examples_ directory of the package.
 .. todo:: Replace datasets in examples with open online datasets
 
 
-.. automodule:: gptables.examples.iris
+.. automodule:: gptables.examples.penguins_minimal
 
-.. literalinclude:: ../../gptables/examples/iris.py
+.. literalinclude:: ../../gptables/examples/penguins_minimal.py
+    :language: python
+    :lines: 16-
+
+.. automodule:: gptables.examples.penguins_theme
+
+.. literalinclude:: ../../gptables/examples/penguins_theme.py
+    :language: python
+    :lines: 16-
+
+.. automodule:: gptables.examples.penguins_cover
+
+.. literalinclude:: ../../gptables/examples/penguins_cover.py
+    :language: python
+    :lines: 14-
+
+.. automodule:: gptables.examples.penguins_notes
+
+.. literalinclude:: ../../gptables/examples/penguins_notes.py
     :language: python
     :lines: 15-
 
+.. automodule:: gptables.examples.penguins_additional_formatting
 
-.. automodule:: gptables.examples.iris_cover
-
-.. literalinclude:: ../../gptables/examples/iris_cover.py
+.. literalinclude:: ../../gptables/examples/penguins_additional_formatting.py
     :language: python
-    :lines: 12-
+    :lines: 25-
 
+.. .. automodule:: gptables.examples.cor_multiple_sheets
 
-.. automodule:: gptables.examples.iris_additional_formatting
-
-.. literalinclude:: ../../gptables/examples/iris_additional_formatting.py
-    :language: python
-    :lines: 24-
-
-
-.. automodule:: gptables.examples.cor_multiple_sheets
-
-.. literalinclude:: ../../gptables/examples/cor_multiple_sheets.py
-    :language: python
-    :lines: 16-
+.. .. literalinclude:: ../../gptables/examples/cor_multiple_sheets.py
+..     :language: python
+..     :lines: 16-
 
 
 R Usage
