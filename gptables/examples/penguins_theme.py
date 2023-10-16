@@ -8,8 +8,9 @@ Summary statistics from the penguins dataset are used to build a ``gptables.GPTa
 object. Elements of metadata are provided to the corresponding parameters of the class.
 Where you wish to provide no metadata in required parameters, use ``None``.
 
-- The theme parameter must take either a directory or a yaml file in the ``gptables.write_workbook`` function. The yaml file used in this example can be found in the themes folder as ''penguins_test_theme.yaml''.
-- The personalised theme removes any bold or italics from the table.
+The theme parameter must take either a directory or a yaml file in the ``gptables.write_workbook`` function. 
+The yaml file used in this example can be found in the themes folder as ''penguins_test_theme.yaml''.
+The personalised theme removes any bold or italics from the table.
 """
 import gptables as gpt
 import pandas as pd
@@ -33,21 +34,15 @@ penguins_subtitles = [
 penguins_scope = "Penguins"
 penguins_source = "Source: Office for Penguin Statistics"
 
-## Define our GPTable
-penguins_table = gpt.GPTable(table=penguins_data, table_name=penguins_table_name, title=penguins_title, subtitles=penguins_subtitles,
-                         scope=penguins_scope, source=penguins_source)
+kwargs = {
+    "table_name": penguins_table_name,
+    "title": penguins_title,
+    "subtitles": penguins_subtitles,
+    "scope": penguins_scope,
+    "source": penguins_source,
+    }
+penguins_table = gpt.GPTable(table=penguins_data, **kwargs)
 
-# or use kwargs to pass these to the appropriate parameters
-# kwargs = {
-#     "table_name": penguins_table_name,
-#     "title": penguins_title,
-#     "subtitles": penguins_subtitles,
-#     "scope": penguins_scope,
-#     "source": penguins_source,
-#     }
-#penguins_table = gpt.GPTable(table=penguins_data, **kwargs)  would also be valid
-
-#Every table must be associated to a sheet name for writing
 penguins_sheets = {"Penguins": penguins_table}
 
 ## Use write_workbook to win!
