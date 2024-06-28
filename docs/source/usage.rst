@@ -41,6 +41,13 @@ examples_ directory of the package.
     :lines: 16-
 
 
+.. automodule:: gptables.examples.survey_data
+
+.. literalinclude:: ../../gptables/examples/survey_data.py
+    :language: python
+    :lines: 8-
+
+
 R Usage
 -------
 
