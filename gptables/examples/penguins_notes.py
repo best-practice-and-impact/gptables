@@ -39,7 +39,7 @@ penguins_subtitles = [
 penguins_table_notes = {"species": "$$noteaboutx$$", 2: "$$noteaboutz$$"} #Columns can be referenced either by index or by name
 penguins_units = {2:"mm", "bill_depth_mm":"mm",4:"mm","body_mass_g":"g"} #As above for column referencing
 penguins_scope = "Penguins"
-penguins_source = "Source: Office for Penguin Statistics"
+penguins_source = "Palmer Station, Antarctica"
 
 kwargs = {
     "table_name": penguins_table_name,

@@ -32,7 +32,7 @@ penguins_subtitles = [
     "Just another subtitle"
     ]
 penguins_scope = "Penguins"
-penguins_source = "Source: Office for Penguin Statistics"
+penguins_source = "Palmer Station, Antarctica"
 
 kwargs = {
     "table_name": penguins_table_name,

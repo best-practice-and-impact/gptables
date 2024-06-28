@@ -33,7 +33,7 @@ penguins_subtitles = [
     "Just another subtitle"
     ]
 penguins_scope = "Penguins"
-penguins_source = "Source: Office for Penguin Statistics"
+penguins_source = "Palmer Station, Antarctica"
 
 ## Define our GPTable
 penguins_table = gpt.GPTable(table=penguins_data, table_name=penguins_table_name, title=penguins_title, subtitles=penguins_subtitles,
