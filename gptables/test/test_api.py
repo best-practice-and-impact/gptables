@@ -58,6 +58,8 @@ def create_gpworkbook():
             notes_table=notes_table,
             notesheet_label="Notes table",
             notesheet_options={"title": "Table with notes"},
+            gridlines="show_all",
+            cover_gridlines=False
         )
 
     return generate_gpworkbook

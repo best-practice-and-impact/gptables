@@ -1052,7 +1052,7 @@ class GPWorkbook(Workbook):
         # Set default theme
         self.set_theme(gptheme)
 
-    def add_worksheet(self, name=None, gridlines=2):
+    def add_worksheet(self, name=None, gridlines="hide_all"):
         """
         Overwrite add_worksheet() to create a GPWorksheet object.
         
@@ -1060,6 +1060,10 @@ class GPWorkbook(Workbook):
         ----------
         name : str (optional)
             name of the the worksheet to be created
+        gridlines : string, optional
+        option to hide or show gridlines on worksheets. "show_all" - don't 
+        hide gridlines, "hide_printed" - hide printed gridlines only, or 
+        "hide_all" - hide screen and printed gridlines.
         
         Returns
         -------
@@ -1069,7 +1073,14 @@ class GPWorkbook(Workbook):
         worksheet = super(GPWorkbook, self).add_worksheet(name, GPWorksheet)
         worksheet.theme = self.theme
         worksheet._workbook = self  # Create reference to wb, for formatting
-        worksheet.hide_gridlines(gridlines)
+        
+        worksheet.hide_gridlines({
+            "show_all": 1,
+            "hide_printed": 2,
+            "hide_all": 3
+            }[gridlines]
+        )
+        
         return worksheet
 
 

@@ -16,7 +16,7 @@ def produce_workbook(
         notesheet_label = "Notes",
         notesheet_options = {},
         auto_width = True,
-        gridlines = 2,
+        gridlines = "hide_all",
         cover_gridlines = False
         ):
     """
@@ -52,9 +52,10 @@ def produce_workbook(
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True
         by default.
-    gridlines : int, optional
-        option to hide or show gridlines on worksheets. 0 - don't hide gridlines, 
-        1 - hide printed gridlines only, or 2 - hide screen and printed gridlines.
+    gridlines : string, optional
+        option to hide or show gridlines on worksheets. "show_all" - don't 
+        hide gridlines, "hide_printed" - hide printed gridlines only, or 
+        "hide_all" - hide screen and printed gridlines.
     cover_gridlines : bool, optional
         indication if gridlines should apply to the cover worksheet. False 
         by default.
@@ -75,7 +76,7 @@ def produce_workbook(
         if cover_gridlines:
             ws = wb.add_worksheet(cover.cover_label, gridlines=gridlines)
         else:
-            ws = wb.add_worksheet(cover.cover_label, gridlines=2)
+            ws = wb.add_worksheet(cover.cover_label, gridlines="hide_all")
         ws.write_cover(cover)
 
     contentsheet = {}
@@ -119,7 +120,7 @@ def write_workbook(
         notesheet_label = "Notes",
         notesheet_options = {},
         auto_width = True,
-        gridlines = 2,
+        gridlines = "hide_all",
         cover_gridlines = False
         ):
 
@@ -162,9 +163,10 @@ def write_workbook(
     auto_width : bool, optional
         indicate if column widths should be automatically determined. True by
         default.
-    gridlines : int, optional
-        option to hide or show gridlines on worksheets. 0 - don't hide gridlines, 
-        1 - hide printed gridlines only, or 2 - hide screen and printed gridlines.
+    gridlines : string, optional
+        option to hide or show gridlines on worksheets. "show_all" - don't 
+        hide gridlines, "hide_printed" - hide printed gridlines only, or 
+        "hide_all" - hide screen and printed gridlines.
     cover_gridlines : bool, optional
         indication if gridlines should apply to the cover worksheet. False 
         by default.
