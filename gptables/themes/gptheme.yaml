@@ -6,12 +6,15 @@ global:
 cover_title:
     bold: True
     font_size: 16
+    text_wrap: True
 
 cover_subtitle:
     bold: True
     font_size: 14
+    text_wrap: True
 
 cover_text:
+    text_wrap: True
 
 title:
     bold: True

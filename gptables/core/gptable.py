@@ -16,8 +16,9 @@ class GPTable:
     table : pandas.DataFrame
         table to be written to an Excel workbook
     table_name : str
-        name for table. Should be unique with no spaces and start with a
-        character or underscore.
+        name for table. Should be unique with no spaces and always begin with a 
+        letter, an underscore character, or a backslash. Use letters, numbers, 
+        periods, and underscore characters for the rest of the name.
     title : str
         title of the table
     subtitles : List[str], optional
