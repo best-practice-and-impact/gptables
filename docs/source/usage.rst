@@ -19,6 +19,16 @@ examples_ directory of the package.
     :language: python
     :lines: 16-
 
+.. automodule:: gptables.examples.penguins_minimal_alternate
+
+.. literalinclude:: ../../gptables/examples/penguins_minimal_alternate.py
+    :language: python
+    :lines: 16-
+
+.. literalinclude:: ../../gptables/examples/penguins_multiple_sheets.py
+    :language: python
+    :lines: 16-
+
 .. automodule:: gptables.examples.penguins_theme
 
 .. literalinclude:: ../../gptables/examples/penguins_theme.py
