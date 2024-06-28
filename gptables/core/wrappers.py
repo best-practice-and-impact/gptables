@@ -1075,9 +1075,9 @@ class GPWorkbook(Workbook):
         worksheet._workbook = self  # Create reference to wb, for formatting
         
         worksheet.hide_gridlines({
-            "show_all": 1,
-            "hide_printed": 2,
-            "hide_all": 3
+            "show_all": 0,
+            "hide_printed": 1,
+            "hide_all": 2
             }[gridlines]
         )
         
