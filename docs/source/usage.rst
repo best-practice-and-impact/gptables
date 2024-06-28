@@ -43,11 +43,7 @@ examples_ directory of the package.
     :language: python
     :lines: 25-
 
-.. .. automodule:: gptables.examples.cor_multiple_sheets
 
-.. .. literalinclude:: ../../gptables/examples/cor_multiple_sheets.py
-..     :language: python
-..     :lines: 16-
 
 
 R Usage
@@ -55,12 +51,5 @@ R Usage
 
 Use of ``gptables`` in R requires use of python via the `reticulate <https://rstudio.github.io/reticulate/>`_ package.
 
-This example demonstrates basic usage of the pacakge in R. More advanced usage will
-use a similar approach to python (above), but may require use of ``reticulate`` functions
-to create/modify python objects. 
-
-.. literalinclude:: ../../gptables/examples/iris.R
-    :language: R
-
-R users may also be interested in the `a11ytables <https://co-analysis.github.io/a11ytables/>`_
+However we recommend use of the `a11ytables <https://co-analysis.github.io/a11ytables/>`_
 R package, developed by the Cabinet Office.
