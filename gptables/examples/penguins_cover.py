@@ -3,19 +3,16 @@ Penguins - Cover Page
 -----------------
 
 This example demonstrates use of the ``gptables.Cover`` class to create a cover page. This example also 
-demonstrates the usage of the ``index_columns`` argument and how to create a workbook with multiple sheets.
+demonstrates the usage of the ``index_columns``.
 
 A gptables cover page contains a range of custom text elements, along with a hyperlinked table of contents.
 Text elements are defined as a ``gptables.Cover`` instance, which is passed to the ``cover`` parameter of ``gptables.write_workbook()`` or ``gptables.produce_workbook()``.
-In this example, we have also set ``auto_width`` to ``True``.
-This automatically determines the width of the first column on the cover sheet, as well as all columns of the tables of the workbook.
 """
 
 import gptables as gpt
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from copy import deepcopy
 
 ## Read data
 parent_dir = Path(__file__).parent
@@ -46,13 +43,8 @@ kwargs = {
 ## Define our GPTable
 penguins_table = gpt.GPTable(table=penguins_data, table_name="penguins_statistics", **kwargs)
 
-penguins_table_copy = deepcopy(penguins_table)
-penguins_table_copy.set_title("A copy of the first sheet")
-penguins_table_copy.set_table_name("penguins_statistics_copy") #All tables in a single workbook must have a unique name
-
 penguins_sheets = {
-    "Penguins": penguins_table,
-    "Copy of Penguins": penguins_table_copy
+    "Penguins": penguins_table
 }
 
 penguins_cover = gpt.Cover(
