@@ -39,16 +39,6 @@ penguins_source = "Palmer Station, Antarctica"
 penguins_table = gpt.GPTable(table=penguins_data, table_name=penguins_table_name, title=penguins_title, subtitles=penguins_subtitles,
                          scope=penguins_scope, source=penguins_source)
 
-# or use kwargs to pass these to the appropriate parameters
-# kwargs = {
-#     "table_name": penguins_table_name,
-#     "title": penguins_title,
-#     "subtitles": penguins_subtitles,
-#     "scope": penguins_scope,
-#     "source": penguins_source,
-#     }
-#penguins_table = gpt.GPTable(table=penguins_data, **kwargs)  would also be valid
-
 #Every table must be associated to a sheet name for writing
 penguins_sheets = {"Penguins": penguins_table}
 
