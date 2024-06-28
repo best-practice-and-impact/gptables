@@ -28,7 +28,7 @@ additional_formatting = [{
     }]
 
 
-# or use kwargs to pass these to the appropriate parameters
+# Use kwargs to pass these to the appropriate parameters
 kwargs = {
     "table_name": table_name,
     "title": title,
