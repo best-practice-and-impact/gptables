@@ -135,6 +135,118 @@ This ``additional_formatting`` parameter is best demonstrated by example:
          }
    ]
 
+Format methods
+-----
+
+.. list-table::
+    :header-rows: 1
+    :widths: 19 19 30
+
+    * - Category
+      - Description
+      - Example usage
+    * - Font
+      - Font type
+      - {"font_name": "Name of font"}
+    * - 
+      - Font size
+      - {"font_size": 30}
+    * - 
+      - Font colour
+      - {"font_color": "red"}
+    * - 
+      - Bold
+      - {"bold": True}
+    * - 
+      - Italic
+      - {"italic": True}
+    * - 
+      - Underline
+      - {"underline": True}
+    * - 
+      - Strikeout
+      - {"strikeout": True}
+    * - 
+      - Super/Subcript
+      - {""}
+    * - Number
+      - Numeric format
+      - {"num_format":}
+    * - Protection
+      - Lock cells
+      - {"locked": True}
+    * - 
+      - Hide formulas
+      - {"hidden": True}
+    * - Alignment
+      - Horizontal align
+      - {"align": "center"}
+    * -  
+      - Vertical align
+      - {"valign": "top"}
+    * - 
+      - Rotation
+      - {"rotation": 30}
+    * - 
+      - Text wrap
+      - {"text_wrap": True}
+    * - 
+      - Reading order
+      - {"reading_order": ""}
+    * -
+      - Justify last
+      - {}
+    * - 
+      - Center across
+      - {}
+    * -
+      - Indentation
+      - {"indentation":2}
+    * -
+      - Shrink to fit
+      - {"shrink": }
+    * - Pattern
+      - Cell pattern
+      - {"pattern": 1}
+    * - 
+      - Background colour
+      - {"bg_color": "white"}
+    * -
+      - Foreground colour
+      - {"fg_color": "white"}
+    * - Border
+      - Cell border 
+      - {"border": 1}
+    * - 
+      - Bottom border
+      - {"bottom": 1}
+    * - 
+      - Top border
+      - {"top": 1}
+    * - 
+      - Left border
+      - {"left": 1} 
+    * -
+      - Right border
+      - {"right": 1}
+    * - 
+      - Border colour
+      - {"border_color": "red"}
+    * - 
+      - Bottom colour
+      - {"bottom_color":"red"}
+    * - 
+      - Top colour
+      - {"top_color": "red"}
+    * - 
+      - Left colour
+      - {"left_color": "red"}
+    * - 
+      - Right colour
+      - {"right_color": "red"}
+
+..
+
 For any formatting beyond this, if the package should support it then please raise an issue
 or create a pull request. Otherwise, you will need to modify the underlying
 :class:`~.core.wrappers.GPWorkbook` or :class:`~.core.wrappers.GPWorksheet` objects
