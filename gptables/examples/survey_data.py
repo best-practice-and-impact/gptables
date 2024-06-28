@@ -6,7 +6,7 @@ from pathlib import Path
 ## Read data and arrange
 parent_dir = Path(__file__).parent
 
-labour_market_data = pd.read_csv(parent_dir / "sheet 1a.csv")
+labour_market_data = pd.read_csv(parent_dir / "survey_data.csv")
 labour_market_data.dropna(axis=0, how="all", inplace=True)
 labour_market_data.dropna(axis=1, how="all", inplace=True)
 
@@ -74,14 +74,14 @@ cover = gpt.Cover(
 )
 
 ## Notesheet
-notes_table = pd.read_csv(parent_dir / "Notes.csv")
+notes_table = pd.read_csv(parent_dir / "survey_data_notes.csv")
 notes_table.dropna(axis=0, how="all", inplace=True)
 notes_table.dropna(axis=1, how="all", inplace=True)
 notes_table.columns = ['Note reference', 'Note text']
 
 ## Use write_workbook to win!
 if __name__ == "__main__":
-    output_path = parent_dir / "demo_gptable.xlsx"
+    output_path = parent_dir / "python_survey_data_gptable.xlsx"
     gpt.write_workbook(
         filename=output_path, 
         sheets=sheets,
