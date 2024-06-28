@@ -50,3 +50,6 @@ machine-readable CSV-W files.
 4. Optionally upload a ``notes_table`` with information about any notes.
 
 5. You ``write_workbook`` to win.
+
+
+**Note**: This package is not intending to create perfectly accessible spreadsheets but will help with the bulk of the work needed. Users of this packages should refer back to the `main spreadsheet guidance <https://analysisfunction.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/>`_ or the `spreadsheet accessibility checklist <https://analysisfunction.civilservice.gov.uk/policy-store/making-spreadsheets-accessible-a-brief-checklist-of-the-basics/>`_ after using it to make sure nothing has been missed. Please email `Analysis.Function@ons.gov.uk <mailto:Analysis.Function@ons.gov.uk>`_ if you use the package so we can monitor use and the outputs produced.
