@@ -243,6 +243,14 @@ class TestGPWorksheetWriting:
         with pytest.raises(ValueError):
             testbook.ws._write_table_elements([0,0], gptable, auto_width=True)
 
+    def test__write_integer_table(self, testbook, create_gptable_with_kwargs):
+        gptable = create_gptable_with_kwargs({
+            "table": pd.DataFrame({"a": [0], "b": [1]})
+        })
+
+        #Testing that this function executes with no errors
+        testbook.ws._write_table_elements([0,0], gptable, auto_width=True)
+
 
     @pytest.mark.parametrize("cell_value1,cell_value2,expectation", [
         (None, "valid text", pytest.warns(UserWarning)),
