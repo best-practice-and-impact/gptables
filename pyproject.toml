@@ -14,7 +14,7 @@ maintainers = [
   {name = "ASAP", email = "ASAP@ons.gov.uk"}
 ]
 dynamic = ["version"]
-python_requires = '>=3.7'
+requires-python = '>=3.7'
 description = 'Simplifying good practice in statistical tables.'
 readme = "README.rst"
 license = {text = "MIT License"}
