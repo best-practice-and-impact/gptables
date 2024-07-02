@@ -1,8 +1,9 @@
 """
-Penguins - Cover Page
+Penguins - Multiple Pages
 -----------------
 
-This example demonstrates how to create a workbook with multiple sheets.
+This example demonstrates how to create a workbook with multiple sheets. Note that it
+will auto-generate a table of contents.
 """
 
 import gptables as gpt
