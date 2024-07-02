@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = ["test"]
+
+[project]
+name = "gptables"
+authors = [
+  {name = "ASAP", email = "ASAP@ons.gov.uk"}
+]
+maintainers = [
+  {name = "ASAP", email = "ASAP@ons.gov.uk"}
+]
+dynamic = ["version"]
+python_requires = '>=3.7'
+description = 'Simplifying good practice in statistical tables.'
+readme = "README.rst"
+license = {text = "MIT License"}
+keywords=["reproducible", "tables", "excel", "xlsxwriter", "reproducible-analytical-pipelines"]
+classifiers = [
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent"
+]
+dependencies = [
+    "pandas>=0.25.3",
+    "xlrd>=1.2.0",
+    "XlsxWriter>=1.2.6",
+    "pyyaml>=3.12",
+    "dataclasses"
+]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx>=2",
+    "sphinx_rtd_theme"
+]
+testing = [
+    "sphinx>=2",
+    "sphinx_rtd_theme",
+    "coverage",
+    "pytest>=6.2.5",
+    "pytest-cov"
+]
+
+[project.urls]
+Homepage = "https://github.com/best-practice-and-impact/gptables"
+Documentation = "https://gptables.readthedocs.io/en/latest/"
