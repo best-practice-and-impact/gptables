@@ -1,0 +1,50 @@
+global:
+    font_size: 12
+    font_name: Arial
+    font_color: 'automatic'
+
+cover_title:
+    font_size: 17
+
+cover_subtitle:
+    font_size: 15
+
+cover_text:
+
+title:
+    font_size: 16
+    
+subtitle:
+    font_size: 15
+
+instructions:
+
+scope:
+
+column_heading:
+    bottom: 1
+    text_wrap: 1
+
+index_1:
+    text_wrap: 1
+
+index_2:
+    text_wrap: 1
+
+index_3:
+    text_wrap: 1
+
+data:
+    text_wrap: 1
+
+source:
+    font_size: 12
+
+legend:
+    font_size: 12
+
+description_order:
+    - instructions
+    - source
+    - legend
+    - scope

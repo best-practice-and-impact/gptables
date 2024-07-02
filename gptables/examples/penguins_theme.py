@@ -9,7 +9,7 @@ object. Elements of metadata are provided to the corresponding parameters of the
 Where you wish to provide no metadata in required parameters, use ``None``.
 
 The theme parameter must take either a directory or a yaml file in the ``gptables.write_workbook`` function. 
-The yaml file used in this example can be found in the themes folder as ''gptheme.yaml''.
+The yaml file used in this example can be found in the themes folder as ''penguins_test_theme.yaml''.
 """
 
 import gptables as gpt
@@ -49,7 +49,7 @@ penguins_sheets = {"Penguins": penguins_table}
 # Simply pass the filepath of the yaml file containing your theme to the GPTables Theme class and then to write_workbook
 if __name__ == "__main__":
     output_path = parent_dir / "python_penguins_gptable.xlsx"
-    theme_path = str(Path(__file__).parent.parent / "themes/gptheme.yaml")
+    theme_path = str(Path(__file__).parent.parent / "themes/penguins_test_theme.yaml")
     gpt.write_workbook(
         filename=output_path, 
         sheets=penguins_sheets,
