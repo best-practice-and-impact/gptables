@@ -22,10 +22,13 @@ Unreleased
 * Rich text format lists can now be of length 2.
 * gptables now supports python 3.11
 * Official disclaimer included at the bottom of the README and PyPI index
+* pyproject.toml is now used to manage the packaging
 
 **Removed**
 
 * CI for Python 3.6 on Linux, as no longer supported by GitHub action ``setup-python``
+* Dataclasses as a dependency due to no longer supporting Python 3.6
+* setup.py as this has been replaced by the more modern pyproject.toml
 
 **Changed**
 
