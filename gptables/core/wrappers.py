@@ -48,7 +48,8 @@ class GPWorksheet(Worksheet):
         if cover.contact is not None:
             pos = self._write_element(pos, "Contact", theme.cover_subtitle_format)
             pos = self._write_element_list(pos, cover.contact, theme.cover_text_format)
-    
+                  
+        self.set_column(0, 0, cover.width)
 
     def write_gptable(self, gptable, auto_width, reference_order=[]):
         """
@@ -109,8 +110,6 @@ class GPWorksheet(Worksheet):
                 gptable,
                 auto_width,
                 )
-
-        self._mark_data_as_worksheet_table(gptable, theme.column_heading_format)
 
 
     def _reference_annotations(self, gptable, reference_order):
@@ -505,7 +504,7 @@ class GPWorksheet(Worksheet):
             warnings.warn(msg)
 
         # Raise error if any table element is only special characters
-        if gptable.table.stack().str.contains('^[^a-zA-Z0-9]*$').any():
+        if gptable.table.astype("string").stack().str.contains('^[^a-zA-Z0-9]*$').any():
             msg = (f"""
             Cell found in {gptable.table_name} containing only special characters,
             replace with alphanumeric characters before inputting to GPTable.
@@ -560,7 +559,9 @@ class GPWorksheet(Worksheet):
                 formats.iloc[1:, col],
                 index_level_formats[level - 1]  # Account for 0-indexing
                 )
-        
+
+        self._apply_column_alignments(data, formats, index_columns)
+
         ## Add additional table-specific formatting from GPTable
         self._apply_additional_formatting(
                 formats,
@@ -575,10 +576,50 @@ class GPWorksheet(Worksheet):
         if auto_width:
             widths = self._calculate_column_widths(data, formats)
             self._set_column_widths(widths)
+
+        self._mark_data_as_worksheet_table(gptable, formats)
         
         return pos
 
-    
+
+    def _apply_column_alignments(self, data_table, formats_table, index_columns):
+        """
+        Add column alignment to format based on datatype
+
+        Parameters
+        ----------
+        data_table : pandas.DataFrame
+            table to be written to an Excel workbook
+        formats_table : pandas.DataFrame
+            table with same dimensions as `data_table`,
+            containing formating dictionaries
+
+        """
+        # look for shorthand notation, usually a few letters in square brackets
+        # will also find note markers eg [Note 1]
+        # Using np.nan instead on None for backwards compatibility with pandas <=1.4
+        data_table_copy = data_table.replace(
+            regex=r"\[[\w\s]+\]",
+            value = np.nan,
+        )
+
+        data_table_copy = data_table_copy.convert_dtypes()
+
+        column_types = data_table_copy.dtypes
+
+        for column in data_table.columns:
+            if data_table.columns.get_loc(column) in index_columns:
+                alignment_dict = {"align": "left"}
+
+            elif pd.api.types.is_numeric_dtype(column_types[column]):
+                alignment_dict = {"align" : "right"}
+
+            else:
+                alignment_dict = {"align": "left"}
+
+            self._apply_format(formats_table[column], alignment_dict)
+
+
     def _apply_additional_formatting(
             self,
             formats_table,
@@ -674,18 +715,32 @@ class GPWorksheet(Worksheet):
         pos = [pos[0] + rows, 0]
         
         return pos
-        
-    def _mark_data_as_worksheet_table(self, gptable, column_header_format_dict):
+
+
+    def _mark_data_as_worksheet_table(self, gptable, formats_dataframe):
         """
         Marks the data to be recognised as a Worksheet Table in Excel.
+
+        Parameters
+        ----------
+        gptable : gptables.GPTable
+            object containing the table
+        formats_dataframe : DataFrame
+            DataFrame with same dimensions as gptable.table, containing
+            formatting dictionaries
         """
         data_range = gptable.data_range
 
-        column_header_format = self._workbook.add_format(column_header_format_dict)
-        
         column_list = gptable.table.columns.tolist()
-        
-        column_headers = [{'header': column, 'header_format': column_header_format} for column in column_list]
+        formats_list = [
+            self._workbook.add_format(format_dict)
+            for format_dict in formats_dataframe.iloc[0, :].tolist()
+        ]
+
+        column_headers = [
+            {'header': header, 'header_format': header_format}
+            for header, header_format in zip(column_list, formats_list)
+        ]
 
         self.add_table(*data_range,
                        {'header_row': True,
@@ -694,6 +749,7 @@ class GPWorksheet(Worksheet):
                         'style': None,
                         'name': gptable.table_name
                         })
+
 
     def _smart_write(self, row, col, data, format_dict, *args):
         """
@@ -735,7 +791,13 @@ class GPWorksheet(Worksheet):
                 self._write_with_newlines(wb, row, col, data, format_dict, *args)
 
         elif isinstance(data, FormatList):
-            self._write_with_custom_formats(wb, row, col, data, format_dict, *args)
+            if len(data.list) == 2:
+                text_format = format_dict.copy()
+                text_format.update(data.list[0])
+                text_data = data.list[1]
+                self._smart_write(row, col, text_data, text_format, *args)
+            else:
+                self._write_with_custom_formats(wb, row, col, data, format_dict, *args)
 
         elif isinstance(data, dict):
             self._write_dict_as_url(wb, row, col, data, format_dict, *args)

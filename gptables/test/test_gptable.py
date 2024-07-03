@@ -53,7 +53,7 @@ def create_gptable_with_kwargs():
     def generate_gptable(format_dict=None):
         base_gptable = {
             "table": pd.DataFrame(),
-            "table_name": "",
+            "table_name": "table_name",
             "title": "",
             "index_columns": {}  # Override default, as no columns in table
             }
@@ -72,7 +72,7 @@ def test_init_defaults(create_gptable_with_kwargs):
 
     # Required args
     assert empty_gptable.title == ""
-    assert empty_gptable.table_name == ""
+    assert empty_gptable.table_name == "table_name"
 
     assert_frame_equal(
             empty_gptable.table, pd.DataFrame().reset_index(drop=True)
