@@ -23,6 +23,8 @@ Unreleased
 * gptables now supports python 3.11
 * Official disclaimer included at the bottom of the README and PyPI index
 * pyproject.toml is now used to manage the packaging
+* Bugfix to allow writing of tables containing only integers
+* New examples to more simply explain things to new users
 
 **Removed**
 
