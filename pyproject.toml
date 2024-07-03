@@ -8,10 +8,10 @@ exclude = ["test"]
 [project]
 name = "gptables"
 authors = [
-  {name = "ASAP", email = "ASAP@ons.gov.uk"}
+  {name = "Analysis Standards and Pipelines", email = "ASAP@ons.gov.uk"}
 ]
 maintainers = [
-  {name = "ASAP", email = "ASAP@ons.gov.uk"}
+  {name = "Analysis Standards and Pipelines", email = "ASAP@ons.gov.uk"}
 ]
 dynamic = ["version"]
 requires-python = '>=3.7'
