@@ -274,9 +274,9 @@ Border formatting
 -------------
 
 This table demonstrates the border formatting options available. You can find all options 
-for `border styles in the XlsxWriter documentation`.
+for `border styles in the XlsxWriter documentation`_.
 
-.. _`border styles in the XlsxWriter documentaion`: https://xlsxwriter.readthedocs.io/format.html#format-set-border
+.. _`border styles in the XlsxWriter documentation`: https://xlsxwriter.readthedocs.io/format.html#format-set-border
 
 .. list-table::
     :header-rows: 1
