@@ -171,10 +171,10 @@ for `underline styles in the XlsxWriter documentation`_.
     * - Underline
       - {"underline": 1}
     * -  Strikeout
-      - {"strikeout": True}
+      - {"font_strikeout": True}
     * - Super/Subscript
-      - | {"set_font_script": 1} # Superscript
-        | {"set_font_script": 2} # Subscript
+      - | {"font_script": 1} # Superscript
+        | {"font_script": 2} # Subscript
 ..  
 ------
 Number formatting
@@ -235,7 +235,7 @@ This table demonstrates the alignment formatting options available. You can find
     * - Horizontal align
       - {"align": "center"}
     * - Vertical align
-      - {"valign": "top"}
+      - {"align": "vcenter"}
     * - Rotation
       - {"rotation": 30}
     * - Text wrap
