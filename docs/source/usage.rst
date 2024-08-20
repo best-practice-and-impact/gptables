@@ -13,32 +13,47 @@ examples_ directory of the package.
 .. todo:: Replace datasets in examples with open online datasets
 
 
-.. automodule:: gptables.examples.iris
+.. automodule:: gptables.examples.penguins_minimal
 
-.. literalinclude:: ../../gptables/examples/iris.py
+.. literalinclude:: ../../gptables/examples/penguins_minimal.py
+    :language: python
+    :lines: 16-
+
+.. automodule:: gptables.examples.penguins_minimal_alternate
+
+.. literalinclude:: ../../gptables/examples/penguins_minimal_alternate.py
+    :language: python
+    :lines: 16-
+
+.. literalinclude:: ../../gptables/examples/penguins_multiple_sheets.py
+    :language: python
+    :lines: 16-
+
+.. automodule:: gptables.examples.penguins_theme
+
+.. literalinclude:: ../../gptables/examples/penguins_theme.py
+    :language: python
+    :lines: 16-
+
+.. automodule:: gptables.examples.penguins_cover
+
+.. literalinclude:: ../../gptables/examples/penguins_cover.py
+    :language: python
+    :lines: 14-
+
+.. automodule:: gptables.examples.penguins_notes
+
+.. literalinclude:: ../../gptables/examples/penguins_notes.py
     :language: python
     :lines: 15-
 
+.. automodule:: gptables.examples.penguins_additional_formatting
 
-.. automodule:: gptables.examples.iris_cover
-
-.. literalinclude:: ../../gptables/examples/iris_cover.py
+.. literalinclude:: ../../gptables/examples/penguins_additional_formatting.py
     :language: python
-    :lines: 12-
+    :lines: 25-
 
 
-.. automodule:: gptables.examples.iris_additional_formatting
-
-.. literalinclude:: ../../gptables/examples/iris_additional_formatting.py
-    :language: python
-    :lines: 24-
-
-
-.. automodule:: gptables.examples.cor_multiple_sheets
-
-.. literalinclude:: ../../gptables/examples/cor_multiple_sheets.py
-    :language: python
-    :lines: 16-
 
 
 .. automodule:: gptables.examples.survey_data
@@ -53,12 +68,5 @@ R Usage
 
 Use of ``gptables`` in R requires use of python via the `reticulate <https://rstudio.github.io/reticulate/>`_ package.
 
-This example demonstrates basic usage of the pacakge in R. More advanced usage will
-use a similar approach to python (above), but may require use of ``reticulate`` functions
-to create/modify python objects. 
-
-.. literalinclude:: ../../gptables/examples/iris.R
-    :language: R
-
-R users may also be interested in the `a11ytables <https://co-analysis.github.io/a11ytables/>`_
+However we recommend use of the `a11ytables <https://co-analysis.github.io/a11ytables/>`_
 R package, developed by the Cabinet Office.

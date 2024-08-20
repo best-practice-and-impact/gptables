@@ -1,5 +1,0 @@
-pandas>=0.25.3
-xlrd>=1.2.0
-XlsxWriter>=3.1.0
-pyyaml>=3.12
-dataclasses;python_version<"3.7"
