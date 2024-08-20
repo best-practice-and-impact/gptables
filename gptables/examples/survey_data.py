@@ -1,3 +1,10 @@
+"""
+Labour market overview, UK: December 2020 - Real Survey Data Example
+--------------------------------------------------------------------
+This example demonstrates how to replicate the Labour Market overview accessible 
+example found at https://analysisfunction.civilservice.gov.uk/policy-store/further-resources-for-releasing-statistics-in-spreadsheets/
+"""
+
 import gptables as gpt
 import pandas as pd
 import numpy as np
@@ -105,6 +112,8 @@ if __name__ == "__main__":
         cover=cover,
         notes_table=notes_table,
         contentsheet_options={"additional_elements": ["subtitles", "scope"]},
-        auto_width=True
+        auto_width=True,
+        gridlines="show_all",
+        cover_gridlines=True
         )
     print("Output written at: ", output_path)
