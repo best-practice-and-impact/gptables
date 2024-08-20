@@ -1,11 +1,3 @@
-"""
-Labour market overview, UK: December 2020 - Real Survey Data Example
---------------------------------------------------------------------
-
-This example demonstrates how to replicate the Labour Market overview accessible 
-example found at https://analysisfunction.civilservice.gov.uk/policy-store/further-resources-for-releasing-statistics-in-spreadsheets/
-"""
-
 import gptables as gpt
 import pandas as pd
 import numpy as np
@@ -17,6 +9,17 @@ parent_dir = Path(__file__).parent
 labour_market_data = pd.read_csv(parent_dir / "survey_data.csv")
 labour_market_data.dropna(axis=0, how="all", inplace=True)
 labour_market_data.dropna(axis=1, how="all", inplace=True)
+col_names = ["Time period and dataset code row",
+             "Number of people", 
+             "Economically active",
+             "Employment level",
+             "Unemployment level",
+             "Economically inactive",
+             "Economically active rate",
+             "Employment rate",
+             "Unemployment rate",
+             "Economically inactive rate"]
+labour_market_data.columns = col_names
 
 
 ## Define table elements
@@ -25,22 +28,28 @@ title = "Number and percentage of population aged 16 and over in each labour mar
 subtitles = [
     "This worksheet contains one table. Some cells refer to notes which can be found on the notes worksheet."
     ]
+units = {1:"thousands", 2:"thousands", 3:"thousands", 4:"thousands",
+         5:"thousands", 6:"%", 7:"%", 8:"%", 9:"%"}
+table_notes = {2:"$$note 1$$", 3:"$$note 2$$", 4:"$$note 2$$",5: "$$note 3$$",
+               7:"$$note 4$$", 8:"$$note 4$$", 9:"$$note 4$$"}
 scope = "Labour Market"
 source = "Source: Office for National Statistics"
 index = {2: 0}  # Column 0 is a level 2 index
 additional_formatting = [{
         "row": {
             "rows": [1],
-            "format": {"bold": True},
+            "format": {"bold": True, "font_size": 14},
         }
     }]
 
 
-# Use kwargs to pass these to the appropriate parameters
+# or use kwargs to pass these to the appropriate parameters
 kwargs = {
     "table_name": table_name,
     "title": title,
     "subtitles": subtitles,
+    "units": units,
+    "table_notes": table_notes,
     "scope": scope,
     "source": source,
     "index_columns": index,
