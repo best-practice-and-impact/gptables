@@ -65,9 +65,9 @@ kwargs = {
 
 
 ## Define our GPTable
-iris_table = gpt.GPTable(table=labour_market_data, **kwargs)
+survey_table = gpt.GPTable(table=labour_market_data, **kwargs)
 
-sheets = {"sheet 1a": iris_table}
+sheets = {"sheet 1a": survey_table}
 
 cover = gpt.Cover(
     cover_label="Cover",
