@@ -1,0 +1,21 @@
+Note number ,Note text 
+note 1,The economically active population is defined as those in employment plus those who are unemployed.   
+note 2,"We publish two levels of employment and unemployment, one for those aged 16 and over and one for those aged 16 to 64. The headline levels are for those aged 16 and over. They measure all people in work or actively seeking and able to work.                                       "
+note 3,"We publish two levels of economic inactivity, one for those aged 16 and over and one for those aged 16 to 64. The headline level is for those aged 16 to 64. The inactivity level for those aged 16 and over is less meaningful as it includes elderly people who have retired from the labour force.  "
+note 4,"The headline employment rate is the number of people aged 16 to 64 in employment divided by the population aged 16 to 64.   
+
+The headline unemployment rate is the number of unemployed people (aged 16 and over) divided by the economically active population (aged 16 and over).  
+
+The headline inactivity rate is the number of economically inactive people aged 16 to 64 divided by the population aged 16 to 64.         
+
+The employment and inactivity rates for those aged 16 and over are affected by the inclusion of the retired population in the denominators and are therefore less meaningful than the rates for those aged from 16 to 64. 
+
+However, for the unemployment rate for those aged 16 and over, no such effect occurs as the denominator for the unemployment rate is the economically active population which only includes people in work or actively seeking and able to work.    "
+note 5,The total series does not equal the sum of the 'UK' and 'Non UK' series as it includes people who do not state their country of birth or nationality. 
+note 6,A more detailed country breakdown for employment is available at Dataset EMP06.
+note 7,EU27 refers to the 27 member states of the European Union. 
+note 8,"This series consists of those people whose main reason for being economically inactive was because they were students. It does not include all students as some students will be included in the employment and unemployment estimates.
+"
+note 9,"As the estimates are not seasonally adjusted, it is best practice to only compare the same quarter for different years e.g. compare Jan to Mar 2018 with Jan to Mar 2019 but do not compare Jul to Sep 2018 with Jan to Mar 2019."
+note 10,Data for workers is only available from January 1986. 
+note 11,Due to rounding the working days lost for the public and private sector may not add up to the working days lost.
