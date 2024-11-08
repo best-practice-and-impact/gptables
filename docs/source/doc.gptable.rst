@@ -298,11 +298,11 @@ for `border styles in the XlsxWriter documentation`_.
     * - Border colour
       - {"border_color": "red"}
     * - Bottom colour
-      - {"bottom_color":"red"}
+      - {"bottom_color":"#FF0000"}
     * - Top colour
       - {"top_color": "red"}
     * - Left colour
-      - {"left_color": "red"}
+      - {"left_color": "#FF0000"}
     * - Right colour
       - {"right_color": "red"}
 
