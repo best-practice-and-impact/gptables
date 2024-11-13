@@ -8,48 +8,19 @@ from pathlib import Path
 ## Read data and arrange
 parent_dir = Path(__file__).parent
 
-iris_data = pd.read_csv(parent_dir / "iris.csv")
-
-iris_data.rename(
-    columns={
-        "class": "class",
-        "sepal_length": "Sepal Length",
-        "petal_length": "Petal Length",
-        "petal_width": "Petal Width",
-        "sepal_width": "Sepal Width",
-    },
-    inplace=True,
-    )
-
-iris_data["class"] = iris_data.apply(lambda row: row["class"][5:].capitalize(), axis=1)
-
-# Calculate summaries
-subtables = []
-funcs = [np.mean, np.median]
-for func in funcs:
-    subtables.append(iris_data.groupby("class").agg(func))
-    subtables.append(pd.DataFrame(iris_data.iloc[:,0:4].agg(func).rename("All")).T)
-iris_summary = pd.concat(subtables)
-iris_summary["Average"] = ["Mean"] * 4 + ["Median"] * 4
-
-# Reshape
-iris_summary = iris_summary.reset_index()
-iris_summary = iris_summary.melt(["index", "Average"], var_name="Iris feature")
-iris_summary = iris_summary.pivot_table(
-    index=["Iris feature", "Average"], columns="index", values="value"
-    ).reset_index()
+penguin_data = pd.read_csv(parent_dir / "penguins.csv")
 
 ## Define table elements
-table_name = "iris_statistics"
-title = "Iris flower dimensions"
+table_name = "penguin_statistics"
+title = "Penguins"
 subtitles = [
     [{"font_name": "Chiller"}, "The", {"font_size": 30}, " first", {"font_color": "red"}, " subtitle"],
     [{"bold": True}, "The", {"italic": True}, " second", {"underline": True}, " subtitle"],
     [{"font_script": 1}, "Ignore", {"font_script": 2}, " this"],
     [{"font_strikeout": True}, "bye", " "] 
      ]   # checking font formatting 
-units = {key: "cm" for key in range(2,6)}
-scope = "Iris"
+units = {key: "mm" for key in range(2,5)}
+scope = "Penguins"
 index = {1: 0, 2: 1}
 
 # Additional formatting
@@ -57,7 +28,7 @@ index = {1: 0, 2: 1}
 additional_formatting = [
     {
         "column": {
-            "columns": ["Setosa", "Versicolor"], 
+            "columns": ["Species", "Island"], 
             "format": {"align": "vcenter"}, #checking vertical alignment
             "include_names": False, 
         }
@@ -103,13 +74,13 @@ kwargs = {
     }
 
 ## Define our GPTable
-iris_table = gpt.GPTable(table=iris_summary, **kwargs)
+iris_table = gpt.GPTable(table=penguin_data, **kwargs)
 
 ## Use produce workbook to return GPWorkbook
 if __name__ == "__main__":
     output_path = parent_dir / "test_additional_formatting_gptable.xlsx"
     wb = gpt.produce_workbook(
-        filename=output_path, sheets={"Iris Flower Dimensions": iris_table}
+        filename=output_path, sheets={"Penguins": iris_table}
         )
 
     # Carry out additional modifications on the GPWorkbook or GPWorksheets

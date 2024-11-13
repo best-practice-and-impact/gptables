@@ -61,7 +61,7 @@ penguins_additional_formatting = [
     {
         "row": {
             "rows": -1,  # Numbers only, but can refer to last row using -1
-            "format": {"bottom": 1, "indentation":2},  # Give the last row a border at the bottom of each cell and indents two levels
+            "format": {"bottom": 1, "indent":2},  # Give the last row a border at the bottom of each cell and indents two levels
         }
     },
     ]
