@@ -13,7 +13,7 @@ penguin_data = pd.read_csv(parent_dir / "penguins.csv")
 # Replace cells containg only special characters with empty strings
 def clean_table(df):
     for col in df.columns:
-        df[col] = df[col].apply(lambda x: '' if isinstance(x, str) and not x.isalnum() else x)
+        df[col] = df[col].apply(lambda x: '' if isinstance(x, str) and not any(char.isalnum() for char in x) else x)
     return df
 
 # Clean the penguins_data table

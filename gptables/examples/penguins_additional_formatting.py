@@ -32,15 +32,14 @@ parent_dir = Path(__file__).parent
 
 penguins_data = pd.read_csv(parent_dir / "penguins.csv")
 
-# Assuming penguins_statistics is a pandas DataFrame
+# Replace cells containg only special characters with empty strings
 def clean_table(df):
     for col in df.columns:
-        df[col] = df[col].apply(lambda x: '' if isinstance(x, str) and not x.isalnum() else x)
+        df[col] = df[col].apply(lambda x: '' if isinstance(x, str) and not any(char.isalnum() for char in x) else x)
     return df
 
-# Clean the penguins_statistics table
+# Clean the penguins_data table
 penguins_statistics = clean_table(penguins_data)
-
 
 #Any data processing could go here as long as you end with a Pandas dataframe that you want to write in a spreadsheet
 
