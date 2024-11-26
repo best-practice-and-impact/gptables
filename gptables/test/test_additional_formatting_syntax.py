@@ -8,16 +8,7 @@ from pathlib import Path
 ## Read data and arrange
 parent_dir = Path(__file__).parent
 
-penguin_data = pd.read_csv(parent_dir / "penguins.csv")
-
-# Replace cells containg only special characters with empty strings
-def clean_table(df):
-    for col in df.columns:
-        df[col] = df[col].apply(lambda x: '' if isinstance(x, str) and not any(char.isalnum() for char in x) else x)
-    return df
-
-# Clean the penguins_data table
-penguins_statistics = clean_table(penguin_data)
+penguin_data = pd.read_csv(parent_dir / "data/penguins.csv")
 
 ## Define table elements
 table_name = "penguin_statistics"
@@ -83,7 +74,7 @@ kwargs = {
     }
 
 ## Define our GPTable
-iris_table = gpt.GPTable(table=penguins_statistics, **kwargs)
+iris_table = gpt.GPTable(table=penguin_data, **kwargs)
 
 ## Use produce workbook to return GPWorkbook
 if __name__ == "__main__":
