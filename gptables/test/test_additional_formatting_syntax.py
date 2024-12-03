@@ -74,13 +74,13 @@ kwargs = {
     }
 
 ## Define our GPTable
-iris_table = gpt.GPTable(table=penguin_data, **kwargs)
+penguin_table = gpt.GPTable(table=penguin_data, **kwargs)
 
 ## Use produce workbook to return GPWorkbook
 if __name__ == "__main__":
     output_path = parent_dir / "test_additional_formatting_gptable.xlsx"
     wb = gpt.produce_workbook(
-        filename=output_path, sheets={"Penguins": iris_table}
+        filename=output_path, sheets={"Penguins": penguin_table}
         )
 
     # Carry out additional modifications on the GPWorkbook or GPWorksheets
