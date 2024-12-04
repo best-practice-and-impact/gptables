@@ -28,9 +28,9 @@ import numpy as np
 from pathlib import Path
 
 ## Read data and arrange
-parent_dir = Path(__file__).parent
+parent_dir = Path(__file__).parents[1]
 
-penguins_data = pd.read_csv(parent_dir / "penguins.csv")
+penguins_data = pd.read_csv(parent_dir / "test/data/penguins.csv")
 
 #Any data processing could go here as long as you end with a Pandas dataframe that you want to write in a spreadsheet
 
@@ -61,7 +61,7 @@ penguins_additional_formatting = [
     {
         "row": {
             "rows": -1,  # Numbers only, but can refer to last row using -1
-            "format": {"bottom": 1, "indentation":2},  # Give the last row a border at the bottom of each cell and indents two levels
+            "format": {"bottom": 1, "indent":2},  # Give the last row a border at the bottom of each cell and indents two levels
         }
     },
     ]
@@ -102,5 +102,4 @@ if __name__ == "__main__":
     
     wb.close()
     print("Output written at: ", output_path)
-
-
+    

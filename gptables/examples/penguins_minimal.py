@@ -19,9 +19,9 @@ import numpy as np
 from pathlib import Path
 
 ## Read data
-parent_dir = Path(__file__).parent
+parent_dir = Path(__file__).parents[1]
 
-penguins_data = pd.read_csv(parent_dir / "penguins.csv")
+penguins_data = pd.read_csv(parent_dir / "test/data/penguins.csv")
 
 #Any data processing could go here as long as you end with a Pandas dataframe that you want to write in a spreadsheet
 
