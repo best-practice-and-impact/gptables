@@ -15,6 +15,14 @@ and this project tries its very best to adhere to
 Unreleased
 ===================
 
+
+Released (PyPI)
+===============
+
+v1.2.0
+------
+:Date: 2024-12-05
+
 **Added**
 
 * Column width customisation to cover sheet
@@ -25,6 +33,7 @@ Unreleased
 * pyproject.toml is now used to manage the packaging
 * Bugfix to allow writing of tables containing only integers
 * New examples to more simply explain things to new users
+* Update documentation for additional formatting
 
 **Removed**
 
@@ -36,9 +45,6 @@ Unreleased
 
 * Default theme now includes cover sheet text wrapping set to True
 
-
-Released (PyPI)
-===============
 
 v1.1.0
 ------
