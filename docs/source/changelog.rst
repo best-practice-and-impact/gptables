@@ -19,6 +19,33 @@ Unreleased
 Released (PyPI)
 ===============
 
+v1.2.0
+------
+:Date: 2024-12-05
+
+**Added**
+
+* Column width customisation to cover sheet
+* Incorporated rich text functionaliy into the cover page by using List[dict, str] to format text in the intro, about, and contact sections.
+* Rich text format lists can now be of length 2.
+* gptables now supports python 3.11
+* Official disclaimer included at the bottom of the README and PyPI index
+* pyproject.toml is now used to manage the packaging
+* Bugfix to allow writing of tables containing only integers
+* New examples to more simply explain things to new users
+* Update documentation for additional formatting
+
+**Removed**
+
+* CI for Python 3.6 on Linux, as no longer supported by GitHub action ``setup-python``
+* Dataclasses as a dependency due to no longer supporting Python 3.6
+* setup.py as this has been replaced by the more modern pyproject.toml
+
+**Changed**
+
+* Default theme now includes cover sheet text wrapping set to True
+
+
 v1.1.0
 ------
 :Date: 2022-07-27

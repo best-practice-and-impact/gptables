@@ -69,7 +69,7 @@ formatting of that element specified in the :class:`~.core.theme.Theme`.
 
 .. _`XlsxWriter format properties`: https://xlsxwriter.readthedocs.io/format.html#format-methods-and-format-properties
 
-``["It is ", {"bold": True}, "inevitable"]`` would give you "It is *inevitable*".
+``["It is ", {"bold": True}, "inevitable"]`` would give you "It is **inevitable**".
 
 See this in practice under :ref:`Example Usage`.
 
@@ -134,6 +134,179 @@ This ``additional_formatting`` parameter is best demonstrated by example:
                }
          }
    ]
+
+Formatting methods
+^^^^^
+
+The following tables show the Excel format categories, along with an example demonstrating the syntax required
+for use in gptables. Some formatting methods use indexing to map to Excel's built-in formats. This information 
+can be found in the applicable sections below.
+
+^^^^
+Font formatting
+^^^^
+
+This table demonstrates the font formatting methods available. You can find all options
+for `underline styles in the XlsxWriter documentation`_.
+
+.. _`underline styles in the XlsxWriter documentation`: https://xlsxwriter.readthedocs.io/format.html#format-set-underline
+
+.. list-table::
+    :header-rows: 1
+    :widths: 19 30
+    :align: left
+
+    * - Description
+      - Example usage
+    * - Font type
+      - {"font_name": "Arial"}
+    * - Font size
+      - {"font_size": 30}
+    * - Font colour
+      - {"font_color": "red"}
+    * - Bold
+      - {"bold": True}
+    * - Italic
+      - {"italic": True}
+    * - Underline
+      - {"underline": 1}
+    * -  Strikeout
+      - {"font_strikeout": True}
+    * - Super/Subscript
+      - | {"font_script": 1} # Superscript
+        | {"font_script": 2} # Subscript
+..  
+^^^^^^
+Number formatting
+^^^^^^
+
+This table demonstrates how to set the numeric format using indexing and string arguments. You can find all 
+options for `numeric formats in the XlsxWriter documentation`_.
+
+.. _`numeric formats in the XlsxWriter documentation`: https://xlsxwriter.readthedocs.io/format.html#format-set-num-format
+
+.. list-table::
+    :header-rows: 1
+    :widths: 19 30
+    :align: left
+
+    * - Description
+      - Example usage
+    * - Numeric format
+      - | {"num_format": 1} # Format index 
+        | {"num_format": "d mmm yyyy"} # Format string
+.. 
+
+^^^^^^^^^^^
+Protection formatting
+^^^^^^^^^^^
+
+This table demonstrates the protection methods available.
+
+.. list-table::
+    :header-rows: 1
+    :widths: 19 30
+    :align: left
+
+    * - Description
+      - Example usage
+    * - Lock cells
+      - {"locked": True}
+    * - Hide formulas
+      - {"hidden": True}
+.. 
+
+^^^^^^^^^^^^
+Alignment formatting
+^^^^^^^^^^^^
+
+This table demonstrates the alignment formatting options available. You can find all options for 
+`horizontal and vertical alignment in the XlsxWriter documentation`_.
+
+.. _`horizontal and vertical alignment in the XlsxWriter documentation`: https://xlsxwriter.readthedocs.io/format.html#format-set-align
+
+.. list-table::
+    :header-rows: 1
+    :widths: 19 30
+    :align: left
+
+    * - Description
+      - Example usage
+    * - Horizontal align
+      - {"align": "center"}
+    * - Vertical align
+      - {"align": "vcenter"}
+    * - Rotation
+      - {"rotation": 30}
+    * - Text wrap
+      - {"text_wrap": True}
+    * - Center across
+      - {"set_center_across": True}
+    * - Indentation
+      - {"indentation":2}
+    * - Shrink to fit
+      - {"shrink": True}
+.. 
+
+^^^^^^^^^^^^^^^^
+Pattern formatting
+^^^^^^^^^^^^^^^^
+
+This table demonstrates the pattern formatting options available.
+
+.. list-table::
+    :header-rows: 1
+    :widths: 19 30
+    :align: left
+
+    * - Description
+      - Example usage  
+    * - Cell pattern
+      - {"pattern": 1}
+    * - Background colour
+      - {"bg_color": "white"}
+    * - Foreground colour
+      - {"fg_color": "white"}
+.. 
+
+^^^^^^^^^^^^^^^^^^
+Border formatting
+^^^^^^^^^^^^^^^^^^
+
+This table demonstrates the border formatting options available. You can find all options 
+for `border styles in the XlsxWriter documentation`_.
+
+.. _`border styles in the XlsxWriter documentation`: https://xlsxwriter.readthedocs.io/format.html#format-set-border
+
+.. list-table::
+    :header-rows: 1
+    :widths: 19 30
+    :align: left
+
+    * - Description
+      - Example usage
+    * - Cell border 
+      - {"border": 1}
+    * - Bottom border
+      - {"bottom": 1}
+    * - Top border
+      - {"top": 1}
+    * - Left border
+      - {"left": 1} 
+    * - Right border
+      - {"right": 1}
+    * - Border colour
+      - {"border_color": "red"}
+    * - Bottom colour
+      - {"bottom_color":"#FF0000"}
+    * - Top colour
+      - {"top_color": "red"}
+    * - Left colour
+      - {"left_color": "#FF0000"}
+    * - Right colour
+      - {"right_color": "red"}
+
+..
 
 For any formatting beyond this, if the package should support it then please raise an issue
 or create a pull request. Otherwise, you will need to modify the underlying
