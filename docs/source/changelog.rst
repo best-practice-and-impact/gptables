@@ -25,6 +25,7 @@ Unreleased
 * pyproject.toml is now used to manage the packaging
 * Bugfix to allow writing of tables containing only integers
 * New examples to more simply explain things to new users
+* Update documentation for additional formatting
 
 **Removed**
 
