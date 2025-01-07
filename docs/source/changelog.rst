@@ -21,7 +21,7 @@ Released (PyPI)
 
 v1.2.0
 ------
-:Date: 2024-12-05
+:Date: 2025-01-07
 
 **Added**
 
@@ -37,13 +37,14 @@ v1.2.0
 
 **Removed**
 
-* CI for Python 3.6 on Linux, as no longer supported by GitHub action ``setup-python``
+* CI for Python 3.6 - 3.8 on Linux, as no longer supported by GitHub action ``setup-python``
 * Dataclasses as a dependency due to no longer supporting Python 3.6
 * setup.py as this has been replaced by the more modern pyproject.toml
 
 **Changed**
 
 * Default theme now includes cover sheet text wrapping set to True
+* CI changed for trusted publishing
 
 
 v1.1.0
