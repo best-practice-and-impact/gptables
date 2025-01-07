@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.9', '3.10', '3.11']
 
         
     steps:
@@ -125,6 +125,10 @@ jobs:
       needs: [linux, windows, test-with-cov]
       if: startsWith(github.event.ref, 'refs/tags/v')
       runs-on: ubuntu-latest
+      environment:
+        name: release
+      permissions:
+        id-token: write
       steps:
         - name: Checkout source
           uses: actions/checkout@v2
@@ -139,7 +143,4 @@ jobs:
           run: |
             python -m build
         - name: Publish
-          uses: pypa/gh-action-pypi-publish@v1.1.0
-          with:
-            user: __token__
-            password: ${{ secrets.PYPI_KEY }}
+          uses: pypa/gh-action-pypi-publish@v1.12.3
