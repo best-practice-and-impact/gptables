@@ -13,7 +13,7 @@ authors = [
 maintainers = [
   {name = "Analysis Standards and Pipelines", email = "ASAP@ons.gov.uk"}
 ]
-dynamic = ["version"]
+version = "1.2.0"
 requires-python = '>=3.7'
 description = 'Simplifying good practice in statistical tables.'
 readme = "README.rst"
@@ -42,6 +42,9 @@ testing = [
     "pytest>=6.2.5",
     "pytest-cov"
 ]
+
+[version]
+file = "VERSION"
 
 [project.urls]
 Homepage = "https://github.com/best-practice-and-impact/gptables"
