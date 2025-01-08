@@ -1,6 +1,10 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_scheme = "only-version" 
+local_scheme = "no-local-version"
 
 [tool.setuptools.packages.find]
 exclude = ["test"]
@@ -42,6 +46,9 @@ testing = [
     "pytest>=6.2.5",
     "pytest-cov"
 ]
+
+[version]
+file = "VERSION"
 
 [project.urls]
 Homepage = "https://github.com/best-practice-and-impact/gptables"
