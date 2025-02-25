@@ -34,7 +34,7 @@ machine-readable CSV-W files.
 .. _`Analysis Function`: https://analysisfunction.civilservice.gov.uk/
 .. _`PyPI`: https://pypi.org/project/gptables/
 .. _`GitHub`: https://github.com/best-practice-and-impact/gptables
-.. _`a11ytables`: https://co-analysis.github.io/a11ytables/index.html
+.. _`aftables`: https://github.com/best-practice-and-impact/aftables
 .. _`csvcubed`: https://gss-cogs.github.io/csvcubed-docs/external/
 
 
