@@ -53,7 +53,7 @@ Found a bug, or would like to suggest a new feature? The best way is to let us k
 
 Alternatively, please email Analysis Standards at Pipelines at the ONS (ASAP@ons.gov.uk), and let us know if you use the package so we can engage with you as a user.
 
-Requests and fixes are managed accoring to resource capacity, and we aim to acknowledge queries within one working week.
+Requests and fixes are managed accoring to resource capacity, and we aim to acknowledge queries within one working week. Please follow up in the case of this taking longer.
 
 .. _`guidance on good practice spreadsheets`: https://analysisfunction.civilservice.gov.uk/policy-store/releasing-statistics-in-spreadsheets/
 .. _`PyPI`: https://pypi.org/project/gptables/
