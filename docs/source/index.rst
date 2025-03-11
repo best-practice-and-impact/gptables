@@ -30,7 +30,7 @@ However, the :class:`~.core.theme.Theme` Class allows development of custom them
 
 ``gptables`` is developed and maintained by the `Analysis Function`_. It can be
 installed from `PyPI`_ or `GitHub`_. The source code is maintained on GitHub.
-Users may also be interested in `a11ytables`_, an R native equivalent to
+Users may also be interested in `aftables`_, an R native equivalent to
 ``gptables``, and `csvcubed`_, a package for turning data and metadata into
 machine-readable CSV-W files.
 
@@ -38,7 +38,7 @@ machine-readable CSV-W files.
 .. _`Analysis Function`: https://analysisfunction.civilservice.gov.uk/
 .. _`PyPI`: https://pypi.org/project/gptables/
 .. _`GitHub`: https://github.com/best-practice-and-impact/gptables
-.. _`a11ytables`: https://co-analysis.github.io/a11ytables/index.html
+.. _`aftables`: https://best-practice-and-impact.github.io/aftables/
 .. _`csvcubed`: https://gss-cogs.github.io/csvcubed-docs/external/
 
 
