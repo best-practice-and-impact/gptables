@@ -68,5 +68,5 @@ R Usage
 
 Use of ``gptables`` in R requires use of python via the `reticulate <https://rstudio.github.io/reticulate/>`_ package.
 
-However we recommend use of the `a11ytables <https://co-analysis.github.io/a11ytables/>`_
-R package, developed by the Cabinet Office.
+However we recommend use of the `aftables <https://github.com/best-practice-and-impact/aftables>`_
+R package, maintained by the Presentation Champions Data Visualisation Tools subgroup.
